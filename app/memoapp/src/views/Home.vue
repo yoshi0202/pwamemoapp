@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-layout text-center wrap>
-      <v-flex md4 pa-5 v-for="(cd, i) in cardData" :key="cd" class="lg5-custom">
-        <Card :data="cardData[i]" />
+      <v-flex md4 pa-5 v-for="cd in cardData" :key="cd" class="lg5-custom">
+        <Card :data="cd" />
       </v-flex>
     </v-layout>
   </v-container>

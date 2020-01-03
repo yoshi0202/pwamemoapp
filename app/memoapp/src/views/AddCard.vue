@@ -1,7 +1,9 @@
 <template>
-  <v-container>
+  <v-container fluid>
     <v-layout text-center wrap>
-      <v-flex md12 class="red">aiueo</v-flex>
+      <v-flex md12 class="red">
+        <mavon-editor language="ja" />
+      </v-flex>
     </v-layout>
   </v-container>
 </template>
