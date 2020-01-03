@@ -6,10 +6,10 @@
           <v-card elevation="0">
             <v-form>
               <v-container pt-3 pb-0 px-10 fluid>
-                <v-text-field label="カードタイトル"></v-text-field>
+                <v-text-field v-model="cardData.cardTitle" label="カードタイトル"></v-text-field>
               </v-container>
               <v-container pt-2 px-10 fluid>
-                <v-text-field label="タグ"></v-text-field>
+                <v-text-field v-model="cardData.cardTags" label="タグ"></v-text-field>
               </v-container>
             </v-form>
           </v-card>
@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import marked from "marked";
+// import marked from "marked";
 import isMobile from "ismobilejs";
 
 export default {
@@ -54,7 +54,8 @@ export default {
   },
   methods: {
     test: function() {
-      this.parseContents = marked(this.cardData.cardContents);
+      alert(this.cardData.cardTitle);
+      // this.parseContents = marked(this.cardData.cardContents);
     }
   }
 };
