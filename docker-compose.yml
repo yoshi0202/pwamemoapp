@@ -14,3 +14,6 @@ services:
     container_name: lambda
     ports:
       - "3000:3000"
+    environment:
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID
