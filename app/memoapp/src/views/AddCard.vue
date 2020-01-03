@@ -9,7 +9,7 @@
                 <v-text-field v-model="cardData.cardTitle" label="カードタイトル"></v-text-field>
               </v-container>
               <v-container pt-2 px-10 fluid>
-                <v-text-field v-model="cardData.cardTags" label="タグ"></v-text-field>
+                <input-tag v-model="cardData.cardTags" limit="5" placeholder="タグを入力(最大5つ)"></input-tag>
               </v-container>
             </v-form>
           </v-card>
@@ -22,7 +22,7 @@
           :toolbarsFlag="toolBarsFlg"
         />
         <v-container mt-2>
-          <v-btn @click="test">submitTest</v-btn>
+          <v-btn @click="submit">submitTest</v-btn>
         </v-container>
         <div v-html="parseContents"></div>
       </v-flex>
@@ -53,7 +53,8 @@ export default {
     }
   },
   methods: {
-    test: function() {
+    submit: function() {
+      alert(JSON.stringify(this.cardData));
       alert(marked(this.cardData.cardContents));
       // this.parseContents = marked(this.cardData.cardContents);
     }

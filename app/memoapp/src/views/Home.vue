@@ -29,7 +29,16 @@ export default {
   },
   data: () => ({
     cardData: []
-  })
+  }),
+  methods: {
+    pushCardData: function(data) {
+      // this.cardData.push(data)
+      this.cardData.push({
+        title: data.cardTitle,
+        subTitle: data.cardContents
+      });
+    }
+  }
 };
 </script>
 
