@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-layout text-center wrap>
-      <v-flex md4 pa-5 v-for="i in 30" :key="i" class="lg5-custom">
-        <Card />
+      <v-flex md4 pa-5 v-for="(cd, i) in cardData" :key="cd" class="lg5-custom">
+        <Card :data="cardData[i]" />
       </v-flex>
     </v-layout>
   </v-container>
@@ -16,7 +16,20 @@ export default {
   name: "home",
   components: {
     Card
-  }
+  },
+  created: function() {
+    for (let i = 0; i < 30; i++) {
+      this.cardData.push({
+        id: i,
+        title: "title" + i,
+        subTitle: "subTitle" + i
+      });
+    }
+    console.log(this.cardData);
+  },
+  data: () => ({
+    cardData: []
+  })
 };
 </script>
 
