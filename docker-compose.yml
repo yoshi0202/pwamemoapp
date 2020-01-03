@@ -7,3 +7,10 @@ services:
     container_name: memoapp
     ports:
       - "8080:8080"
+  lambda:
+    build: lambda/.
+    volumes:
+      - "./lambda:/app"
+    container_name: lambda
+    ports:
+      - "3000:3000"
