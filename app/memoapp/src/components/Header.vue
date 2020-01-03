@@ -1,12 +1,14 @@
 <template>
   <v-app-bar app dark class="orange lighten-2">
-    <div class="d-flex align-center">PWA Memo APP</div>
+    <v-btn to="/" text class="orange lighten-2">
+      <div class="d-flex align-center orange lighten-2">PWA Memo APP</div>
+    </v-btn>
 
     <v-spacer></v-spacer>
 
-    <v-btn href="https://github.com/vuetifyjs/vuetify/releases/latest" target="_blank" text>
-      <span class="mr-2">Latest Release</span>
-      <v-icon>mdi-open-in-new</v-icon>
+    <v-btn to="addCard" text>
+      <span class="mr-2">add Cards!</span>
+      <v-icon small>fas fa-edit</v-icon>
     </v-btn>
   </v-app-bar>
 </template>
@@ -17,5 +19,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
