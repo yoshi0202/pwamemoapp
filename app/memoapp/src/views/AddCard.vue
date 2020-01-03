@@ -31,7 +31,7 @@
 </template>
 
 <script>
-// import marked from "marked";
+import marked from "marked";
 import isMobile from "ismobilejs";
 
 export default {
@@ -54,7 +54,7 @@ export default {
   },
   methods: {
     test: function() {
-      alert(this.cardData.cardTitle);
+      alert(marked(this.cardData.cardContents));
       // this.parseContents = marked(this.cardData.cardContents);
     }
   }
