@@ -1,5 +1,11 @@
 <template>
-  <v-card class="mx-auto" height="300" outlined>
+  <v-card
+    class="mx-auto"
+    height="300"
+    :elevation="elevation"
+    v-on:mouseover="hover"
+    v-on:mouseleave="leave"
+  >
     <v-list-item three-line>
       <v-list-item-content>
         <v-list-item-title class="headline mb-1">テスト1</v-list-item-title>
@@ -18,7 +24,18 @@
 
 <script>
 export default {
-  Name: "Card"
+  Name: "Card",
+  data: () => ({
+    elevation: "0"
+  }),
+  methods: {
+    hover: function() {
+      this.elevation = "10";
+    },
+    leave: function() {
+      this.elevation = "0";
+    }
+  }
 };
 </script>
 
