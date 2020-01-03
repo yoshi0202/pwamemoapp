@@ -1,7 +1,7 @@
 <template>
   <v-app-bar app dark class="orange lighten-2">
-    <v-btn to="/" text>
-      <div class="d-flex align-center">PWA Memo APP</div>
+    <v-btn to="/" text class="orange lighten-2">
+      <div class="d-flex align-center orange lighten-2">PWA Memo APP</div>
     </v-btn>
 
     <v-spacer></v-spacer>

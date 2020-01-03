@@ -1,7 +1,7 @@
 <template>
   <v-container fluid>
     <v-layout text-center wrap>
-      <v-flex md12 class="red">
+      <v-flex md12>
         <mavon-editor language="ja" />
       </v-flex>
     </v-layout>
