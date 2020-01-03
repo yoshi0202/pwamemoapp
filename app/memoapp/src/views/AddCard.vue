@@ -5,10 +5,10 @@
         <v-container fluid px-0>
           <v-card elevation="0">
             <v-form>
-              <v-container pt-3 pb-0 fluid>
+              <v-container pt-3 pb-0 px-10 fluid>
                 <v-text-field label="カードタイトル"></v-text-field>
               </v-container>
-              <v-container pt-2 fluid>
+              <v-container pt-2 px-10 fluid>
                 <v-text-field label="タグ"></v-text-field>
               </v-container>
             </v-form>
