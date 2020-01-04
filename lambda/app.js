@@ -17,11 +17,6 @@ app.use(express.static(path.join(__dirname, "public")));
 
 app.use(cors());
 app.use("/api", apiRouter);
-app.get("/", function(req, res, next) {
-  res.json({
-    status: "ok"
-  });
-});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
