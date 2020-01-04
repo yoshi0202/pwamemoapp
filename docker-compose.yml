@@ -7,3 +7,16 @@ services:
     container_name: memoapp
     ports:
       - "8080:8080"
+    environment:
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID
+  lambda:
+    build: lambda/.
+    volumes:
+      - "./lambda:/app"
+    container_name: lambda
+    ports:
+      - "3000:3000"
+    environment:
+      - AWS_SECRET_ACCESS_KEY
+      - AWS_ACCESS_KEY_ID
