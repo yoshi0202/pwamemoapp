@@ -5,7 +5,7 @@ Resources:
   ApiGatewayApi:
     Type: AWS::Serverless::Api
     Properties:
-      DefinitionUri: s3://pwamemoappbucket/76834d37f0d3d0c8fe578fcf9a9a1971
+      DefinitionUri: s3://pwamemoappbucket/d787b7c01e2bc6d16c0415627d77f99c
       StageName: prod
       Variables:
         ServerlessExpressLambdaFunctionName:
@@ -54,7 +54,7 @@ Resources:
   PWAMemoAPPFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://pwamemoappbucket/b57b3479ce90ef842d66f1051ed62abe
+      CodeUri: s3://pwamemoappbucket/4b9600d4c0716c91d5e0ddc9b1ed04dc
       Handler: lambda.handler
       MemorySize: 1024
       Role:
