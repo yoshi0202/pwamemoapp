@@ -11,21 +11,21 @@
 <script>
 // @ is an alias to /src
 import Card from "@/components/Card";
+import axios from "axios";
 
 export default {
   name: "home",
   components: {
     Card
   },
-  created: function() {
-    for (let i = 0; i < 30; i++) {
-      this.cardData.push({
-        id: i,
-        title: "title" + i,
-        subTitle: "subTitle" + i
-      });
+  mounted: async function() {
+    try {
+      const result = await axios.get("http://localhost:3000/api/cards");
+      this.cardData = result.data.Items;
+      console.log(this.cardData);
+    } catch (err) {
+      alert(JSON.stringify(err));
     }
-    console.log(this.cardData);
   },
   data: () => ({
     cardData: []
