@@ -18,7 +18,7 @@ const routes = [
     component: AddCard
   },
   {
-    path: "/:user/card/:id",
+    path: "/:user/card/:cardid",
     name: "showCard",
     component: showCard
   }
