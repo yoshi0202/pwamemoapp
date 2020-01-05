@@ -20,6 +20,7 @@
           v-model="cardData.cardContents"
           placeholder="カード内容を入力"
           :toolbarsFlag="toolBarsFlg"
+          :subfield="toolBarsFlg"
         />
         <v-container mt-2>
           <v-btn @click="submit">submitTest</v-btn>
@@ -44,12 +45,13 @@ export default {
         cardContents: ""
       },
       parseContents: "",
-      toolBarsFlg: false
+      toolBarsFlg: true,
+      subfieldFlg: false
     };
   },
   created: function() {
     if (!isMobile().any) {
-      this.toolBarsFlg = true;
+      this.subfieldFlg = false;
     }
   },
   methods: {
