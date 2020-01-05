@@ -60,6 +60,7 @@ router.post("/:id/cards/add", async function(req, res, next) {
   try {
     const user = Number(req.params.id);
     const createdAt = Number(getTimestamp());
+    // console.log(JSON.stringify(req.body));
     var params = {
       TableName: tableName,
       ExpressionAttributeNames: { "#u": "user", "#ci": "cardId" },
@@ -83,8 +84,12 @@ router.post("/:id/cards/add", async function(req, res, next) {
         }
       }
     };
+    console.log(params);
     const result = await dynamo.put(params).promise();
     res.json(result);
+    // res.json({
+    //   result: "ok"
+    // });
   } catch (err) {
     res.json(err);
   }

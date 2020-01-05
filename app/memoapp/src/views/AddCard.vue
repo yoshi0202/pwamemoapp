@@ -34,6 +34,7 @@
 <script>
 import marked from "marked";
 import isMobile from "ismobilejs";
+import axios from "axios";
 
 export default {
   name: "addCard",
@@ -55,10 +56,21 @@ export default {
     }
   },
   methods: {
-    submit: function() {
-      alert(JSON.stringify(this.cardData));
-      alert(marked(this.cardData.cardContents));
-      // this.parseContents = marked(this.cardData.cardContents);
+    submit: async function() {
+      try {
+        await axios.post("http://localhost:3000/api/1/cards/add", {
+          title: this.cardData.cardTitle,
+          cardTags: this.cardData.cardTags,
+          contents: this.cardData.cardContents,
+          cardType: 0
+        });
+
+        console.log(JSON.stringify(this.cardData));
+        console.log(marked(this.cardData.cardContents));
+        // this.parseContents = marked(this.cardData.cardContents);
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
     }
   }
 };
