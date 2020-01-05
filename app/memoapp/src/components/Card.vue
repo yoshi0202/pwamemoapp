@@ -1,5 +1,12 @@
 <template>
-  <v-card class="mx-auto" height="300" :elevation="elevation" @mouseover="elevation = 10" @mouseleave="elevation = 0">
+  <v-card
+    :to="data.user + '/card/' + data.cardId"
+    class="mx-auto"
+    height="300"
+    :elevation="elevation"
+    @mouseover="elevation = 10"
+    @mouseleave="elevation = 0"
+  >
     <v-container text-left fluid ma-0 py-3 px-5 fill-height>
       <v-layout column>
         <v-flex md2>
@@ -13,7 +20,7 @@
           </v-container>
         </v-flex>
         <v-divider></v-divider>
-        <v-flex md8 body-2>{{ data.cardData.contents }}</v-flex>
+        <v-flex md8 body-2>{{ parseMd(data.cardData.contents) }}</v-flex>
         <v-divider></v-divider>
         <v-flex md1>
           <v-container fluid fill-height ma-0 pa-0>
@@ -35,6 +42,8 @@
 </template>
 
 <script>
+import marked from "marked";
+
 export default {
   Name: "Card",
   data: () => ({
@@ -62,6 +71,9 @@ export default {
       var sec = ("0" + y.getSeconds()).slice(-2);
 
       return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+    },
+    parseMd: function(sentence) {
+      return marked(sentence).replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "");
     }
   }
 };
