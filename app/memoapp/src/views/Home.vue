@@ -20,7 +20,7 @@ export default {
   },
   mounted: async function() {
     try {
-      const result = await axios.get("http://localhost:3000/api/cards");
+      const result = await axios.get("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/cards");
       this.cardData = result.data.Items;
       console.log(this.cardData);
     } catch (err) {
@@ -43,11 +43,18 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1264px) and (max-width: 1903px) {
+@media (min-width: 1264px) and (max-width: 1980px) {
   .flex.lg5-custom {
     width: 20%;
     max-width: 20%;
     flex-basis: 20%;
+  }
+}
+@media (max-width: 600px) {
+  .flex.lg5-custom {
+    width: 100%;
+    max-width: 100%;
+    flex-basis: 100%;
   }
 }
 </style>

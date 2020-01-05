@@ -78,7 +78,8 @@ router.post("/:id/cards/add", async function(req, res, next) {
         cardData: {
           title: req.body.title,
           subTitle: req.body.subTitle,
-          contents: req.body.contents
+          contents: req.body.contents,
+          tags: req.body.cardTags
         }
       }
     };
