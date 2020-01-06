@@ -6,7 +6,7 @@
 
     <v-spacer></v-spacer>
 
-    <v-btn to="addCard" text>
+    <v-btn to="/addCard" text>
       <span class="mr-2">add Cards!</span>
       <v-icon small>fas fa-edit</v-icon>
     </v-btn>
