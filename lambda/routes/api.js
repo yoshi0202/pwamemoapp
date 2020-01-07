@@ -38,6 +38,10 @@ router.get("/:id/cards", async function(req, res, next) {
   }
 });
 
+router.post("/:id/cards/:cardid/thumbtack", async function(req, res, next) {
+  try {
+  } catch (err) {}
+});
 router.get("/:id/cards/:cardId", async function(req, res, next) {
   try {
     const user = Number(req.params.id);
