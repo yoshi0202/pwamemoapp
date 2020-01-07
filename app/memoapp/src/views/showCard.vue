@@ -1,7 +1,7 @@
 <template>
   <v-container fluid pa-0 ma-0>
     <v-layout>
-      <v-flex text-center>
+      <v-flex md8 offset-md2 text-center>
         <v-container text-left title>
           {{ cardData.cardData.title }}
           <v-divider></v-divider>
