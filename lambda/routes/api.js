@@ -4,6 +4,16 @@ var aws = require("aws-sdk");
 var dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
 const tableName = "pwaMemoApp";
 
+router.post("/login", async function(req, res, next) {
+  try {
+    res.json({
+      result: !req.body.status
+    });
+  } catch (err) {
+    res.json(err);
+  }
+});
+
 router.get("/cards", async function(req, res, next) {
   try {
     var params = {
