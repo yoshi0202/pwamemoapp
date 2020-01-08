@@ -3,14 +3,16 @@
     <v-layout align-center>
       <v-flex md6 offset-md3>
         <v-card>
-          <v-container text-center headline>Snippy</v-container>
+          <v-container text-center headline pt-10>Snippy</v-container>
           <v-container text-center fluid>
             <v-form ref="form">
-              <v-text-field v-model="email" label="Email"></v-text-field>
-              <v-text-field v-model="password" label="Password" type="password"></v-text-field>
-              <v-layout>
+              <v-container pa-10>
+                <v-text-field v-model="email" label="Email"></v-text-field>
+                <v-text-field v-model="password" label="Password" type="password"></v-text-field>
+              </v-container>
+              <v-layout px-10 pb-10>
                 <v-flex md-6>
-                  <v-btn large color="primary" @click="alertFunc">Login</v-btn>
+                  <v-btn large color="primary" @click="login">Login</v-btn>
                 </v-flex>
                 <v-flex md-6>
                   <v-btn large color="secondary">SignUP</v-btn>
@@ -36,9 +38,9 @@ export default {
   },
   created: function() {},
   methods: {
-    alertFunc: function() {
-      alert(this.email);
-      alert(this.password);
+    login: async function() {
+      await this.$store.dispatch("updateLoginStatus", false);
+      this.$router.push("/");
     }
   }
 };
