@@ -22,7 +22,7 @@ export default new Vuex.Store({
   },
   actions: {
     async updateLoginStatus({ commit }, data) {
-      const result = await axios.post("http://localhost:3000/api/login", {
+      const result = await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/login", {
         status: data
       });
       console.log(result.data.result);

@@ -58,7 +58,7 @@ export default {
   methods: {
     submit: async function() {
       try {
-        await axios.post("http://localhost:3000/api/1/cards/add", {
+        await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/cards/add", {
           title: this.cardData.cardTitle,
           cardTags: this.cardData.cardTags,
           contents: this.cardData.cardContents,
