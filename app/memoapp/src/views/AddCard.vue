@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import marked from "marked";
 import isMobile from "ismobilejs";
 import axios from "axios";
 
@@ -58,16 +57,13 @@ export default {
   methods: {
     submit: async function() {
       try {
-        await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/cards/add", {
+        await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/1/cards/add", {
           title: this.cardData.cardTitle,
           cardTags: this.cardData.cardTags,
           contents: this.cardData.cardContents,
           cardType: 0
         });
-
-        console.log(JSON.stringify(this.cardData));
-        console.log(marked(this.cardData.cardContents));
-        // this.parseContents = marked(this.cardData.cardContents);
+        this.$router.push("/");
       } catch (err) {
         alert(JSON.stringify(err));
       }
