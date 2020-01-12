@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import AddCard from "../views/AddCard.vue";
 import showCard from "../views/showCard.vue";
 import Login from "../views/Login.vue";
+import SignUp from "../views/SignUp.vue";
 import Store from "@/store/index.js";
 Vue.use(VueRouter);
 
@@ -30,6 +31,14 @@ const routes = [
     }
   },
   {
+    path: "/signUp",
+    name: "signUp",
+    component: SignUp,
+    meta: {
+      isPublic: true
+    }
+  },
+  {
     path: "*",
     name: "home",
     component: Home,
@@ -46,7 +55,9 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  if (to.matched.some(page => page.meta.isPublic) || Store.getters.getLoginStatus) {
+  const userStatus = Store.getters.getLoginStatus;
+
+  if (to.matched.some(page => page.meta.isPublic) || userStatus.status) {
     next();
   } else {
     next("/login");
