@@ -44,20 +44,27 @@ export default {
   created: function() {},
   methods: {
     login: async function() {
-      const result = await axios.post("http://localhost:3000/api/login", {
-        email: this.email,
-        password: this.password
-      });
-      if (result.data.err) {
-        alert(result.data.err);
-        return;
+      try {
+        if (!this.email || !this.password) {
+          return;
+        }
+        const result = await axios.post("http://localhost:3000/api/login", {
+          email: this.email,
+          password: this.password
+        });
+        if (result.data.err) {
+          alert(result.data.err);
+          return;
+        }
+        await this.$store.dispatch("updateLoginStatus", {
+          userId: this.email,
+          status: true,
+          loginToken: result.data.loginToken
+        });
+        this.$router.push("/");
+      } catch (err) {
+        alert(JSON.stringify(err));
       }
-      await this.$store.dispatch("updateLoginStatus", {
-        userId: this.email,
-        status: true,
-        loginToken: result.data.loginToken
-      });
-      this.$router.push("/");
     }
   }
 };
