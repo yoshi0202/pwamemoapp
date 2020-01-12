@@ -18,22 +18,27 @@ router.post("/login", async function(req, res, next) {
     };
     const userData = await dynamo.query(params).promise();
     if (userData.Items.length === 0) {
+      // user not defined
       console.log("user not defined");
       result.status = false;
+      result.err = "user not defined";
       res.json(result);
       return;
     }
-    if (userData.Items && bcrypt.compareSync(req.body.password, userData.Items[0].password)) {
-      // auth success
-      console.log("password is valid");
-      result.status = true;
-      result.loginToken = getRandomToken(32);
-    } else {
+    if (!userData.Items || !bcrypt.compareSync(req.body.password, userData.Items[0].password)) {
       // auth not succcess
       console.log("password is not valid");
       result.status = false;
-      result.loginToken = " ";
+      result.err = "password is not valid";
+      res.json(result);
+      return;
     }
+    // auth success
+    console.log("password is valid");
+    result.status = true;
+    result.err = "";
+    result.loginToken = getRandomToken(32);
+    res.json(result);
     var updateParams = {
       TableName: userTableName,
       Key: {
@@ -47,8 +52,7 @@ router.post("/login", async function(req, res, next) {
       },
       UpdateExpression: "SET #l = :l"
     };
-    await dynamo.update(updateParams).promise();
-    res.json(result);
+    dynamo.update(updateParams).promise();
   } catch (err) {
     console.log(err);
     res.json(err);
@@ -73,10 +77,7 @@ router.delete("/logout", async function(req, res, next) {
       ExpressionAttributeNames: {
         "#l": "loginToken"
       },
-      ExpressionAttributeValues: {
-        ":l": " "
-      },
-      UpdateExpression: "SET #l = :l"
+      UpdateExpression: "REMOVE #l"
     };
     await dynamo.update(updateParams).promise();
     console.log(result);

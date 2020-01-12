@@ -48,6 +48,10 @@ export default {
         email: this.email,
         password: this.password
       });
+      if (result.data.err) {
+        alert(result.data.err);
+        return;
+      }
       await this.$store.dispatch("updateLoginStatus", {
         userId: this.email,
         status: true,
