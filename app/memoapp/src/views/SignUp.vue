@@ -10,7 +10,7 @@
               <v-container pa-10>
                 <v-text-field v-model="email" label="Email"></v-text-field>
                 <v-text-field v-model="password" label="Password" type="password"></v-text-field>
-                <v-text-field label="Retype Password" type="password"></v-text-field>
+                <v-text-field v-model="reTypePassword" label="Retype Password" type="password"></v-text-field>
               </v-container>
               <v-layout px-10>
                 <v-flex md-6>
@@ -39,22 +39,35 @@ export default {
   data: function() {
     return {
       email: "",
-      password: ""
+      password: "",
+      reTypePassword: ""
     };
   },
   created: function() {},
   methods: {
     signup: async function() {
-      const result = await axios.post("http://localhost:3000/api/signUp", {
-        email: this.email,
-        password: this.password
-      });
-      await this.$store.dispatch("updateLoginStatus", {
-        status: result.data.status,
-        loginToken: result.data.loginToken,
-        userId: result.data.userId
-      });
-      this.$router.push("/");
+      try {
+        if (!this.password || !this.reTypePassword || !this.email) {
+          alert("入力箇所を確認してください。");
+          return;
+        }
+        if (this.password !== this.reTypePassword) {
+          alert("パスワードを正しく入力してください。");
+          return;
+        }
+        const result = await axios.post("http://localhost:3000/api/signUp", {
+          email: this.email,
+          password: this.password
+        });
+        await this.$store.dispatch("updateLoginStatus", {
+          status: result.data.status,
+          loginToken: result.data.loginToken,
+          userId: result.data.userId
+        });
+        this.$router.push("/");
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
     }
   }
 };
