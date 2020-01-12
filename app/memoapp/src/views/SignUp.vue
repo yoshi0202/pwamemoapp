@@ -55,7 +55,7 @@ export default {
           alert("パスワードを正しく入力してください。");
           return;
         }
-        const result = await axios.post("http://localhost:3000/api/signUp", {
+        const result = await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/signUp", {
           email: this.email,
           password: this.password
         });

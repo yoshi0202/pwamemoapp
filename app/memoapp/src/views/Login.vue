@@ -46,9 +46,10 @@ export default {
     login: async function() {
       try {
         if (!this.email || !this.password) {
+          alert("入力項目を確認してください。");
           return;
         }
-        const result = await axios.post("http://localhost:3000/api/login", {
+        const result = await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/login", {
           email: this.email,
           password: this.password
         });

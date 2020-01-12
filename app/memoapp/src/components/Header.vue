@@ -46,7 +46,7 @@ export default {
   methods: {
     logout: async function() {
       const loginStatus = this.$store.getters.getLoginStatus;
-      await axios.delete("http://localhost:3000/api/logout", {
+      await axios.delete("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/logout", {
         data: {
           userid: loginStatus.userId,
           loginToken: loginStatus.loginToken
