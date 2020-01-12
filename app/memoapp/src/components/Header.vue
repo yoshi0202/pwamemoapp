@@ -24,6 +24,7 @@
 </template>
 
 <script>
+import axios from "axios";
 export default {
   Name: "Header",
   data: function() {
@@ -38,14 +39,25 @@ export default {
   },
   watch: {
     status(val) {
-      this.loginStatus = val;
+      this.loginStatus = val.status;
     }
   },
   mounted: function() {},
   methods: {
     logout: async function() {
-      await this.$store.dispatch("updateLoginStatus", this.loginStatus);
-      this.loginStatus = this.$store.getters.getLoginStatus;
+      const loginStatus = this.$store.getters.getLoginStatus;
+      await axios.delete("http://localhost:3000/api/logout", {
+        data: {
+          userid: loginStatus.userId,
+          loginToken: loginStatus.loginToken
+        }
+      });
+      await this.$store.dispatch("updateLoginStatus", {
+        status: false,
+        loginToken: "",
+        userId: ""
+      });
+      this.loginStatus = false;
       this.$router.push("/");
     }
   }
