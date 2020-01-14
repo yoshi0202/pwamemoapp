@@ -9,7 +9,8 @@ export default new Vuex.Store({
     login: {
       status: false,
       loginToken: "",
-      userId: ""
+      userId: "",
+      id: ""
     }
   },
   getters: {
