@@ -17,6 +17,7 @@ router.post("/login", async function(req, res, next) {
       KeyConditionExpression: "#userid = :userid"
     };
     const userData = await dynamo.query(params).promise();
+    console.log(userData);
     if (userData.Items.length === 0) {
       // user not defined
       console.log("user not defined");
@@ -38,6 +39,8 @@ router.post("/login", async function(req, res, next) {
     result.status = true;
     result.err = "";
     result.loginToken = getRandomToken(32);
+    result.id = userData.Count;
+    console.log(result.id);
     res.json(result);
     var updateParams = {
       TableName: userTableName,
@@ -93,13 +96,15 @@ router.post("/signUp", async function(req, res, next) {
   try {
     const hashedPassword = bcrypt.hashSync(req.body.password, 10);
     const loginToken = getRandomToken(32);
-    var params = {
-      TableName: userTableName,
-      Item: {
-        userid: req.body.email,
-        password: hashedPassword,
-        loginToken: loginToken
-      }
+    let params = {
+      TableName: userTableName
+    };
+    const scanResult = await dynamo.scan(params).promise();
+    params.Item = {
+      userid: req.body.email,
+      password: hashedPassword,
+      loginToken: loginToken,
+      id: scanResult.Count
     };
     await dynamo.put(params).promise();
     res.json({

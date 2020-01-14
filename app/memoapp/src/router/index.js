@@ -5,6 +5,7 @@ import AddCard from "../views/AddCard.vue";
 import showCard from "../views/showCard.vue";
 import Login from "../views/Login.vue";
 import SignUp from "../views/SignUp.vue";
+import MyPage from "../views/MyPage.vue";
 import Store from "@/store/index.js";
 Vue.use(VueRouter);
 
@@ -13,6 +14,11 @@ const routes = [
     path: "/addCard",
     name: "addCard",
     component: AddCard
+  },
+  {
+    path: "/:user/mypage",
+    name: "myPage",
+    component: MyPage
   },
   {
     path: "/:user/card/:cardid",

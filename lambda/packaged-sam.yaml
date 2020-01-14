@@ -54,7 +54,7 @@ Resources:
   PWAMemoAPPFunction:
     Type: AWS::Serverless::Function
     Properties:
-      CodeUri: s3://pwamemoappbucket/9a6bb14cad0d00c587afdcc23e780142
+      CodeUri: s3://pwamemoappbucket/c852e338f635097bdf2b84e5eb5b3bec
       Handler: lambda.handler
       MemorySize: 1024
       Role:

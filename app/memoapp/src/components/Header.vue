@@ -7,6 +7,9 @@
     <v-spacer></v-spacer>
 
     <span v-if="loginStatus">
+      <v-btn class="ma-2" outlined color="white" @click="mypage">
+        <span class="mr-2">MyPage</span>
+      </v-btn>
       <v-btn class="ma-2" outlined color="white" @click="logout">
         <span class="mr-2">Logout</span>
       </v-btn>
@@ -29,7 +32,8 @@ export default {
   Name: "Header",
   data: function() {
     return {
-      loginStatus: false
+      loginStatus: false,
+      userId: ""
     };
   },
   computed: {
@@ -40,6 +44,7 @@ export default {
   watch: {
     status(val) {
       this.loginStatus = val.status;
+      this.userId = val.userId;
     }
   },
   mounted: function() {},
@@ -59,6 +64,9 @@ export default {
       });
       this.loginStatus = false;
       this.$router.push("/");
+    },
+    mypage: function() {
+      this.$router.push("/" + this.userId + "/mypage");
     }
   }
 };

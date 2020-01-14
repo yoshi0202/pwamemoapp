@@ -62,7 +62,8 @@ export default {
         await this.$store.dispatch("updateLoginStatus", {
           status: result.data.status,
           loginToken: result.data.loginToken,
-          userId: result.data.userId
+          userId: result.data.userId,
+          id: result.data.id
         });
         this.$router.push("/");
       } catch (err) {

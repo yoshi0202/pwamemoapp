@@ -49,7 +49,8 @@ export default {
           alert("入力項目を確認してください。");
           return;
         }
-        const result = await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/login", {
+        // const result = await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/login", {
+        const result = await axios.post("http://localhost:3000/api/login", {
           email: this.email,
           password: this.password
         });
@@ -57,10 +58,12 @@ export default {
           alert(result.data.err);
           return;
         }
+        console.log(result);
         await this.$store.dispatch("updateLoginStatus", {
           userId: this.email,
           status: true,
-          loginToken: result.data.loginToken
+          loginToken: result.data.loginToken,
+          id: result.data.id
         });
         this.$router.push("/");
       } catch (err) {
