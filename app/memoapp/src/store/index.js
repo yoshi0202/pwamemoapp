@@ -16,6 +16,9 @@ export default new Vuex.Store({
   getters: {
     getLoginStatus(state) {
       return state.login;
+    },
+    getId(state) {
+      return state.login.id;
     }
   },
   mutations: {
