@@ -39,8 +39,7 @@ router.post("/login", async function(req, res, next) {
     result.status = true;
     result.err = "";
     result.loginToken = getRandomToken(32);
-    result.id = userData.Count;
-    console.log(result.id);
+    result.id = userData.Items[0].id;
     res.json(result);
     var updateParams = {
       TableName: userTableName,
@@ -110,7 +109,8 @@ router.post("/signUp", async function(req, res, next) {
     res.json({
       status: true,
       loginToken: loginToken,
-      userId: req.body.email
+      userId: req.body.email,
+      id: scanResult.Count
     });
   } catch (err) {
     res.json(err);
@@ -144,9 +144,11 @@ router.get("/:id/cards", async function(req, res, next) {
       KeyConditionExpression: "#u = :user AND #ci >= :cardId"
       // ScanIndexForward: false,
     };
+    console.log(params);
     const result = await dynamo.query(params).promise();
     res.json(result);
   } catch (err) {
+    console.log(err);
     res.json(err);
   }
 });
@@ -177,7 +179,6 @@ router.post("/:id/cards/add", async function(req, res, next) {
   try {
     const user = Number(req.params.id);
     const createdAt = Number(getTimestamp());
-    // console.log(JSON.stringify(req.body));
     var params = {
       TableName: tableName,
       ExpressionAttributeNames: { "#u": "user", "#ci": "cardId" },
