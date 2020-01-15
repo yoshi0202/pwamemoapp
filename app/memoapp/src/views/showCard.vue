@@ -2,10 +2,17 @@
   <v-container fluid pa-0 ma-0>
     <v-layout>
       <v-flex md8 offset-md2 text-center>
-        <v-container text-left title>
-          {{ cardData.cardData.title }}
-          <v-divider></v-divider>
-        </v-container>
+        <v-layout>
+          <v-flex>
+            <v-container text-left title>{{ cardData.cardData.title }}</v-container>
+          </v-flex>
+          <v-flex>
+            <v-container text-right title>
+              <v-icon v-if="ownCard" @click="$router.push('/')">fas fa-edit</v-icon>
+            </v-container>
+          </v-flex>
+        </v-layout>
+        <v-divider></v-divider>
         <v-container text-left>
           <v-layout>
             <v-flex>
@@ -39,11 +46,11 @@ export default {
       "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/" + userId + "/cards/" + cardId
     );
     this.cardData = result.data.Item;
-    console.log(marked(JSON.stringify(this.cardData)));
   },
   data: function() {
     return {
-      cardData: {}
+      cardData: {},
+      ownCard: Number(this.$route.params.user) === this.$store.getters.getId
     };
   },
   created: function() {},

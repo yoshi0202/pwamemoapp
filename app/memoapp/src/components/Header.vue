@@ -33,7 +33,8 @@ export default {
   data: function() {
     return {
       loginStatus: false,
-      userId: ""
+      userId: "",
+      id: ""
     };
   },
   computed: {
@@ -45,6 +46,7 @@ export default {
     status(val) {
       this.loginStatus = val.status;
       this.userId = val.userId;
+      this.id = val.id;
     }
   },
   mounted: function() {},
@@ -66,7 +68,7 @@ export default {
       this.$router.push("/");
     },
     mypage: function() {
-      this.$router.push("/" + this.userId + "/mypage");
+      this.$router.push("/" + this.id + "/mypage");
     }
   }
 };
