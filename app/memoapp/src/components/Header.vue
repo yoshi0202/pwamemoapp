@@ -1,25 +1,25 @@
 <template>
-  <v-app-bar app dark class="orange lighten-2">
-    <v-btn to="/" text class="orange lighten-2">
-      <div class="d-flex align-center orange lighten-2">Snippy</div>
+  <v-app-bar app dark color="#147F9B">
+    <v-btn to="/" text class="#FDB436">
+      <div class="d-flex align-center">Snippy</div>
     </v-btn>
 
     <v-spacer></v-spacer>
 
     <span v-if="loginStatus">
-      <v-btn class="ma-2" outlined color="white" @click="mypage">
+      <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
         <span class="mr-2">MyPage</span>
       </v-btn>
-      <v-btn class="ma-2" outlined color="white" @click="logout">
+      <v-btn class="ma-2" outlined color="#FDB436" @click="logout">
         <span class="mr-2">Logout</span>
       </v-btn>
     </span>
     <span v-else>
-      <v-btn class="ma-2" outlined color="white" to="/login">
+      <v-btn class="ma-2" outlined color="#FDB436" to="/login">
         <span class="mr-2">Login</span>
       </v-btn>
     </span>
-    <v-btn to="/addCard" outlined>
+    <v-btn to="/addCard" outlined color="#FDB436">
       <span class="mr-2">add Cards!</span>
       <v-icon small>fas fa-edit</v-icon>
     </v-btn>
