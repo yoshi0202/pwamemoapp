@@ -175,6 +175,34 @@ router.get("/:id/cards/:cardId", async function(req, res, next) {
   }
 });
 
+router.post("/:user/cards/:cardid/update", async function(req, res, next) {
+  try {
+    var updateParams = {
+      TableName: tableName,
+      Key: {
+        user: Number(req.params.user),
+        cardId: Number(req.params.cardid)
+      },
+      ExpressionAttributeNames: {
+        "#c": "cardData"
+      },
+      ExpressionAttributeValues: {
+        ":c": {
+          contents: req.body.contents,
+          tags: req.body.tags,
+          title: req.body.title
+        }
+      },
+      UpdateExpression: "SET #c = :c"
+    };
+    const result = await dynamo.update(updateParams).promise();
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
 router.post("/:id/cards/add", async function(req, res, next) {
   try {
     const user = Number(req.params.id);

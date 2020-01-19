@@ -6,7 +6,7 @@
 import axios from "axios";
 export default {
   name: "MyPage",
-  mounted: async function() {
+  created: async function() {
     const state = this.$store.getters.getLoginStatus;
     this.cardData = await axios.get(
       "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/" + state.id + "/cards"
@@ -17,7 +17,6 @@ export default {
       cardData: {}
     };
   },
-  created: function() {},
   methods: {}
 };
 </script>

@@ -34,7 +34,6 @@
 import axios from "axios";
 export default {
   name: "Login",
-  mounted: async function() {},
   data: function() {
     return {
       email: "",

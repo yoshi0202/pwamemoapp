@@ -19,7 +19,7 @@ export default {
     Card
   },
   computed: {},
-  mounted: async function() {
+  created: async function() {
     try {
       const result = await axios.get("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/cards");
       this.cardData = result.data.Items;
