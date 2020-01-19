@@ -203,6 +203,22 @@ router.post("/:user/cards/:cardid/update", async function(req, res, next) {
   }
 });
 
+router.delete("/:user/cards/:cardid/destroy", async function(req, res, next) {
+  try {
+    var updateParams = {
+      TableName: tableName,
+      Key: {
+        user: Number(req.params.user),
+        cardId: Number(req.params.cardid)
+      }
+    };
+    const result = await dynamo.delete(updateParams).promise();
+    res.json(result);
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
 router.post("/:id/cards/add", async function(req, res, next) {
   try {
     const user = Number(req.params.id);
@@ -230,12 +246,8 @@ router.post("/:id/cards/add", async function(req, res, next) {
         }
       }
     };
-    console.log(params);
     const result = await dynamo.put(params).promise();
     res.json(result);
-    // res.json({
-    //   result: "ok"
-    // });
   } catch (err) {
     res.json(err);
   }

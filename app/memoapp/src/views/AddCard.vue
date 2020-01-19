@@ -33,7 +33,7 @@
 
 <script>
 import isMobile from "ismobilejs";
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   name: "addCard",
@@ -57,18 +57,17 @@ export default {
   methods: {
     submit: async function() {
       try {
-        console.log(this.cardData);
-        // const state = this.$store.getters.getLoginStatus;
-        // await axios.post(
-        //   "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/" + state.id + "/cards/add",
-        //   {
-        //     title: this.cardData.cardTitle,
-        //     cardTags: this.cardData.cardTags,
-        //     contents: this.cardData.cardContents,
-        //     cardType: 0
-        //   }
-        // );
-        // this.$router.push("/");
+        const state = this.$store.getters.getLoginStatus;
+        await axios.post(
+          "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/" + state.id + "/cards/add",
+          {
+            title: this.cardData.cardTitle,
+            cardTags: this.cardData.cardTags,
+            contents: this.cardData.cardContents,
+            cardType: 0
+          }
+        );
+        this.$router.push("/");
       } catch (err) {
         alert(JSON.stringify(err));
       }

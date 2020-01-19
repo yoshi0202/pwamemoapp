@@ -10,8 +10,10 @@
             <v-container text-right title>
               <v-icon
                 v-if="ownCard"
+                class="mx-2"
                 @click="$router.push('/' + editParams.userId + '/card/' + editParams.cardId + '/edit')"
               >fas fa-edit</v-icon>
+              <v-icon v-if="ownCard" class="mx-2" @click="deleteCard">far fa-trash-alt</v-icon>
             </v-container>
           </v-flex>
         </v-layout>
@@ -64,6 +66,17 @@ export default {
       return marked(text, {
         breaks: true
       });
+    },
+    deleteCard: async function() {
+      try {
+        await axios.delete(
+          "http://localhost:3000/api/" + this.$route.params.user + "/cards/" + this.$route.params.cardid + "/destroy",
+          {}
+        );
+        this.$router.push("/");
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
     }
   }
 };
