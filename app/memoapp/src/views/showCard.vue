@@ -8,7 +8,10 @@
           </v-flex>
           <v-flex>
             <v-container text-right title>
-              <v-icon v-if="ownCard" @click="$router.push('/')">fas fa-edit</v-icon>
+              <v-icon
+                v-if="ownCard"
+                @click="$router.push('/' + editParams.userId + '/card/' + editParams.cardId + '/edit')"
+              >fas fa-edit</v-icon>
             </v-container>
           </v-flex>
         </v-layout>
@@ -39,24 +42,28 @@ import marked from "marked";
 
 export default {
   name: "showCard",
-  mounted: async function() {
+  created: async function() {
     const userId = this.$route.params.user;
     const cardId = this.$route.params.cardid;
     const result = await axios.get(
       "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/" + userId + "/cards/" + cardId
     );
     this.cardData = result.data.Item;
+    this.editParams.userId = userId;
+    this.editParams.cardId = cardId;
   },
   data: function() {
     return {
       cardData: {},
+      editParams: {},
       ownCard: Number(this.$route.params.user) === this.$store.getters.getId
     };
   },
-  created: function() {},
   methods: {
     parseMd: function(text) {
-      return marked(text);
+      return marked(text, {
+        breaks: true
+      });
     }
   }
 };

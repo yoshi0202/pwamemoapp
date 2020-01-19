@@ -49,7 +49,7 @@ export default {
       this.id = val.id;
     }
   },
-  mounted: function() {},
+  created: function() {},
   methods: {
     logout: async function() {
       const loginStatus = this.$store.getters.getLoginStatus;

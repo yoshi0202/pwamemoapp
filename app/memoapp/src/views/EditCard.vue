@@ -23,7 +23,7 @@
           :subfield="toolBarsFlg"
         />
         <v-container mt-2>
-          <v-btn @click="submit">submitTest</v-btn>
+          <v-btn @click="update">CardUpdate</v-btn>
         </v-container>
         <div v-html="parseContents"></div>
       </v-flex>
@@ -33,10 +33,10 @@
 
 <script>
 import isMobile from "ismobilejs";
-// import axios from "axios";
+import axios from "axios";
 
 export default {
-  name: "addCard",
+  name: "editCard",
   data: function() {
     return {
       cardData: {
@@ -49,26 +49,29 @@ export default {
       subfieldFlg: false
     };
   },
-  created: function() {
+  mounted: async function() {
     if (!isMobile().any) {
       this.subfieldFlg = false;
     }
+    const getResult = await axios.get(
+      "http://localhost:3000/api/" + this.$route.params.user + "/cards/" + this.$route.params.cardid
+    );
+    this.cardData.cardTitle = getResult.data.Item.cardData.title;
+    this.cardData.cardTags = getResult.data.Item.cardData.tags;
+    this.cardData.cardContents = getResult.data.Item.cardData.contents;
   },
   methods: {
-    submit: async function() {
+    update: async function() {
       try {
-        console.log(this.cardData);
-        // const state = this.$store.getters.getLoginStatus;
-        // await axios.post(
-        //   "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/" + state.id + "/cards/add",
-        //   {
-        //     title: this.cardData.cardTitle,
-        //     cardTags: this.cardData.cardTags,
-        //     contents: this.cardData.cardContents,
-        //     cardType: 0
-        //   }
-        // );
-        // this.$router.push("/");
+        await axios.post(
+          "http://localhost:3000/api/" + this.$route.params.user + "/cards/" + this.$route.params.cardid + "/update",
+          {
+            title: this.cardData.cardTitle,
+            tags: this.cardData.cardTags,
+            contents: this.cardData.cardContents
+          }
+        );
+        this.$router.push("/");
       } catch (err) {
         alert(JSON.stringify(err));
       }
