@@ -6,35 +6,43 @@
 
     <v-spacer></v-spacer>
 
-    <span v-if="loginStatus">
-      <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
-        <span class="mr-2">MyPage</span>
-      </v-btn>
-      <v-btn class="ma-2" outlined color="#FDB436" @click="logout">
-        <span class="mr-2">Logout</span>
-      </v-btn>
+    <span v-if="ismobile">
+      <v-icon color="#FDB436" @click="toggleMenu">mdi-menu</v-icon>
     </span>
     <span v-else>
-      <v-btn class="ma-2" outlined color="#FDB436" to="/login">
-        <span class="mr-2">Login</span>
+      <span v-if="loginStatus">
+        <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
+          <span class="mr-2">MyPage</span>
+        </v-btn>
+        <v-btn class="ma-2" outlined color="#FDB436" @click="logout">
+          <span class="mr-2">Logout</span>
+        </v-btn>
+      </span>
+      <span v-else>
+        <v-btn class="ma-2" outlined color="#FDB436" to="/login">
+          <span class="mr-2">Login</span>
+        </v-btn>
+      </span>
+      <v-btn to="/addCard" outlined color="#FDB436">
+        <span class="mr-2">add Cards!</span>
+        <v-icon small>fas fa-edit</v-icon>
       </v-btn>
     </span>
-    <v-btn to="/addCard" outlined color="#FDB436">
-      <span class="mr-2">add Cards!</span>
-      <v-icon small>fas fa-edit</v-icon>
-    </v-btn>
   </v-app-bar>
 </template>
 
 <script>
 import axios from "axios";
+import isMobile from "ismobilejs";
+
 export default {
   Name: "Header",
   data: function() {
     return {
       loginStatus: false,
       userId: "",
-      id: ""
+      id: "",
+      ismobile: isMobile().any
     };
   },
   computed: {
@@ -69,6 +77,9 @@ export default {
     },
     mypage: function() {
       this.$router.push("/" + this.id + "/mypage");
+    },
+    toggleMenu: function() {
+      this.$emit("toggleMenu");
     }
   }
 };
