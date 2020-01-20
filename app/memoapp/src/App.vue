@@ -4,7 +4,7 @@
     <v-content class="grey lighten-3">
       <router-view />
     </v-content>
-    <v-navigation-drawer v-model="drawer" absolute temporary right>
+    <v-navigation-drawer v-model="drawer" app temporary right>
       <v-list-item>
         <v-list-item-content>
           <v-layout>
@@ -43,7 +43,7 @@ export default {
   },
 
   data: () => ({
-    drawer: null,
+    drawer: false,
     items: [
       { title: "Login", icon: "mdi-login" },
       { title: "My Page", icon: "mdi-account" },

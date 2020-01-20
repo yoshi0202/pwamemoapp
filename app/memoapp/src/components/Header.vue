@@ -6,24 +6,28 @@
 
     <v-spacer></v-spacer>
 
-    <span v-if="loginStatus">
-      <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
-        <span class="mr-2">MyPage</span>
-      </v-btn>
-      <v-btn class="ma-2" outlined color="#FDB436" @click="logout">
-        <span class="mr-2">Logout</span>
-      </v-btn>
+    <span v-if="ismobile">
+      <v-icon color="#FDB436" @click="toggleMenu">mdi-menu</v-icon>
     </span>
     <span v-else>
-      <v-btn class="ma-2" outlined color="#FDB436" to="/login">
-        <span class="mr-2">Login</span>
+      <span v-if="loginStatus">
+        <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
+          <span class="mr-2">MyPage</span>
+        </v-btn>
+        <v-btn class="ma-2" outlined color="#FDB436" @click="logout">
+          <span class="mr-2">Logout</span>
+        </v-btn>
+      </span>
+      <span v-else>
+        <v-btn class="ma-2" outlined color="#FDB436" to="/login">
+          <span class="mr-2">Login</span>
+        </v-btn>
+      </span>
+      <v-btn to="/addCard" outlined color="#FDB436">
+        <span class="mr-2">add Cards!</span>
+        <v-icon small>fas fa-edit</v-icon>
       </v-btn>
     </span>
-    <v-btn to="/addCard" outlined color="#FDB436">
-      <span class="mr-2">add Cards!</span>
-      <v-icon small>fas fa-edit</v-icon>
-    </v-btn>
-    <v-icon color="#FDB436" @click="toggleMenu">mdi-menu</v-icon>
   </v-app-bar>
 </template>
 
@@ -37,7 +41,8 @@ export default {
     return {
       loginStatus: false,
       userId: "",
-      id: ""
+      id: "",
+      ismobile: isMobile().any
     };
   },
   computed: {
@@ -52,11 +57,7 @@ export default {
       this.id = val.id;
     }
   },
-  created: function() {
-    if (!isMobile().any) {
-      alert(isMobile().any);
-    }
-  },
+  created: function() {},
   methods: {
     logout: async function() {
       const loginStatus = this.$store.getters.getLoginStatus;
