@@ -14,7 +14,11 @@
             <v-layout align-center>
               <v-flex md10 body-1>{{ data.cardData.title }}</v-flex>
               <v-flex text-center>
-                <v-icon small :color="thumbtackColor" @click="changeThumbtackStatus">fas fa-thumbtack</v-icon>
+                <v-icon
+                  small
+                  :color="thumbtackColor"
+                  @click="changeThumbtackStatus"
+                >fas fa-thumbtack</v-icon>
               </v-flex>
             </v-layout>
           </v-container>
@@ -23,10 +27,13 @@
         <v-flex md8 body-2>{{ parseMd(data.cardData.contents) }}</v-flex>
         <v-divider></v-divider>
         <v-flex md1>
-          <v-container fluid fill-height ma-0 pa-0>
-            <v-layout align-end text-wrap>
-              <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>
-            </v-layout>
+          <v-container fluid fill-height ma-0 pa-0 red>
+            <!-- <v-layout align-end text-wrap> -->
+            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
+            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
+            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
+            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
+            <!-- </v-layout> -->
           </v-container>
         </v-flex>
         <v-flex md1>

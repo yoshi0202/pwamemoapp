@@ -23,11 +23,14 @@
       <span class="mr-2">add Cards!</span>
       <v-icon small>fas fa-edit</v-icon>
     </v-btn>
+    <v-icon color="#FDB436" @click="toggleMenu">mdi-menu</v-icon>
   </v-app-bar>
 </template>
 
 <script>
 import axios from "axios";
+import isMobile from "ismobilejs";
+
 export default {
   Name: "Header",
   data: function() {
@@ -49,7 +52,11 @@ export default {
       this.id = val.id;
     }
   },
-  created: function() {},
+  created: function() {
+    if (!isMobile().any) {
+      alert(isMobile().any);
+    }
+  },
   methods: {
     logout: async function() {
       const loginStatus = this.$store.getters.getLoginStatus;
@@ -69,6 +76,9 @@ export default {
     },
     mypage: function() {
       this.$router.push("/" + this.id + "/mypage");
+    },
+    toggleMenu: function() {
+      this.$emit("toggleMenu");
     }
   }
 };
