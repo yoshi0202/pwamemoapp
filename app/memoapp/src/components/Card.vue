@@ -1,48 +1,69 @@
 <template>
   <v-card
-    :to="data.user + '/card/' + data.cardId"
-    class="mx-auto"
+    class="mx-auto snippy-card"
     height="300"
     :elevation="elevation"
+    :ripple="false"
+    :retain-focus-on-click="retain"
     @mouseover="elevation = 10"
     @mouseleave="elevation = 0"
+    @click="cardClick"
+    active-class
   >
-    <v-container text-left fluid ma-0 py-3 px-5 fill-height>
+    <v-container text-left fluid ma-0 pa-0 fill-height>
       <v-layout column>
-        <v-flex md2>
-          <v-container fluid fill-height ma-0 pa-0>
-            <v-layout align-center>
-              <v-flex md10 body-1>{{ data.cardData.title }}</v-flex>
-              <v-flex text-center>
-                <v-icon
-                  small
-                  :color="thumbtackColor"
-                  @click="changeThumbtackStatus"
-                >fas fa-thumbtack</v-icon>
+        <!-- title -->
+        <v-flex xs2>
+          <v-container py-0>
+            <v-layout align-center wrap row>
+              <v-flex xs10 body-1>
+                <v-container>
+                  {{ data.cardData.title }}
+                </v-container>
+              </v-flex>
+              <v-flex xs2 text-center>
+                <v-container>
+                  <v-icon small :color="thumbtackColor" @click.stop="changeThumbtackStatus">fas fa-thumbtack</v-icon>
+                </v-container>
               </v-flex>
             </v-layout>
           </v-container>
         </v-flex>
-        <v-divider></v-divider>
-        <v-flex md8 body-2>{{ parseMd(data.cardData.contents) }}</v-flex>
-        <v-divider></v-divider>
-        <v-flex md1>
-          <v-container fluid fill-height ma-0 pa-0 red>
-            <!-- <v-layout align-end text-wrap> -->
-            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
-            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
-            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
-            <v-chip v-for="tag in data.cardData.tags" :key="tag" small class="mt-1">{{ tag }}</v-chip>aiueo
-            <!-- </v-layout> -->
-          </v-container>
+        <!-- title -->
+        <v-container py-0>
+          <v-divider></v-divider>
+        </v-container>
+        <!-- contents -->
+        <v-flex xs8 body-2 overflow-y-hidden>
+          <v-container v-html="parseMd(data.cardData.contents)"> </v-container>
         </v-flex>
-        <v-flex md1>
-          <v-container fluid fill-height ma-0 pa-0>
-            <v-layout align-end>
-              <v-flex text-right body-2>更新日：{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
+        <!-- contents -->
+        <!-- tags -->
+        <v-flex xs1 @click.stop="">
+          <v-container py-1>
+            <v-layout align-center>
+              <perfect-scrollbar>
+                <v-container ma-0 pa-0 style="max-height:25px;white-space:nowrap;">
+                  <v-chip color="#FFCC80" small v-for="t in data.cardData.tags" :key="t" class="mx-1 black--text">{{
+                    t
+                  }}</v-chip>
+                </v-container>
+              </perfect-scrollbar>
             </v-layout>
           </v-container>
         </v-flex>
+        <!-- tags -->
+        <v-container py-0>
+          <v-divider></v-divider>
+        </v-container>
+        <v-flex xs1>
+          <v-container py-2>
+            <v-layout align-end>
+              <v-flex text-center body-2>{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
+            </v-layout>
+          </v-container>
+        </v-flex>
+        <!-- tags -->
       </v-layout>
     </v-container>
   </v-card>
@@ -55,7 +76,8 @@ export default {
   Name: "Card",
   data: () => ({
     elevation: "0",
-    thumbtackColor: "grey"
+    thumbtackColor: "grey",
+    retain: false
   }),
   props: {
     data: Object
@@ -77,13 +99,23 @@ export default {
       var min = ("0" + y.getMinutes()).slice(-2);
       var sec = ("0" + y.getSeconds()).slice(-2);
 
-      return year + "-" + month + "-" + day + " " + hour + ":" + min + ":" + sec;
+      return year + "/" + month + "/" + day + " " + hour + ":" + min + ":" + sec;
     },
     parseMd: function(sentence) {
       return marked(sentence).replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "");
+      // return marked(sentence, {
+      //   breaks: true
+      // });
+    },
+    cardClick: function() {
+      this.$router.push(this.data.user + "/card/" + this.data.cardId);
     }
   }
 };
 </script>
 
-<style></style>
+<style>
+.snippy-card:focus::before {
+  opacity: 0 !important;
+}
+</style>
