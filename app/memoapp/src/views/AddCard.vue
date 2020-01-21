@@ -19,8 +19,8 @@
           language="ja"
           v-model="cardData.cardContents"
           placeholder="カード内容を入力"
-          :toolbarsFlag="toolBarsFlg"
-          :subfield="toolBarsFlg"
+          :toolbarsFlag="mobileFlg"
+          :subfield="mobileFlg"
         />
         <v-container mt-2>
           <v-btn @click="submit">submitTest</v-btn>
@@ -45,15 +45,10 @@ export default {
         cardContents: ""
       },
       parseContents: "",
-      toolBarsFlg: true,
-      subfieldFlg: false
+      mobileFlg: !isMobile().any
     };
   },
-  created: function() {
-    if (!isMobile().any) {
-      this.subfieldFlg = false;
-    }
-  },
+  created: function() {},
   methods: {
     submit: async function() {
       try {
@@ -77,9 +72,12 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1264px) and (max-width: 1903px) {
+@media (min-width: 1264px) {
   .markdown-body {
-    height: 62%;
+    height: 70%;
   }
+}
+.markdown-body {
+  z-index: 0 !important;
 }
 </style>

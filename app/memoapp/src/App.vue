@@ -26,7 +26,7 @@
           </v-list-item-icon>
 
           <v-list-item-content>
-            <v-list-item-title>{{ item.title }}</v-list-item-title>
+            <v-list-item-title @click="$router.push(item.link)">{{ item.title }}</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list>
@@ -47,9 +47,9 @@ export default {
   data: () => ({
     drawer: false,
     items: [
-      { title: "Login", icon: "mdi-login" },
-      { title: "My Page", icon: "mdi-account" },
-      { title: "Add Card", icon: "fas fa-edit" }
+      { title: "Login", icon: "mdi-login", link: "/login" },
+      { title: "My Page", icon: "mdi-account", link: "/mypage" },
+      { title: "Add Card", icon: "fas fa-edit", link: "/addCard" }
     ]
   }),
   methods: {
