@@ -19,8 +19,8 @@
           language="ja"
           v-model="cardData.cardContents"
           placeholder="カード内容を入力"
-          :toolbarsFlag="toolBarsFlg"
-          :subfield="toolBarsFlg"
+          :toolbarsFlag="mobileFlg"
+          :subfield="mobileFlg"
         />
         <v-container mt-2>
           <v-btn @click="update">CardUpdate</v-btn>
@@ -45,14 +45,10 @@ export default {
         cardContents: ""
       },
       parseContents: "",
-      toolBarsFlg: true,
-      subfieldFlg: false
+      mobileFlg: !isMobile().any
     };
   },
   mounted: async function() {
-    if (!isMobile().any) {
-      this.subfieldFlg = false;
-    }
     const getResult = await axios.get(
       "http://localhost:3000/api/" + this.$route.params.user + "/cards/" + this.$route.params.cardid
     );
