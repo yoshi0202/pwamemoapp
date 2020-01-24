@@ -1,61 +1,29 @@
 <template>
   <v-app>
-    <Header @toggleMenu="toggle" />
+    <Header />
     <v-content class="grey lighten-3">
       <router-view />
     </v-content>
-    <v-navigation-drawer v-model="drawer" app temporary right>
-      <v-list-item>
-        <v-container fluid pa-0 ma-0>
-          <v-list-item-content>
-            <v-layout>
-              <v-list-item-title>Menu</v-list-item-title>
-              <v-layout text-right>
-                <v-icon @click="toggle">mdi-close</v-icon>
-              </v-layout>
-            </v-layout>
-          </v-list-item-content>
-        </v-container>
-      </v-list-item>
-
-      <v-divider></v-divider>
-      <v-list dense>
-        <v-list-item v-for="item in items" :key="item.title">
-          <v-list-item-icon>
-            <v-icon>{{ item.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title @click="$router.push(item.link)">{{ item.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
-      </v-list>
-    </v-navigation-drawer>
+    <NavigationDrawer />
   </v-app>
 </template>
 
 <script>
 import Header from "./components/Header";
+import NavigationDrawer from "./components/NavigationDrawer";
 
 export default {
   name: "App",
 
   components: {
-    Header
+    Header,
+    NavigationDrawer
   },
 
-  data: () => ({
-    drawer: false,
-    items: [
-      { title: "Login", icon: "mdi-login", link: "/login" },
-      { title: "My Page", icon: "mdi-account", link: "/mypage" },
-      { title: "Add Card", icon: "fas fa-edit", link: "/addCard" }
-    ]
-  }),
-  methods: {
-    toggle: function() {
-      this.drawer = !this.drawer;
-    }
-  }
+  data: () => ({}),
+  created: function() {
+    this.$store.dispatch("judgeMobile");
+  },
+  methods: {}
 };
 </script>
