@@ -6,11 +6,11 @@
 
     <v-spacer></v-spacer>
 
-    <span v-if="ismobile">
-      <v-icon color="#FDB436" @click="toggleMenu">mdi-menu</v-icon>
+    <span v-if="$store.getters.getIsMobile">
+      <v-icon color="#FDB436" @click="$store.dispatch('toggleDrawer')">mdi-menu</v-icon>
     </span>
     <span v-else>
-      <span v-if="loginStatus">
+      <span v-if="$store.getters.getLoginStatus">
         <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
           <span class="mr-2">MyPage</span>
         </v-btn>
@@ -33,53 +33,31 @@
 
 <script>
 import axios from "axios";
-import isMobile from "ismobilejs";
 
 export default {
   Name: "Header",
-  data: function() {
-    return {
-      loginStatus: false,
-      userId: "",
-      id: "",
-      ismobile: isMobile().any
-    };
-  },
-  computed: {
-    status() {
-      return this.$store.getters.getLoginStatus;
-    }
-  },
-  watch: {
-    status(val) {
-      this.loginStatus = val.status;
-      this.userId = val.userId;
-      this.id = val.id;
-    }
-  },
+  data: () => ({}),
+  component: {},
   created: function() {},
   methods: {
     logout: async function() {
-      const loginStatus = this.$store.getters.getLoginStatus;
+      const userInfo = this.$store.getters.getLogin;
       await axios.delete("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/logout", {
         data: {
-          userid: loginStatus.userId,
-          loginToken: loginStatus.loginToken
+          userid: userInfo.userId,
+          loginToken: userInfo.loginToken
         }
       });
-      await this.$store.dispatch("updateLoginStatus", {
+      this.$store.dispatch("updateLoginStatus", {
         status: false,
         loginToken: "",
         userId: ""
       });
-      this.loginStatus = false;
       this.$router.push("/");
     },
     mypage: function() {
-      this.$router.push("/" + this.id + "/mypage");
-    },
-    toggleMenu: function() {
-      this.$emit("toggleMenu");
+      const user = this.$store.getters.getLogin;
+      this.$router.push("/" + user.id + "/mypage");
     }
   }
 };

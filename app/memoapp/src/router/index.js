@@ -67,9 +67,7 @@ const router = new VueRouter({
 });
 
 router.beforeEach((to, from, next) => {
-  const userStatus = Store.getters.getLoginStatus;
-
-  if (to.matched.some(page => page.meta.isPublic) || userStatus.status) {
+  if (to.matched.some(page => page.meta.isPublic) || Store.getters.getLoginStatus) {
     next();
   } else {
     next("/login");
