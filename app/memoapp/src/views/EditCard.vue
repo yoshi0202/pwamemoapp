@@ -22,8 +22,11 @@
           :toolbarsFlag="mobileFlg"
           :subfield="mobileFlg"
         />
-        <v-container mt-2>
-          <v-btn @click="update">CardUpdate</v-btn>
+        <v-container v-if="editMode" mt-2>
+          <v-btn @click="update">UpdateCard</v-btn>
+        </v-container>
+        <v-container v-else mt-2>
+          <v-btn @click="add">AddCard</v-btn>
         </v-container>
         <div v-html="parseContents"></div>
       </v-flex>
@@ -32,7 +35,6 @@
 </template>
 
 <script>
-import isMobile from "ismobilejs";
 import axios from "axios";
 
 export default {
@@ -45,28 +47,53 @@ export default {
         cardContents: ""
       },
       parseContents: "",
-      mobileFlg: !isMobile().any
+      mobileFlg: !this.$store.getters.getIsMobile,
+      user: this.$route.params.user,
+      cardId: this.$route.params.cardid,
+      editMode: false
     };
   },
   mounted: async function() {
-    const getResult = await axios.get(
-      "http://localhost:3000/api/" + this.$route.params.user + "/cards/" + this.$route.params.cardid
-    );
-    this.cardData.cardTitle = getResult.data.Item.cardData.title;
-    this.cardData.cardTags = getResult.data.Item.cardData.tags;
-    this.cardData.cardContents = getResult.data.Item.cardData.contents;
+    try {
+      if (this.user && this.cardId) {
+        this.editMode = true;
+        const apiUrl = this.$store.getters.getApiUrl;
+        const url = apiUrl + this.user + "/cards/" + this.cardId;
+        const getResult = await axios.get(url);
+        this.cardData.cardTitle = getResult.data.Item.cardData.title;
+        this.cardData.cardTags = getResult.data.Item.cardData.tags;
+        this.cardData.cardContents = getResult.data.Item.cardData.contents;
+      }
+    } catch (err) {
+      alert(JSON.stringify(err));
+    }
   },
   methods: {
     update: async function() {
       try {
-        await axios.post(
-          "http://localhost:3000/api/" + this.$route.params.user + "/cards/" + this.$route.params.cardid + "/update",
-          {
-            title: this.cardData.cardTitle,
-            tags: this.cardData.cardTags,
-            contents: this.cardData.cardContents
-          }
-        );
+        const apiUrl = this.$store.getters.getApiUrl;
+        const url = apiUrl + this.user + "/cards/" + this.cardid + "/update";
+        await axios.post(url, {
+          title: this.cardData.cardTitle,
+          tags: this.cardData.cardTags,
+          contents: this.cardData.cardContents
+        });
+        this.$router.push("/");
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
+    },
+    add: async function() {
+      try {
+        const apiUrl = this.$store.getters.getApiUrl;
+        const user = this.$store.getters.getLogin;
+        const url = apiUrl + user.id + "/cards/add";
+        await axios.post(url, {
+          title: this.cardData.cardTitle,
+          cardTags: this.cardData.cardTags,
+          contents: this.cardData.cardContents,
+          cardType: 0
+        });
         this.$router.push("/");
       } catch (err) {
         alert(JSON.stringify(err));
@@ -77,9 +104,12 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1264px) and (max-width: 1903px) {
+@media (min-width: 1264px) {
   .markdown-body {
-    height: 62%;
+    height: 70%;
   }
+}
+.markdown-body {
+  z-index: 0 !important;
 }
 </style>

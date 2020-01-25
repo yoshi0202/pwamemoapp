@@ -53,7 +53,8 @@ export default {
           alert("パスワードを正しく入力してください。");
           return;
         }
-        const result = await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/signUp", {
+        const apiUrl = this.$store.getters.getApiUrl;
+        const result = await axios.post(apiUrl + "/signUp", {
           email: this.email,
           password: this.password
         });

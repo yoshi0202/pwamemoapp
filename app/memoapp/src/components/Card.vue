@@ -84,11 +84,7 @@ export default {
   },
   methods: {
     changeThumbtackStatus: function() {
-      if (this.thumbtackColor === "orange lighten-2") {
-        this.thumbtackColor = "grey";
-      } else {
-        this.thumbtackColor = "orange lighten-2";
-      }
+      this.thumbtackColor = this.thumbtackColor === "orange lighten-2" ? "grey" : "orange lighten-2";
     },
     changeUnixTimeToDate: function(unixtime) {
       var y = new Date(unixtime * 1000);

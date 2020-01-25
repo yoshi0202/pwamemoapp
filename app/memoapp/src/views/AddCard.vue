@@ -32,7 +32,6 @@
 </template>
 
 <script>
-import isMobile from "ismobilejs";
 import axios from "axios";
 
 export default {
@@ -45,7 +44,7 @@ export default {
         cardContents: ""
       },
       parseContents: "",
-      mobileFlg: !isMobile().any
+      mobileFlg: !this.$store.getters.getIsMobile
     };
   },
   created: function() {},
