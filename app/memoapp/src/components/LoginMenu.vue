@@ -19,7 +19,7 @@ export default {
     loginItems: [
       { title: "My Page", icon: "mdi-account", action: "mypage" },
       { title: "Add Card", icon: "fas fa-edit", action: "addcard" },
-      { title: "logout", icon: "mdi-logout", action: "logout" }
+      { title: "Logout", icon: "mdi-logout", action: "logout" }
     ]
   }),
   created: function() {},

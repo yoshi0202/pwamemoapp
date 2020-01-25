@@ -14,7 +14,9 @@ export default new Vuex.Store({
       id: ""
     },
     isMobile: false,
-    drawer: false
+    drawer: false,
+    // url: "http://localhost:3000/api/"
+    url: "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/"
   },
   getters: {
     getLogin(state) {
@@ -31,6 +33,9 @@ export default new Vuex.Store({
     },
     getDrawer(state) {
       return state.drawer;
+    },
+    getApiUrl(state) {
+      return state.url;
     }
   },
   mutations: {

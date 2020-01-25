@@ -46,11 +46,12 @@ export default {
   methods: {
     login: async function() {
       try {
+        const apiUrl = this.$store.getters.getApiUrl;
         if (!this.email || !this.password) {
           alert("入力項目を確認してください。");
           return;
         }
-        const result = await axios.post("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/login", {
+        const result = await axios.post(apiUrl + "login", {
           email: this.email,
           password: this.password
         });
