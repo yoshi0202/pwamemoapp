@@ -16,44 +16,32 @@
     <v-divider></v-divider>
     <v-list dense>
       <div v-if="$store.getters.getLoginStatus">
-        <v-list-item v-for="li in loginItems" :key="li">
-          <v-list-item-icon>
-            <v-icon>{{ li.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title @click="$router.push(li.link)">{{ li.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <LoginMenu @logout="logout" />
       </div>
       <div v-else>
-        <v-list-item v-for="li in logoutItems" :key="li">
-          <v-list-item-icon>
-            <v-icon>{{ li.icon }}</v-icon>
-          </v-list-item-icon>
-
-          <v-list-item-content>
-            <v-list-item-title @click="$router.push(li.link)">{{ li.title }}</v-list-item-title>
-          </v-list-item-content>
-        </v-list-item>
+        <LogoutMenu />
       </div>
     </v-list>
   </v-navigation-drawer>
 </template>
 
 <script>
+import LoginMenu from "./LoginMenu";
+import LogoutMenu from "./LogoutMenu";
+
 export default {
   Name: "NavigationDrawer",
-  data: () => ({
-    loginItems: [
-      { title: "My Page", icon: "mdi-account", link: "/mypage" },
-      { title: "Add Card", icon: "fas fa-edit", link: "/addCard" },
-      { title: "logout", icon: "mdi-logout", link: "/logout" }
-    ],
-    logoutItems: [{ title: "Login", icon: "mdi-login", link: "/login" }]
-  }),
+  data: () => ({}),
   created: function() {},
-  methods: {}
+  methods: {
+    logout: function() {
+      this.$emit("logout");
+    }
+  },
+  components: {
+    LoginMenu,
+    LogoutMenu
+  }
 };
 </script>
 

@@ -37,22 +37,39 @@ export default new Vuex.Store({
     updateStatus(state, data) {
       state.login = data;
     },
+    deleteStatus(state) {
+      state.login = {
+        status: false,
+        loginToken: "",
+        userId: "",
+        id: ""
+      };
+    },
     isMobile(state) {
       state.isMobile = isMobile().any;
     },
     drawer(state) {
       state.drawer = !state.drawer;
+    },
+    closeDrawer(state) {
+      state.drawer = false;
     }
   },
   actions: {
     updateLoginStatus({ commit }, data) {
       commit("updateStatus", data);
     },
+    deleteLoginStatus({ commit }) {
+      commit("deleteStatus");
+    },
     judgeMobile({ commit }) {
       commit("isMobile");
     },
     toggleDrawer({ commit }) {
       commit("drawer");
+    },
+    closeDrawer({ commit }) {
+      commit("closeDrawer");
     }
   },
   modules: {}

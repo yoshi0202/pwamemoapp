@@ -14,7 +14,7 @@
         <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
           <span class="mr-2">MyPage</span>
         </v-btn>
-        <v-btn class="ma-2" outlined color="#FDB436" @click="logout">
+        <v-btn class="ma-2" outlined color="#FDB436" @click="$emit('logout')">
           <span class="mr-2">Logout</span>
         </v-btn>
       </span>
@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 
 export default {
   Name: "Header",
@@ -40,21 +40,17 @@ export default {
   component: {},
   created: function() {},
   methods: {
-    logout: async function() {
-      const userInfo = this.$store.getters.getLogin;
-      await axios.delete("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/logout", {
-        data: {
-          userid: userInfo.userId,
-          loginToken: userInfo.loginToken
-        }
-      });
-      this.$store.dispatch("updateLoginStatus", {
-        status: false,
-        loginToken: "",
-        userId: ""
-      });
-      this.$router.push("/");
-    },
+    // logout: async function() {
+    //   const userInfo = this.$store.getters.getLogin;
+    //   await axios.delete("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/logout", {
+    //     data: {
+    //       userid: userInfo.userId,
+    //       loginToken: userInfo.loginToken
+    //     }
+    //   });
+    //   this.$store.dispatch("deleteLoginStatus");
+    //   this.$router.push("/");
+    // },
     mypage: function() {
       const user = this.$store.getters.getLogin;
       this.$router.push("/" + user.id + "/mypage");
