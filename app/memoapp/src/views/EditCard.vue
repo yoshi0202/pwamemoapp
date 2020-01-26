@@ -72,7 +72,7 @@ export default {
     update: async function() {
       try {
         const apiUrl = this.$store.getters.getApiUrl + "api/";
-        const url = apiUrl + this.user + "/cards/" + this.cardid + "/update";
+        const url = apiUrl + this.user + "/cards/" + this.cardId + "/update";
         await axios.post(url, {
           title: this.cardData.cardTitle,
           tags: this.cardData.cardTags,
