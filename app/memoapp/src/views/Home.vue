@@ -21,7 +21,7 @@ export default {
   computed: {},
   created: async function() {
     try {
-      const apiUrl = this.$store.getters.getApiUrl;
+      const apiUrl = this.$store.getters.getApiUrl + "api/";
       const result = await axios.get(apiUrl + "cards");
       this.cardData = result.data.Items;
     } catch (err) {

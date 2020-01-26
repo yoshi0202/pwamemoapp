@@ -1,11 +1,11 @@
-var express = require("express");
-var router = express.Router();
-var aws = require("aws-sdk");
-var dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
-const tableName = "pwaMemoApp";
-const userTableName = "snippy-user";
+const express = require("express");
+const router = express.Router();
+const aws = require("aws-sdk");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
+const tableName = "pwaMemoApp";
+const userTableName = "snippy-user";
 
 router.post("/login", async function(req, res, next) {
   try {

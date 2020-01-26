@@ -4,8 +4,11 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
+const passport = require("passport");
+const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 
 var apiRouter = require("./routes/api");
+var authRouter = require("./routes/auth");
 
 var app = express();
 
@@ -14,13 +17,17 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
-
 app.use(cors());
-app.use("/api", apiRouter);
+app.use(passport.initialize());
 
-// catch 404 and forward to error handler
+app.use("/api", apiRouter);
+app.use("/auth", authRouter);
+
 app.use(function(req, res, next) {
-  next(createError(404));
+  res.status(404).json({
+    status: 404,
+    msg: "404 not found"
+  });
 });
 
 // error handler
@@ -28,8 +35,8 @@ app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
-
-  res.json(err);
+  console.log(err);
+  // res.send(err);
 });
 
 app.listen(3000);

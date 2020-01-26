@@ -57,7 +57,7 @@ export default {
     try {
       if (this.user && this.cardId) {
         this.editMode = true;
-        const apiUrl = this.$store.getters.getApiUrl;
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const url = apiUrl + this.user + "/cards/" + this.cardId;
         const getResult = await axios.get(url);
         this.cardData.cardTitle = getResult.data.Item.cardData.title;
@@ -71,7 +71,7 @@ export default {
   methods: {
     update: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl;
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const url = apiUrl + this.user + "/cards/" + this.cardid + "/update";
         await axios.post(url, {
           title: this.cardData.cardTitle,
@@ -85,7 +85,7 @@ export default {
     },
     add: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl;
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const user = this.$store.getters.getLogin;
         const url = apiUrl + user.id + "/cards/add";
         await axios.post(url, {
