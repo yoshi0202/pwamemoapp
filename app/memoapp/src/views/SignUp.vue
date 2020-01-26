@@ -53,8 +53,8 @@ export default {
           alert("パスワードを正しく入力してください。");
           return;
         }
-        const apiUrl = this.$store.getters.getApiUrl;
-        const result = await axios.post(apiUrl + "/signUp", {
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
+        const result = await axios.post(apiUrl + "signUp", {
           email: this.email,
           password: this.password
         });

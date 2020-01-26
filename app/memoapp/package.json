@@ -13,6 +13,7 @@
     "core-js": "^3.4.4",
     "ismobilejs": "^1.0.3",
     "marked": "^0.8.0",
+    "materialize-social": "^1.0.3",
     "mavon-editor": "^2.7.7",
     "register-service-worker": "^1.6.2",
     "vue": "^2.6.10",

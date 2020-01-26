@@ -26,7 +26,20 @@
               <v-btn text color="orange" to="/signUp">create new account</v-btn>
             </v-container>
             <v-container fluid text-center>
-              <v-btn text color="orange" href="http://localhost:3000/auth/google">SignIn with google</v-btn>
+              <v-btn color="deep-orange accent-4" class="white--text" :href="$store.getters.getApiUrl + 'auth/google'">
+                <v-icon>fab fa-google</v-icon>
+                <v-container>
+                  Sign in with Google
+                </v-container>
+              </v-btn>
+            </v-container>
+            <v-container fluid text-center>
+              <v-btn color="grey darken-4" class="white--text" :href="$store.getters.getApiUrl + 'auth/github'">
+                <v-icon>fab fa-github</v-icon>
+                <v-container>
+                  Sign in with GitHub
+                </v-container>
+              </v-btn>
             </v-container>
           </v-card>
         </v-container>
@@ -49,7 +62,7 @@ export default {
   methods: {
     login: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl;
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
         if (!this.email || !this.password) {
           alert("入力項目を確認してください。");
           return;
