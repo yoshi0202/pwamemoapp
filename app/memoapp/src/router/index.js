@@ -1,7 +1,6 @@
 import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
-// import AddCard from "../views/AddCard.vue";
 import EditCard from "../views/EditCard.vue";
 import showCard from "../views/showCard.vue";
 import Login from "../views/Login.vue";

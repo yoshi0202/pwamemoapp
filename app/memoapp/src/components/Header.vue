@@ -40,17 +40,6 @@ export default {
   component: {},
   created: function() {},
   methods: {
-    // logout: async function() {
-    //   const userInfo = this.$store.getters.getLogin;
-    //   await axios.delete("https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/logout", {
-    //     data: {
-    //       userid: userInfo.userId,
-    //       loginToken: userInfo.loginToken
-    //     }
-    //   });
-    //   this.$store.dispatch("deleteLoginStatus");
-    //   this.$router.push("/");
-    // },
     mypage: function() {
       const user = this.$store.getters.getLogin;
       this.$router.push("/" + user.id + "/mypage");

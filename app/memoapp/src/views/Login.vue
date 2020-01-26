@@ -25,6 +25,9 @@
             <v-container fluid text-center>
               <v-btn text color="orange" to="/signUp">create new account</v-btn>
             </v-container>
+            <v-container fluid text-center>
+              <v-btn text color="orange" href="http://localhost:3000/auth/google">SignIn with google</v-btn>
+            </v-container>
           </v-card>
         </v-container>
       </v-flex>
