@@ -1,6 +1,8 @@
 import Vue from "vue";
 import Vuex from "vuex";
 import isMobile from "ismobilejs";
+import createPersistedState from "vuex-persistedstate";
+
 // import axios from "axios";
 
 Vue.use(Vuex);
@@ -15,8 +17,7 @@ export default new Vuex.Store({
     },
     isMobile: false,
     drawer: false,
-    url: "http://localhost:3000/"
-    // url: "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/"
+    url: process.env.VUE_APP_BASE_URL
   },
   getters: {
     getLogin(state) {
@@ -77,5 +78,10 @@ export default new Vuex.Store({
       commit("closeDrawer");
     }
   },
-  modules: {}
+  modules: {},
+  plugins: [
+    createPersistedState({
+      key: "Snippy"
+    })
+  ]
 });

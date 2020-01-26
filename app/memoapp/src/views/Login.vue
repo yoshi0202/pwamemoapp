@@ -5,41 +5,82 @@
         <v-container>
           <v-card>
             <v-container text-center headline pt-10>Snippy</v-container>
-            <v-container text-center body-1 pt-10>Login</v-container>
-            <v-container text-center fluid>
-              <v-form ref="form">
-                <v-container pa-10>
-                  <v-text-field v-model="email" label="Email"></v-text-field>
-                  <v-text-field v-model="password" label="Password" type="password"></v-text-field>
-                </v-container>
-                <v-layout px-10>
-                  <v-flex md-6>
-                    <v-btn large color="primary" @click="login">Login</v-btn>
-                  </v-flex>
-                  <v-flex md-6>
-                    <v-btn large color="secondary" to="/">Cancel</v-btn>
-                  </v-flex>
-                </v-layout>
-              </v-form>
+            <v-container text-center fluid pa-0 ma-0>
+              <v-layout wrap>
+                <v-flex xs12 md6>
+                  <v-form ref="form">
+                    <v-container pa-10 ma-0 fluid>
+                      <v-text-field v-model="email" label="Email"></v-text-field>
+                      <v-text-field v-model="password" label="Password" type="password"></v-text-field>
+                    </v-container>
+                    <v-layout px-10>
+                      <v-flex md-6>
+                        <v-btn large color="primary" @click="login">Login</v-btn>
+                      </v-flex>
+                    </v-layout>
+                  </v-form>
+                </v-flex>
+                <!-- <v-divider vertical></v-divider> -->
+                <!-- <v-spacer></v-spacer> -->
+                <v-flex xs12 md6>
+                  <v-container fluid fill-height ma-0>
+                    <v-container fluid text-center ma-0>
+                      <v-btn
+                        color="#DD4B39"
+                        class="white--text"
+                        width="100%"
+                        :href="$store.getters.getApiUrl + 'auth/google'"
+                      >
+                        <v-icon>fab fa-google</v-icon>
+                        <v-container>
+                          Sign in with Google
+                        </v-container>
+                      </v-btn>
+                    </v-container>
+                    <v-container fluid text-center ma-0>
+                      <v-btn
+                        color="#71b7ee"
+                        class="white--text"
+                        width="100%"
+                        :href="$store.getters.getApiUrl + 'auth/twitter'"
+                      >
+                        <v-icon>fab fa-twitter</v-icon>
+                        <v-container>
+                          Sign in with Twitter
+                        </v-container>
+                      </v-btn>
+                    </v-container>
+                    <v-container fluid text-center ma-0>
+                      <v-btn
+                        color="#444444"
+                        class="white--text"
+                        width="100%"
+                        :href="$store.getters.getApiUrl + 'auth/github'"
+                      >
+                        <v-icon>fab fa-github</v-icon>
+                        <v-container>
+                          Sign in with GitHub
+                        </v-container>
+                      </v-btn>
+                    </v-container>
+                    <v-container fluid text-center ma-0>
+                      <v-btn
+                        color="#55C500"
+                        class="white--text"
+                        width="100%"
+                        :href="$store.getters.getApiUrl + 'auth/qiita'"
+                      >
+                        <v-container>
+                          Sign in with Qiita
+                        </v-container>
+                      </v-btn>
+                    </v-container>
+                  </v-container>
+                </v-flex>
+              </v-layout>
             </v-container>
-            <v-container fluid text-center>
+            <v-container fluid text-center ma-0>
               <v-btn text color="orange" to="/signUp">create new account</v-btn>
-            </v-container>
-            <v-container fluid text-center>
-              <v-btn color="deep-orange accent-4" class="white--text" :href="$store.getters.getApiUrl + 'auth/google'">
-                <v-icon>fab fa-google</v-icon>
-                <v-container>
-                  Sign in with Google
-                </v-container>
-              </v-btn>
-            </v-container>
-            <v-container fluid text-center>
-              <v-btn color="grey darken-4" class="white--text" :href="$store.getters.getApiUrl + 'auth/github'">
-                <v-icon>fab fa-github</v-icon>
-                <v-container>
-                  Sign in with GitHub
-                </v-container>
-              </v-btn>
             </v-container>
           </v-card>
         </v-container>
