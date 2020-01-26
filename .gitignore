@@ -3,5 +3,7 @@
 .DS_Store
 node_modules/
 .env
+.env.production
+.env.development
 lambda/package.json
 lambda/simple-proxy-api.yaml

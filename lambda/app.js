@@ -1,16 +1,25 @@
 var createError = require("http-errors");
 var express = require("express");
+const session = require("express-session");
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 
 var apiRouter = require("./routes/api");
 var authRouter = require("./routes/auth");
 
 var app = express();
+
+app.use(
+  session({
+    secret: "some secret",
+    resave: true,
+    saveUninitialized: true,
+    cookie: { secure: true }
+  })
+);
 
 app.use(logger("dev"));
 app.use(express.json());

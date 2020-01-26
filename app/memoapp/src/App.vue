@@ -29,7 +29,7 @@ export default {
     logout: async function() {
       const userInfo = this.$store.getters.getLogin;
       const apiUrl = this.$store.getters.getApiUrl;
-      await axios.delete(apiUrl + "/logout", {
+      await axios.delete(apiUrl + "api/logout", {
         data: {
           userid: userInfo.userId,
           loginToken: userInfo.loginToken
