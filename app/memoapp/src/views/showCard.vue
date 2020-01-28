@@ -2,26 +2,41 @@
   <v-container fluid pa-0 ma-0>
     <v-layout>
       <v-flex md8 offset-md2 text-center>
-        <v-layout>
-          <v-flex>
-            <v-container text-left title>{{ cardData.cardData.title }}</v-container>
-          </v-flex>
-          <v-flex>
-            <v-container text-right title>
-              <v-icon
-                v-if="ownCard"
-                class="mx-2"
-                @click="$router.push('/' + editParams.userId + '/card/' + editParams.cardId + '/edit')"
-              >fas fa-edit</v-icon>
-              <v-icon v-if="ownCard" class="mx-2" @click="deleteCard">far fa-trash-alt</v-icon>
-            </v-container>
-          </v-flex>
-        </v-layout>
-        <v-divider></v-divider>
+        <v-container>
+          <v-layout wrap align-center>
+            <v-flex md12 xs12>
+              <v-container text-left title pa-0>
+                {{ cardData.cardData.title }}
+              </v-container>
+            </v-flex>
+            <v-flex md12 xs12>
+              <v-container text-right align-center pa-0>
+                <v-row>
+                  <v-col cols="6" class="text-left">
+                    <span class="subtitle-2">{{ changeUnixTimeToDate(cardData.createdAt) }}</span>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="6">
+                    <v-icon
+                      v-if="ownCard"
+                      class="mx-3"
+                      @click="$router.push('/' + editParams.userId + '/card/' + editParams.cardId + '/edit')"
+                      >fas fa-edit</v-icon
+                    >
+                    <v-icon v-if="ownCard" class="mx-3" @click="deleteCard">far fa-trash-alt</v-icon>
+                  </v-col>
+                </v-row>
+              </v-container>
+            </v-flex>
+          </v-layout>
+          <v-divider></v-divider>
+        </v-container>
         <v-container text-left>
           <v-layout>
             <v-flex>
-              <v-chip v-for="tag in cardData.cardData.tags" :key="tag" small>{{ tag }}</v-chip>
+              <v-chip color="#FFCC80" small v-for="tag in cardData.cardData.tags" :key="tag" class="mx-1 black--text">{{
+                tag
+              }}</v-chip>
             </v-flex>
           </v-layout>
         </v-container>
@@ -41,6 +56,7 @@
 <script>
 import axios from "axios";
 import marked from "marked";
+import Mixin from "../mixin/mixin";
 
 export default {
   name: "showCard",
@@ -78,7 +94,9 @@ export default {
         alert(JSON.stringify(err));
       }
     }
-  }
+  },
+  components: {},
+  mixins: [Mixin]
 };
 </script>
 

@@ -1,7 +1,7 @@
 <template>
   <v-card
     class="mx-auto snippy-card"
-    height="300"
+    height="300px"
     :elevation="elevation"
     :ripple="false"
     :retain-focus-on-click="retain"
@@ -11,66 +11,51 @@
     active-class
   >
     <v-container text-left fluid ma-0 pa-0 fill-height>
-      <v-layout column>
-        <!-- title -->
-        <v-flex xs2>
-          <v-container py-0>
-            <v-layout align-center wrap row>
-              <v-flex xs10 body-1>
-                <v-container>
-                  {{ data.cardData.title }}
-                </v-container>
-              </v-flex>
-              <v-flex xs2 text-center>
-                <v-container>
-                  <v-icon small :color="thumbtackColor" @click.stop="changeThumbtackStatus">fas fa-thumbtack</v-icon>
-                </v-container>
-              </v-flex>
-            </v-layout>
-          </v-container>
-        </v-flex>
-        <!-- title -->
-        <v-container py-0>
-          <v-divider></v-divider>
+      <v-container style="height:20%" class="d-flex align-center">
+        <v-row class="pa-3">
+          <v-col cols="10" class="pa-0">
+            <v-container fluid pa-0 fill-height>
+              <v-clamp autoresize :max-lines="2">{{ data.cardData.title }}</v-clamp>
+            </v-container>
+          </v-col>
+          <v-col cols="1">
+            <v-container>
+              <v-icon small :color="thumbtackColor" @click.stop="changeThumbtackStatus">fas fa-thumbtack</v-icon>
+            </v-container>
+          </v-col>
+        </v-row>
+      </v-container>
+      <v-container py-0>
+        <v-divider></v-divider>
+      </v-container>
+      <v-container style="height:60%" body-2 fluid>
+        <v-clamp autoresize :max-lines="8"> {{ data.cardData.contents }} </v-clamp>
+      </v-container>
+      <v-container style="height:10%" pa-0 ma-0 class="d-flex align-center" @click.stop="">
+        <perfect-scrollbar>
+          <v-flex style="white-space:nowrap">
+            <v-chip color="#FFCC80" small v-for="t in data.cardData.tags" :key="t" class="mx-3 black--text">{{
+              t
+            }}</v-chip>
+          </v-flex>
+        </perfect-scrollbar>
+      </v-container>
+      <v-container py-0>
+        <v-divider></v-divider>
+      </v-container>
+      <v-container class="d-flex align-center font-weight-thin text-center" style="height:10%" pa-0 ma-0 body-2>
+        <v-container text-center>
+          {{ changeUnixTimeToDate(data.createdAt) }}
         </v-container>
-        <!-- contents -->
-        <v-flex xs8 body-2 overflow-y-hidden>
-          <v-container v-html="parseMd(data.cardData.contents)"> </v-container>
-        </v-flex>
-        <!-- contents -->
-        <!-- tags -->
-        <v-flex xs1 @click.stop="">
-          <v-container py-1>
-            <v-layout align-center>
-              <perfect-scrollbar>
-                <v-container ma-0 pa-0 style="max-height:25px;white-space:nowrap;">
-                  <v-chip color="#FFCC80" small v-for="t in data.cardData.tags" :key="t" class="mx-1 black--text">{{
-                    t
-                  }}</v-chip>
-                </v-container>
-              </perfect-scrollbar>
-            </v-layout>
-          </v-container>
-        </v-flex>
-        <!-- tags -->
-        <v-container py-0>
-          <v-divider></v-divider>
-        </v-container>
-        <v-flex xs1>
-          <v-container py-2>
-            <v-layout align-end>
-              <v-flex text-center body-2>{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
-            </v-layout>
-          </v-container>
-        </v-flex>
-        <!-- tags -->
-      </v-layout>
+      </v-container>
     </v-container>
   </v-card>
 </template>
 
 <script>
 import marked from "marked";
+import VClamp from "vue-clamp";
+import Mixin from "../mixin/mixin";
 
 export default {
   Name: "Card",
@@ -86,17 +71,6 @@ export default {
     changeThumbtackStatus: function() {
       this.thumbtackColor = this.thumbtackColor === "orange lighten-2" ? "grey" : "orange lighten-2";
     },
-    changeUnixTimeToDate: function(unixtime) {
-      var y = new Date(unixtime * 1000);
-      var year = y.getFullYear();
-      var month = y.getMonth() + 1;
-      var day = y.getDate();
-      var hour = ("0" + y.getHours()).slice(-2);
-      var min = ("0" + y.getMinutes()).slice(-2);
-      var sec = ("0" + y.getSeconds()).slice(-2);
-
-      return year + "/" + month + "/" + day + " " + hour + ":" + min + ":" + sec;
-    },
     parseMd: function(sentence) {
       return marked(sentence).replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "");
       // return marked(sentence, {
@@ -106,7 +80,11 @@ export default {
     cardClick: function() {
       this.$router.push(this.data.user + "/card/" + this.data.cardId);
     }
-  }
+  },
+  components: {
+    VClamp
+  },
+  mixins: [Mixin]
 };
 </script>
 

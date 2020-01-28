@@ -4,6 +4,8 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const GitHubStrategy = require("passport-github").Strategy;
 const TwitterStrategy = require("passport-twitter").Strategy;
+const OAuth2Strategy = require("passport-oauth2").Strategy;
+const axios = require("axios");
 const tableName = "pwaMemoApp";
 const userTableName = "snippy-user";
 const frontBaseUrl = process.env.FRONT_BASE_URL;
@@ -109,5 +111,35 @@ router.get(
     res.redirect(frontBaseUrl + "/#/");
   }
 );
+
+router.get("/qiita", function(req, res, next) {
+  console.log("qiita auth");
+  const scope = "read_qiita";
+  const url = "https://qiita.com/api/v2/oauth/authorize";
+  const state = "aaaaaaaaaa";
+  const urlParams = `client_id=${process.env.QIITA_OAUTH_CLIENT_ID}&scope=${scope}&state=${state}`;
+  res.redirect(`${url}?${urlParams}`);
+});
+router.get("/qiita/callback", async function(req, res, next) {
+  const result = await axios.post(
+    "https://qiita.com/api/v2/access_tokens",
+    {
+      client_id: process.env.QIITA_OAUTH_CLIENT_ID,
+      client_secret: process.env.QIITA_OAUTH_CLIENT_SECRET,
+      code: req.query.code
+    },
+    { headers: { "Content-Type": "application/json" } }
+  );
+  console.log(result.data);
+  const userResult = await axios.get("https://qiita.com/api/v2/authenticated_user", {
+    headers: {
+      Authorization: `Bearer ${result.data.token}`,
+      "Content-Type": "application/json"
+    },
+    data: {}
+  });
+  console.log(userResult);
+  res.redirect(frontBaseUrl + "/#/");
+});
 // functions
 module.exports = router;

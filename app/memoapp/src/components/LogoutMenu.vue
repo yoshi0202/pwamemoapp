@@ -16,7 +16,7 @@
 export default {
   Name: "LogoutMenu",
   data: () => ({
-    logoutItems: [{ title: "Login", icon: "mdi-login", action: "login" }]
+    logoutItems: [{ title: "Login", icon: "mdi-login", action: "/login" }]
   }),
   created: function() {},
   methods: {
