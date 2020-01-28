@@ -12,11 +12,11 @@
             <v-flex md12 xs12>
               <v-container text-right align-center pa-0>
                 <v-row>
-                  <v-col cols="6" class="text-left">
+                  <v-col cols="7" class="text-left">
                     <span class="subtitle-2">{{ changeUnixTimeToDate(cardData.createdAt) }}</span>
                   </v-col>
                   <v-spacer></v-spacer>
-                  <v-col cols="6">
+                  <v-col cols="5">
                     <v-icon
                       v-if="ownCard"
                       class="mx-3"
