@@ -44,7 +44,7 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1264px) and (max-width: 1980px) {
+@media (min-width: 601px) and (max-width: 1920px) {
   .flex.lg5-custom {
     width: 20%;
     max-width: 20%;
