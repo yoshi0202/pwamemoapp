@@ -1,5 +1,5 @@
 <template>
-  <v-container>{{ cardData }}</v-container>
+  <v-container>{{ snipData.data.Items }}</v-container>
 </template>
 
 <script>
@@ -9,11 +9,11 @@ export default {
   created: async function() {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const userInfo = this.$store.getters.getLogin;
-    this.cardData = await axios.get(apiUrl + userInfo.id + "/cards");
+    this.snipData = await axios.get(apiUrl + "user/" + userInfo.userId + "/cards");
   },
   data: function() {
     return {
-      cardData: {}
+      snipData: {}
     };
   },
   methods: {}

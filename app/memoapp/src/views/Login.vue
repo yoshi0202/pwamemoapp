@@ -103,12 +103,12 @@ export default {
   methods: {
     login: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
+        const apiUrl = this.$store.getters.getApiUrl;
         if (!this.email || !this.password) {
           alert("入力項目を確認してください。");
           return;
         }
-        const result = await axios.post(apiUrl + "login", {
+        const result = await axios.post(apiUrl + "auth/login", {
           email: this.email,
           password: this.password
         });
@@ -118,10 +118,12 @@ export default {
         }
         console.log(result);
         await this.$store.dispatch("updateLoginStatus", {
-          userId: this.email,
+          userId: result.data.userId,
+          email: result.data.email,
+          loginType: result.data.loginType,
+          snipCounts: result.data.snipCounts,
           status: true,
-          loginToken: result.data.loginToken,
-          id: result.data.id
+          loginToken: result.data.loginToken
         });
         this.$router.push("/");
       } catch (err) {

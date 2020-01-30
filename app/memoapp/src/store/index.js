@@ -13,7 +13,9 @@ export default new Vuex.Store({
       status: false,
       loginToken: "",
       userId: "",
-      id: ""
+      email: "",
+      loginType: "",
+      snipCounts: ""
     },
     isMobile: false,
     drawer: false,
@@ -26,8 +28,8 @@ export default new Vuex.Store({
     getLoginStatus(state) {
       return state.login.status;
     },
-    getId(state) {
-      return state.login.id;
+    getUserId(state) {
+      return state.login.userId;
     },
     getIsMobile(state) {
       return state.isMobile;
@@ -48,8 +50,13 @@ export default new Vuex.Store({
         status: false,
         loginToken: "",
         userId: "",
-        id: ""
+        email: "",
+        loginType: "",
+        snipCounts: ""
       };
+    },
+    incrementsSnip(state) {
+      state.login.snipCounts += 1;
     },
     isMobile(state) {
       state.isMobile = isMobile().any;
@@ -67,6 +74,9 @@ export default new Vuex.Store({
     },
     deleteLoginStatus({ commit }) {
       commit("deleteStatus");
+    },
+    incrementsSnipCounts({ commit }) {
+      commit("incrementsSnip");
     },
     judgeMobile({ commit }) {
       commit("isMobile");
