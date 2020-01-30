@@ -1,8 +1,8 @@
 <template>
   <v-container>
     <v-layout text-center wrap>
-      <v-flex md4 pa-5 v-for="cd in cardData" :key="cd" class="lg5-custom">
-        <Card :data="cd" />
+      <v-flex lg3 md6 xs12 pa-5 v-for="sd in snipData" :key="sd.createdAt" class="lg5-custom">
+        <Card :data="sd" />
       </v-flex>
     </v-layout>
   </v-container>
@@ -22,29 +22,21 @@ export default {
   created: async function() {
     try {
       const apiUrl = this.$store.getters.getApiUrl + "api/";
-      const result = await axios.get(apiUrl + "cards");
-      this.cardData = result.data.Items;
+      const result = await axios.get(apiUrl + "snip");
+      this.snipData = result.data.Items;
     } catch (err) {
       alert(JSON.stringify(err));
     }
   },
   data: () => ({
-    cardData: []
+    snipData: []
   }),
-  methods: {
-    pushCardData: function(data) {
-      // this.cardData.push(data)
-      this.cardData.push({
-        title: data.cardTitle,
-        subTitle: data.cardContents
-      });
-    }
-  }
+  methods: {}
 };
 </script>
 
 <style>
-@media (min-width: 601px) and (max-width: 1920px) {
+/* @media (min-width: 601px) and (max-width: 1920px) {
   .flex.lg5-custom {
     width: 20%;
     max-width: 20%;
@@ -57,5 +49,5 @@ export default {
     max-width: 100%;
     flex-basis: 100%;
   }
-}
+} */
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <v-contents>
+  <v-contents name="loginMenu">
     <v-list-item v-for="li in loginItems" :key="li.title">
       <v-list-item-icon>
         <v-icon>{{ li.icon }}</v-icon>

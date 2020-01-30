@@ -10,16 +10,17 @@
     @click="cardClick"
     active-class
   >
-    <v-container text-left fluid ma-0 pa-0 fill-height>
-      <v-container style="height:20%" class="d-flex align-center">
-        <v-row class="pa-3">
-          <v-col cols="10" class="pa-0">
-            <v-container fluid pa-0 fill-height>
-              <v-clamp autoresize :max-lines="2">{{ data.cardData.title }}</v-clamp>
+    <v-container text-left fluid fill-height>
+      <v-container pa-0 style="height:20%" class="d-flex align-center">
+        <v-row class="py-0 ma-0" style="max-width:100%;max-height:100%" no-gutters>
+          <v-col cols="10" class="ma-0 pa-0">
+            <v-container fluid py-0>
+              <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
             </v-container>
           </v-col>
-          <v-col cols="1">
-            <v-container>
+          <v-spacer></v-spacer>
+          <v-col cols="2" class="ma-0 pa-0">
+            <v-container text-center>
               <v-icon small :color="thumbtackColor" @click.stop="changeThumbtackStatus">fas fa-thumbtack</v-icon>
             </v-container>
           </v-col>
@@ -28,13 +29,13 @@
       <v-container py-0>
         <v-divider></v-divider>
       </v-container>
-      <v-container style="height:60%" body-2 fluid>
-        <v-clamp autoresize :max-lines="8"> {{ data.cardData.contents }} </v-clamp>
+      <v-container style="height:60%" body-2 fluid pb-0 pt-1>
+        <v-clamp autoresize :max-lines="8"> {{ data.snipData.contents }} </v-clamp>
       </v-container>
-      <v-container style="height:10%" pa-0 ma-0 class="d-flex align-center" @click.stop="">
+      <v-container style="height:13%" px-0 ma-0 class="d-flex align-center" @click.stop="">
         <perfect-scrollbar>
           <v-flex style="white-space:nowrap">
-            <v-chip color="#FFCC80" small v-for="t in data.cardData.tags" :key="t" class="mx-3 black--text">{{
+            <v-chip color="#FFCC80" small v-for="t in data.snipData.tags" :key="t" class="mx-3 black--text">{{
               t
             }}</v-chip>
           </v-flex>
@@ -74,11 +75,11 @@ export default {
     parseMd: function(sentence) {
       return marked(sentence).replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "");
       // return marked(sentence, {
-      //   breaks: true
+      // breaks: true
       // });
     },
     cardClick: function() {
-      this.$router.push(this.data.user + "/card/" + this.data.cardId);
+      this.$router.push(this.data.userId + "/snip/" + this.data.snipId);
     }
   },
   components: {
