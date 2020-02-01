@@ -27,10 +27,48 @@ passport.use(
       clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
       callbackURL: apiBaseUrl + "/auth/google/callback"
     },
-    function(accessToken, refreshToken, profile, done) {
-      console.log(accessToken);
-      console.log(profile);
-      console.log(refreshToken);
+    async function(accessToken, refreshToken, profile, done) {
+      const params = {
+        TableName: userTableName,
+        FilterExpression: "#u = :u AND #l = :l",
+        ExpressionAttributeNames: {
+          "#u": "userId",
+          "#l": "loginType"
+        },
+        ExpressionAttributeValues: {
+          ":u": profile.id,
+          ":l": "google"
+        }
+      };
+      const result = await dynamo.scan(params).promise();
+      if (result.Count === 0) {
+        const userId = profile.id;
+        let params = {
+          TableName: userTableName,
+          Item: {
+            userId: userId,
+            loginToken: utils.getRandomToken(32),
+            loginType: "google",
+            snipCounts: 0
+          }
+        };
+        dynamo.put(params).promise();
+      } else {
+        const updateParams = {
+          TableName: userTableName,
+          Key: {
+            userId: profile.id
+          },
+          ExpressionAttributeNames: {
+            "#l": "loginToken"
+          },
+          ExpressionAttributeValues: {
+            ":l": utils.getRandomToken(32)
+          },
+          UpdateExpression: "SET #l = :l"
+        };
+        dynamo.update(updateParams).promise();
+      }
       if (profile) {
         return done(null, profile);
       } else {
@@ -200,10 +238,10 @@ router.get("/twitter", passport.authenticate("twitter", { scope: ["email"] }));
 router.get(
   "/twitter/callback",
   passport.authenticate("twitter", {
-    failureRedirect: frontBaseUrl + "/#/login"
+    failureRedirect: frontBaseUrl + "/login"
   }),
   function(req, res) {
-    res.redirect(frontBaseUrl + "/#/");
+    res.redirect(frontBaseUrl + "/");
   }
 );
 
@@ -212,10 +250,10 @@ router.get(
   "/github/callback",
   passport.authenticate("github", {
     session: false,
-    failureRedirect: frontBaseUrl + "/#/login"
+    failureRedirect: frontBaseUrl + "/login"
   }),
   function(req, res) {
-    res.redirect(frontBaseUrl + "/#/");
+    res.redirect(frontBaseUrl + "/");
   }
 );
 
@@ -224,12 +262,28 @@ router.get(
   "/google/callback",
   passport.authenticate("google", {
     session: false,
-    failureRedirect: frontBaseUrl + "/#/login"
+    failureRedirect: frontBaseUrl + "/login"
   }),
   function(req, res) {
-    res.redirect(frontBaseUrl + "/#/");
+    res.redirect(frontBaseUrl + "/?userId=" + res.req.user.id + "&loginType=google");
   }
 );
+router.post("/google/signin", async function(req, res, next) {
+  const params = {
+    TableName: userTableName,
+    FilterExpression: "#u = :u AND #l = :l",
+    ExpressionAttributeNames: {
+      "#u": "userId",
+      "#l": "loginType"
+    },
+    ExpressionAttributeValues: {
+      ":u": req.body.userId,
+      ":l": req.body.loginType
+    }
+  };
+  const result = await dynamo.scan(params).promise();
+  res.json(result);
+});
 
 router.get("/qiita", function(req, res, next) {
   console.log("qiita auth");
@@ -258,7 +312,7 @@ router.get("/qiita/callback", async function(req, res, next) {
     data: {}
   });
   console.log(userResult);
-  res.redirect(frontBaseUrl + "/#/");
+  res.redirect(frontBaseUrl + "/");
 });
 
 module.exports = router;

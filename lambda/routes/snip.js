@@ -19,7 +19,6 @@ router.get("/", async function(req, res, next) {
     };
     const result = await dynamo.query(params).promise();
     res.json(result);
-    console.log(result);
   } catch (err) {
     console.log(err);
     res.json(err);
