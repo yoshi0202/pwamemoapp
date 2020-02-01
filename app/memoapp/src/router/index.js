@@ -76,11 +76,11 @@ router.beforeEach((to, from, next) => {
 });
 router.afterEach(async to => {
   if (to.query.userId) {
-    const result = await Axios.post("http://localhost:3000/auth/google/signin", {
+    const apiUrl = Store.getters.getApiUrl;
+    const result = await Axios.post(apiUrl + "auth/google/signin", {
       userId: to.query.userId,
       loginType: to.query.loginType
     });
-    console.log(JSON.stringify(result.data.Items[0]));
     await Store.dispatch("updateLoginStatus", {
       userId: result.data.Items[0].userId,
       email: result.data.Items[0].email,
