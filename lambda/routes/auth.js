@@ -27,47 +27,11 @@ passport.use(
       clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
       callbackURL: apiBaseUrl + "/auth/google/callback"
     },
-    async function(accessToken, refreshToken, profile, done) {
-      const params = {
-        TableName: userTableName,
-        FilterExpression: "#u = :u AND #l = :l",
-        ExpressionAttributeNames: {
-          "#u": "userId",
-          "#l": "loginType"
-        },
-        ExpressionAttributeValues: {
-          ":u": profile.id,
-          ":l": "google"
-        }
-      };
-      const result = await dynamo.scan(params).promise();
-      if (result.Count === 0) {
-        const userId = profile.id;
-        let params = {
-          TableName: userTableName,
-          Item: {
-            userId: userId,
-            loginToken: utils.getRandomToken(32),
-            loginType: "google",
-            snipCounts: 0
-          }
-        };
-        dynamo.put(params).promise();
+    function(accessToken, refreshToken, profile, done) {
+      if (isOauthUserRegisterd(profile.id, "google")) {
+        oauthUserUpdate(profile.id);
       } else {
-        const updateParams = {
-          TableName: userTableName,
-          Key: {
-            userId: profile.id
-          },
-          ExpressionAttributeNames: {
-            "#l": "loginToken"
-          },
-          ExpressionAttributeValues: {
-            ":l": utils.getRandomToken(32)
-          },
-          UpdateExpression: "SET #l = :l"
-        };
-        dynamo.update(updateParams).promise();
+        oauthUserCreate(profile.id, "google");
       }
       if (profile) {
         return done(null, profile);
@@ -86,9 +50,11 @@ passport.use(
       callbackURL: apiBaseUrl + "/auth/github/callback"
     },
     function(accessToken, refreshToken, profile, done) {
-      console.log(accessToken);
-      console.log(profile);
-      console.log(refreshToken);
+      if (isOauthUserRegisterd(profile.id, "github")) {
+        oauthUserUpdate(profile.id);
+      } else {
+        oauthUserCreate(profile.id, "github");
+      }
       if (profile) {
         return done(null, profile);
       } else {
@@ -253,9 +219,25 @@ router.get(
     failureRedirect: frontBaseUrl + "/login"
   }),
   function(req, res) {
-    res.redirect(frontBaseUrl + "/");
+    res.redirect(frontBaseUrl + "/?userId=" + res.req.user.id + "&loginType=github");
   }
 );
+router.post("/github/signin", async function(req, res, next) {
+  const params = {
+    TableName: userTableName,
+    FilterExpression: "#u = :u AND #l = :l",
+    ExpressionAttributeNames: {
+      "#u": "userId",
+      "#l": "loginType"
+    },
+    ExpressionAttributeValues: {
+      ":u": req.body.userId,
+      ":l": req.body.loginType
+    }
+  };
+  const result = await dynamo.scan(params).promise();
+  res.json(result);
+});
 
 router.get("/google", passport.authenticate("google", { scope: ["email", "profile"] }));
 router.get(
@@ -316,3 +298,56 @@ router.get("/qiita/callback", async function(req, res, next) {
 });
 
 module.exports = router;
+
+async function isOauthUserRegisterd(userId, provider) {
+  const params = {
+    TableName: userTableName,
+    FilterExpression: "#u = :u AND #l = :l",
+    ExpressionAttributeNames: {
+      "#u": "userId",
+      "#l": "loginType"
+    },
+    ExpressionAttributeValues: {
+      ":u": userId,
+      ":l": provider
+    }
+  };
+  const result = await dynamo.scan(params).promise();
+  if (result.Count === 0) {
+    console.log("user is not existed");
+    return false;
+  } else {
+    console.log("user is existed");
+    return true;
+  }
+}
+
+function oauthUserCreate(userId, provider) {
+  let params = {
+    TableName: userTableName,
+    Item: {
+      userId: userId,
+      loginToken: utils.getRandomToken(32),
+      loginType: provider,
+      snipCounts: 0
+    }
+  };
+  dynamo.put(params).promise();
+}
+
+function oauthUserUpdate(userId) {
+  const updateParams = {
+    TableName: userTableName,
+    Key: {
+      userId: userId
+    },
+    ExpressionAttributeNames: {
+      "#l": "loginToken"
+    },
+    ExpressionAttributeValues: {
+      ":l": utils.getRandomToken(32)
+    },
+    UpdateExpression: "SET #l = :l"
+  };
+  dynamo.update(updateParams).promise();
+}
