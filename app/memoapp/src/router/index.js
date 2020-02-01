@@ -77,7 +77,7 @@ router.beforeEach((to, from, next) => {
 router.afterEach(async to => {
   if (to.query.userId) {
     const apiUrl = Store.getters.getApiUrl;
-    const result = await Axios.post(apiUrl + "auth/google/signin", {
+    const result = await Axios.post(apiUrl + "auth/" + to.query.loginType + "/signin", {
       userId: to.query.userId,
       loginType: to.query.loginType
     });
