@@ -6,10 +6,10 @@
           <v-card elevation="0">
             <v-form>
               <v-container pt-3 pb-0 px-10 fluid>
-                <v-text-field v-model="cardData.cardTitle" label="カードタイトル"></v-text-field>
+                <v-text-field v-model="snipData.snipTitle" label="カードタイトル"></v-text-field>
               </v-container>
               <v-container pt-2 px-10 fluid>
-                <input-tag v-model="cardData.cardTags" limit="5" placeholder="タグを入力(最大5つ)"></input-tag>
+                <input-tag v-model="snipData.snipTags" limit="5" placeholder="タグを入力(最大5つ)"></input-tag>
               </v-container>
             </v-form>
           </v-card>
@@ -17,16 +17,16 @@
 
         <mavon-editor
           language="ja"
-          v-model="cardData.cardContents"
+          v-model="snipData.snipContents"
           placeholder="カード内容を入力"
           :toolbarsFlag="mobileFlg"
           :subfield="mobileFlg"
         />
         <v-container v-if="editMode" mt-2>
-          <v-btn @click="update">UpdateCard</v-btn>
+          <v-btn @click="update">UpdateSnippets</v-btn>
         </v-container>
         <v-container v-else mt-2>
-          <v-btn @click="add">AddCard</v-btn>
+          <v-btn @click="add">AddSnippets</v-btn>
         </v-container>
         <div v-html="parseContents"></div>
       </v-flex>
@@ -41,28 +41,28 @@ export default {
   name: "editCard",
   data: function() {
     return {
-      cardData: {
-        cardTitle: "",
-        cardTags: [],
-        cardContents: ""
+      snipData: {
+        snipTitle: "",
+        snipTags: [],
+        snipContents: ""
       },
       parseContents: "",
       mobileFlg: !this.$store.getters.getIsMobile,
-      user: this.$route.params.user,
-      cardId: this.$route.params.cardid,
+      userId: this.$route.params.userId,
+      snipId: this.$route.params.snipId,
       editMode: false
     };
   },
   mounted: async function() {
     try {
-      if (this.user && this.cardId) {
+      if (this.userId && this.snipId) {
         this.editMode = true;
         const apiUrl = this.$store.getters.getApiUrl + "api/";
-        const url = apiUrl + this.user + "/cards/" + this.cardId;
+        const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
         const getResult = await axios.get(url);
-        this.cardData.cardTitle = getResult.data.Item.cardData.title;
-        this.cardData.cardTags = getResult.data.Item.cardData.tags;
-        this.cardData.cardContents = getResult.data.Item.cardData.contents;
+        this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
+        this.snipData.snipTags = getResult.data.Items[0].snipData.tags;
+        this.snipData.snipContents = getResult.data.Items[0].snipData.contents;
       }
     } catch (err) {
       alert(JSON.stringify(err));
@@ -72,11 +72,13 @@ export default {
     update: async function() {
       try {
         const apiUrl = this.$store.getters.getApiUrl + "api/";
-        const url = apiUrl + this.user + "/cards/" + this.cardId + "/update";
+        const url = apiUrl + "snip/update";
         await axios.post(url, {
-          title: this.cardData.cardTitle,
-          tags: this.cardData.cardTags,
-          contents: this.cardData.cardContents
+          userId: this.userId,
+          snipId: this.snipId,
+          snipTitle: this.snipData.snipTitle,
+          snipTags: this.snipData.snipTags,
+          snipContents: this.snipData.snipContents
         });
         this.$router.push("/");
       } catch (err) {
@@ -86,14 +88,17 @@ export default {
     add: async function() {
       try {
         const apiUrl = this.$store.getters.getApiUrl + "api/";
-        const user = this.$store.getters.getLogin;
-        const url = apiUrl + user.id + "/cards/add";
+        const url = apiUrl + "snip/add";
+        const userInfo = this.$store.getters.getLogin;
         await axios.post(url, {
-          title: this.cardData.cardTitle,
-          cardTags: this.cardData.cardTags,
-          contents: this.cardData.cardContents,
-          cardType: 0
+          snipTitle: this.snipData.snipTitle,
+          snipTags: this.snipData.snipTags,
+          snipContents: this.snipData.snipContents,
+          snipType: 0,
+          snipCounts: userInfo.snipCounts,
+          userId: userInfo.userId
         });
+        this.$store.dispatch("incrementsSnipCounts");
         this.$router.push("/");
       } catch (err) {
         alert(JSON.stringify(err));

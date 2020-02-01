@@ -5,25 +5,25 @@
         <v-container>
           <v-layout wrap align-center>
             <v-flex md12 xs12>
-              <v-container text-left title pa-0>
-                {{ cardData.cardData.title }}
+              <v-container text-left title pa-0 style="word-break:break-all">
+                {{ snipData.snipData.title }}
               </v-container>
             </v-flex>
             <v-flex md12 xs12>
               <v-container text-right align-center pa-0>
                 <v-row>
                   <v-col cols="7" class="text-left">
-                    <span class="subtitle-2">{{ changeUnixTimeToDate(cardData.createdAt) }}</span>
+                    <span class="subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col cols="5">
                     <v-icon
-                      v-if="ownCard"
+                      v-if="ownSnip"
                       class="mx-3"
-                      @click="$router.push('/' + editParams.userId + '/card/' + editParams.cardId + '/edit')"
+                      @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
                       >fas fa-edit</v-icon
                     >
-                    <v-icon v-if="ownCard" class="mx-3" @click="deleteCard">far fa-trash-alt</v-icon>
+                    <v-icon v-if="ownSnip" class="mx-3" @click="deleteCard">far fa-trash-alt</v-icon>
                   </v-col>
                 </v-row>
               </v-container>
@@ -34,7 +34,7 @@
         <v-container text-left>
           <v-layout>
             <v-flex>
-              <v-chip color="#FFCC80" small v-for="tag in cardData.cardData.tags" :key="tag" class="mx-1 black--text">{{
+              <v-chip color="#FFCC80" small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text">{{
                 tag
               }}</v-chip>
             </v-flex>
@@ -42,7 +42,7 @@
         </v-container>
         <v-container>
           <v-card>
-            <v-container v-html="parseMd(cardData.cardData.contents)" text-left></v-container>
+            <v-container v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
           </v-card>
         </v-container>
         <v-container>
@@ -61,20 +61,21 @@ import Mixin from "../mixin/mixin";
 export default {
   name: "showCard",
   created: async function() {
-    const userId = this.$route.params.user;
-    const cardId = this.$route.params.cardid;
-    const result = await axios.get(
-      "https://u65qbs6yva.execute-api.ap-northeast-1.amazonaws.com/prod/api/" + userId + "/cards/" + cardId
-    );
-    this.cardData = result.data.Item;
-    this.editParams.userId = userId;
-    this.editParams.cardId = cardId;
+    const userId = this.$route.params.userId;
+    const snipId = this.$route.params.snipId;
+    const apiUrl = this.$store.getters.getApiUrl + "api/";
+    const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
+    this.snipData = result.data.Items[0];
+    this.editParams = {
+      userId: userId,
+      snipId: snipId
+    };
   },
   data: function() {
     return {
-      cardData: {},
+      snipData: {},
       editParams: {},
-      ownCard: Number(this.$route.params.user) === this.$store.getters.getId
+      ownSnip: this.$route.params.userId === this.$store.getters.getUserId
     };
   },
   methods: {
@@ -85,10 +86,13 @@ export default {
     },
     deleteCard: async function() {
       try {
-        await axios.delete(
-          "http://localhost:3000/api/" + this.$route.params.user + "/cards/" + this.$route.params.cardid + "/destroy",
-          {}
-        );
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
+        await axios.delete(apiUrl + "snip/destroy", {
+          data: {
+            userId: this.editParams.userId,
+            snipId: this.editParams.snipId
+          }
+        });
         this.$router.push("/");
       } catch (err) {
         alert(JSON.stringify(err));

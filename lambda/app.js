@@ -7,7 +7,8 @@ var logger = require("morgan");
 var cors = require("cors");
 const passport = require("passport");
 
-var apiRouter = require("./routes/api");
+var snipRouter = require("./routes/snip");
+var userRouter = require("./routes/user");
 var authRouter = require("./routes/auth");
 
 var app = express();
@@ -29,7 +30,8 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(cors());
 app.use(passport.initialize());
 
-app.use("/api", apiRouter);
+app.use("/api/snip", snipRouter);
+app.use("/api/user", userRouter);
 app.use("/auth", authRouter);
 
 app.use(function(req, res, next) {

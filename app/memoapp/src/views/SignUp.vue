@@ -53,8 +53,8 @@ export default {
           alert("パスワードを正しく入力してください。");
           return;
         }
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
-        const result = await axios.post(apiUrl + "signUp", {
+        const apiUrl = this.$store.getters.getApiUrl;
+        const result = await axios.post(apiUrl + "auth/signUp", {
           email: this.email,
           password: this.password
         });
@@ -62,7 +62,9 @@ export default {
           status: result.data.status,
           loginToken: result.data.loginToken,
           userId: result.data.userId,
-          id: result.data.id
+          email: result.data.email,
+          loginType: result.data.loginType,
+          snipCounts: result.data.snipCounts
         });
         this.$router.push("/");
       } catch (err) {

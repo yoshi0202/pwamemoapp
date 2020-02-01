@@ -22,7 +22,7 @@ const routes = [
     component: MyPage
   },
   {
-    path: "/:user/card/:cardid",
+    path: "/:userId/snip/:snipId",
     name: "showCard",
     component: showCard,
     meta: {
@@ -30,7 +30,7 @@ const routes = [
     }
   },
   {
-    path: "/:user/card/:cardid/edit",
+    path: "/:userId/snip/:snipId/edit",
     name: "editCard",
     component: EditCard
   },

@@ -1,12 +1,14 @@
 const express = require("express");
 const router = express.Router();
+const aws = require("aws-sdk");
+const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const GitHubStrategy = require("passport-github").Strategy;
 const TwitterStrategy = require("passport-twitter").Strategy;
-const OAuth2Strategy = require("passport-oauth2").Strategy;
 const axios = require("axios");
-const tableName = "pwaMemoApp";
+const bcrypt = require("bcrypt");
+const utils = require("../utils/utils");
 const userTableName = "snippy-user";
 const frontBaseUrl = process.env.FRONT_BASE_URL;
 const apiBaseUrl = process.env.API_BASE_URL;
@@ -115,6 +117,123 @@ passport.use(
     }
   )
 );
+
+router.post("/signUp", async function(req, res, next) {
+  try {
+    const userId = utils.createDefaultUserId();
+    let params = {
+      TableName: userTableName,
+      Item: {
+        userId: userId,
+        email: req.body.email,
+        password: bcrypt.hashSync(req.body.password, 10),
+        loginToken: utils.getRandomToken(32),
+        loginType: "email",
+        snipCounts: 0
+      }
+    };
+    await dynamo.put(params).promise();
+    res.json({
+      status: true,
+      userId: userId,
+      email: req.body.email,
+      loginToken: utils.getRandomToken(32),
+      loginType: "email",
+      snipCounts: 0
+    });
+  } catch (err) {
+    console.log(JSON.stringify(err));
+    res.json(err);
+  }
+});
+
+router.post("/login", async function(req, res, next) {
+  try {
+    let result = {};
+    var params = {
+      TableName: userTableName,
+      IndexName: "email-index",
+      ExpressionAttributeNames: { "#e": "email" },
+      ExpressionAttributeValues: { ":e": req.body.email },
+      KeyConditionExpression: "#e = :e"
+    };
+    const userData = await dynamo.query(params).promise();
+    console.log(userData);
+    if (userData.Items.length === 0) {
+      // user not defined
+      console.log("user not defined");
+      result.status = false;
+      result.err = "user not defined";
+      res.json(result);
+      return;
+    }
+    if (!userData.Items || !bcrypt.compareSync(req.body.password, userData.Items[0].password)) {
+      // auth not succcess
+      console.log("password is not valid");
+      result.status = false;
+      result.err = "password is not valid";
+      res.json(result);
+      return;
+    }
+    // auth success
+    console.log("password is valid");
+    result.status = true;
+    result.err = "";
+    result.loginToken = utils.getRandomToken(32);
+    result.userId = userData.Items[0].userId;
+    result.email = userData.Items[0].email;
+    result.loginType = userData.Items[0].loginType;
+    result.snipCounts = userData.Items[0].snipCounts;
+    res.json(result);
+    var updateParams = {
+      TableName: userTableName,
+      Key: {
+        userId: result.userId
+      },
+      ExpressionAttributeNames: {
+        "#l": "loginToken"
+      },
+      ExpressionAttributeValues: {
+        ":l": result.loginToken
+      },
+      UpdateExpression: "SET #l = :l"
+    };
+    dynamo.update(updateParams).promise();
+  } catch (err) {
+    console.log(err);
+    res.json(err);
+  }
+});
+
+router.delete("/logout", async function(req, res, next) {
+  try {
+    var queryParams = {
+      TableName: userTableName,
+      ExpressionAttributeNames: { "#u": "userId", "#l": "loginToken" },
+      ExpressionAttributeValues: { ":u": req.body.userId, ":l": req.body.loginToken },
+      KeyConditionExpression: "#u = :u",
+      FilterExpression: "#l = :l"
+    };
+    const result = await dynamo.query(queryParams).promise();
+    var updateParams = {
+      TableName: userTableName,
+      Key: {
+        userId: req.body.userId
+      },
+      ExpressionAttributeNames: {
+        "#l": "loginToken"
+      },
+      UpdateExpression: "REMOVE #l"
+    };
+    await dynamo.update(updateParams).promise();
+    res.json({
+      result: "ok"
+    });
+  } catch (err) {
+    console.log(err);
+  }
+});
+
 router.get("/twitter", passport.authenticate("twitter", { scope: ["email"] }));
 router.get(
   "/twitter/callback",
@@ -195,5 +314,5 @@ router.get("/qiita/callback", async function(req, res, next) {
   console.log(userResult);
   res.redirect(frontBaseUrl + "/");
 });
-// functions
+
 module.exports = router;
