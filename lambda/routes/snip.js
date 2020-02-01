@@ -97,16 +97,18 @@ router.post("/update", async function(req, res, next) {
         snipId: Number(req.body.snipId)
       },
       ExpressionAttributeNames: {
-        "#s": "snipData"
+        "#s": "snipData",
+        "#ca": "createdAt"
       },
       ExpressionAttributeValues: {
         ":s": {
           title: req.body.snipTitle,
           tags: req.body.snipTags,
           contents: req.body.snipContents
-        }
+        },
+        ":ca": Number(utils.getTimestamp())
       },
-      UpdateExpression: "SET #s = :s"
+      UpdateExpression: "SET #s = :s ,#ca = :ca"
     };
     const result = await dynamo.update(updateParams).promise();
     res.json(result);
