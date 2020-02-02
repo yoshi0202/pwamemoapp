@@ -11,9 +11,9 @@
     </span>
     <span v-else>
       <span v-if="$store.getters.getLoginStatus">
-        <v-btn class="ma-2" outlined color="#FDB436" @click="mypage">
-          <span class="mr-2">MyPage</span>
-        </v-btn>
+        <v-avatar>
+          <img :src="$store.getters.getImgUrl" alt="avator" @click="mypage" style="cursor:pointer" />
+        </v-avatar>
         <v-btn class="ma-2" outlined color="#FDB436" @click="$emit('logout')">
           <span class="mr-2">Logout</span>
         </v-btn>
@@ -23,10 +23,6 @@
           <span class="mr-2">Login</span>
         </v-btn>
       </span>
-      <v-btn to="/addCard" outlined color="#FDB436">
-        <span class="mr-2">add Snippets!</span>
-        <v-icon small>fas fa-edit</v-icon>
-      </v-btn>
     </span>
   </v-app-bar>
 </template>

@@ -71,6 +71,7 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   Store.dispatch("closeDrawer");
+  Store.dispatch("changeLoading", true);
   if (to.matched.some(page => page.meta.isPublic) || Store.getters.getLoginStatus) {
     next();
   } else {
@@ -90,7 +91,8 @@ router.afterEach(async to => {
       loginType: result.data.Items[0].loginType,
       snipCounts: result.data.Items[0].snipCounts,
       status: true,
-      loginToken: result.data.Items[0].loginToken
+      loginToken: result.data.Items[0].loginToken,
+      imgUrl: result.data.Items[0].imgUrl
     });
     router.push("/");
   }

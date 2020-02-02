@@ -150,6 +150,7 @@ router.post("/login", async function(req, res, next) {
     result.email = userData.Items[0].email;
     result.loginType = userData.Items[0].loginType;
     result.snipCounts = userData.Items[0].snipCounts;
+    result.imgUrl = userData.Items[0].imgUrl;
     res.json(result);
     var updateParams = {
       TableName: userTableName,

@@ -2,6 +2,7 @@
   <v-container fluid fill-height>
     <v-layout>
       <v-flex lg8 md10 offset-lg2 offset-md1 text-center white>
+        <Loading />
         <v-container text-center fill-height fluid>
           <v-layout fluid>
             <v-flex fluid>
@@ -90,6 +91,7 @@
 
 <script>
 import axios from "axios";
+import Loading from "@/components/Loading";
 import Mixin from "../mixin/mixin";
 
 export default {
@@ -99,7 +101,7 @@ export default {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const result = await axios.get(apiUrl + "user/" + userId);
     this.userData = result.data;
-    console.log(this.userData);
+    this.$store.dispatch("changeLoading", false);
   },
   data: function() {
     return {
@@ -133,7 +135,9 @@ export default {
       this.$refs.fileUploads.click();
     }
   },
-  components: {},
+  components: {
+    Loading
+  },
   mixins: [Mixin]
 };
 </script>

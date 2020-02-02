@@ -15,11 +15,13 @@ export default new Vuex.Store({
       userId: "",
       email: "",
       loginType: "",
-      snipCounts: ""
+      snipCounts: "",
+      imgUrl: ""
     },
     isMobile: false,
     drawer: false,
-    url: process.env.VUE_APP_BASE_URL
+    url: process.env.VUE_APP_BASE_URL,
+    loading: true
   },
   getters: {
     getLogin(state) {
@@ -39,6 +41,12 @@ export default new Vuex.Store({
     },
     getApiUrl(state) {
       return state.url;
+    },
+    getImgUrl(state) {
+      return state.login.imgUrl;
+    },
+    getLoadingStatus(state) {
+      return state.loading;
     }
   },
   mutations: {
@@ -66,6 +74,9 @@ export default new Vuex.Store({
     },
     closeDrawer(state) {
       state.drawer = false;
+    },
+    changeLoading(state, boolean) {
+      state.loading = boolean;
     }
   },
   actions: {
@@ -86,6 +97,9 @@ export default new Vuex.Store({
     },
     closeDrawer({ commit }) {
       commit("closeDrawer");
+    },
+    changeLoading({ commit }, boolean) {
+      commit("changeLoading", boolean);
     }
   },
   modules: {},

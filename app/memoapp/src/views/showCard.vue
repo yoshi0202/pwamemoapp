@@ -2,6 +2,7 @@
   <v-container fluid pa-0 ma-0>
     <v-layout>
       <v-flex md8 offset-md2 text-center>
+        <Loading />
         <v-container>
           <v-layout wrap align-center>
             <v-flex md12 xs12>
@@ -12,17 +13,14 @@
             <v-flex md12 xs12>
               <v-container text-right align-center pa-0>
                 <v-row class="align-center" style="height:100px">
-                  <v-col cols="7" class="text-left align-center">
-                    <img
-                      @click="toUserPage"
-                      :src="userData"
-                      alt="avator"
-                      style="max-width:50px;height:auto;border-radius:50%;cursor: pointer;"
-                    />
+                  <v-col cols="8" class="text-left align-center">
+                    <v-avatar>
+                      <img @click="toUserPage" :src="userData" alt="avator" style="cursor: pointer;" />
+                    </v-avatar>
                     <span class="px-4 subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
                   </v-col>
                   <v-spacer></v-spacer>
-                  <v-col cols="5">
+                  <v-col cols="4">
                     <v-icon
                       v-if="ownSnip"
                       class="mx-3"
@@ -63,6 +61,7 @@
 import axios from "axios";
 import marked from "marked";
 import Mixin from "../mixin/mixin";
+import Loading from "@/components/Loading";
 
 export default {
   name: "showCard",
@@ -77,6 +76,7 @@ export default {
       userId: userId,
       snipId: snipId
     };
+    this.$store.dispatch("changeLoading", false);
   },
   data: function() {
     return {
@@ -110,7 +110,9 @@ export default {
       this.$router.push("/user/" + this.snipData.userId);
     }
   },
-  components: {},
+  components: {
+    Loading
+  },
   mixins: [Mixin]
 };
 </script>
