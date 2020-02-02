@@ -10,7 +10,7 @@
                   <img
                     :src="userData.userData.imgUrl"
                     alt="avator"
-                    style="width:300px;height:300px;"
+                    style="width:300px;height:300px;cursor: pointer;"
                     @click="imgClick"
                   />
                   <input type="file" style="display:none" ref="fileUploads" name="avatar" @change="changeUserImg" />

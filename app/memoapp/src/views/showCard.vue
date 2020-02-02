@@ -11,9 +11,15 @@
             </v-flex>
             <v-flex md12 xs12>
               <v-container text-right align-center pa-0>
-                <v-row>
-                  <v-col cols="7" class="text-left">
-                    <span class="subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
+                <v-row class="align-center" style="height:100px">
+                  <v-col cols="7" class="text-left align-center">
+                    <img
+                      @click="toUserPage"
+                      :src="userData"
+                      alt="avator"
+                      style="max-width:50px;height:auto;border-radius:50%;cursor: pointer;"
+                    />
+                    <span class="px-4 subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
                   </v-col>
                   <v-spacer></v-spacer>
                   <v-col cols="5">
@@ -66,6 +72,7 @@ export default {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
     this.snipData = result.data.Items[0];
+    this.userData = result.data.userData;
     this.editParams = {
       userId: userId,
       snipId: snipId
@@ -74,6 +81,7 @@ export default {
   data: function() {
     return {
       snipData: {},
+      userData: "",
       editParams: {},
       ownSnip: this.$route.params.userId === this.$store.getters.getUserId
     };
@@ -97,6 +105,9 @@ export default {
       } catch (err) {
         alert(JSON.stringify(err));
       }
+    },
+    toUserPage: function() {
+      this.$router.push("/user/" + this.snipData.userId);
     }
   },
   components: {},
