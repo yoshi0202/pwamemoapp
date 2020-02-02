@@ -28,7 +28,7 @@ export default {
       const user = this.$store.getters.getLogin;
       switch (path) {
         case "mypage":
-          this.$router.push("/" + user.id + "/mypage");
+          this.$router.push("/user/" + user.userId);
           break;
         case "addcard":
           this.$router.push("/addCard");

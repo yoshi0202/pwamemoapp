@@ -3,23 +3,62 @@ const router = express.Router();
 const aws = require("aws-sdk");
 const crypto = require("crypto");
 const bcrypt = require("bcrypt");
+const multer = require("multer");
+let multerS3 = require("multer-s3");
 const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
 const tableName = "snippy-snippets";
 const userTableName = "snippy-user";
+const storage = multer.memoryStorage();
+const s3 = new aws.S3({
+  bucket: "snippy.site"
+});
+const upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: "snippy.site",
+    metadata: function(req, file, cb) {
+      cb(null, { fieldName: file.fieldname });
+    },
+    key: function(req, file, cb) {
+      cb(null, "userimg/" + file.originalname);
+    }
+  })
+});
 
-router.get("/:userId/cards", async function(req, res, next) {
+router.get("/:userId", async function(req, res, next) {
   try {
     const userId = req.params.userId;
-    var params = {
+    let params = {
       TableName: tableName,
-      IndexName: "userId-createdAt-index",
-      ExpressionAttributeNames: { "#u": "userId", "#ca": "createdAt" },
-      ExpressionAttributeValues: { ":u": userId, ":ca": 0 },
-      KeyConditionExpression: "#u = :u AND #ca >= :ca",
-      ScanIndexForward: false
+      ExpressionAttributeNames: {
+        "#u": "userId"
+      },
+      ExpressionAttributeValues: {
+        ":u": userId
+      },
+      FilterExpression: "#u = :u"
     };
-    console.log(params);
-    const result = await dynamo.query(params).promise();
+    const snippets = await dynamo.scan(params).promise();
+    params = {
+      TableName: userTableName,
+      ExpressionAttributeNames: {
+        "#u": "userId"
+      },
+      ExpressionAttributeValues: {
+        ":u": userId
+      },
+      FilterExpression: "#u = :u"
+    };
+    const userData = await dynamo.scan(params).promise();
+    const result = {
+      snippets: {
+        userSnippets: snippets.Items,
+        favorites: []
+      },
+      userData: userData.Items[0]
+    };
+    delete result.userData.password;
+    console.log(result);
     res.json(result);
   } catch (err) {
     console.log(err);
@@ -105,6 +144,33 @@ router.post("/:id/cards/add", async function(req, res, next) {
   }
 });
 
+router.post("/:userId/changeImg", upload.single("avatar"), async function(req, res) {
+  try {
+    console.log(req.file.location);
+    const updateParams = {
+      TableName: userTableName,
+      Key: {
+        userId: req.params.userId
+      },
+      ExpressionAttributeNames: {
+        "#iu": "imgUrl"
+      },
+      ExpressionAttributeValues: {
+        ":iu": req.file.location
+      },
+      UpdateExpression: "SET #iu = :iu"
+    };
+    console.log(updateParams);
+    await dynamo.update(updateParams).promise();
+    res.json({
+      result: "ok"
+    });
+  } catch (err) {
+    res.json({
+      result: "ok"
+    });
+  }
+});
 // functions
 function getTimestamp() {
   return Math.floor(new Date().getTime() / 1000);

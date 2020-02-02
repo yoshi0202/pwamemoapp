@@ -9,7 +9,7 @@ const utils = require("../utils/utils");
 // all snip get
 router.get("/", async function(req, res, next) {
   try {
-    var params = {
+    const params = {
       TableName: tableName,
       IndexName: "snipType-createdAt-index",
       ExpressionAttributeNames: { "#st": "snipType", "#ca": "createdAt" },
@@ -17,7 +17,17 @@ router.get("/", async function(req, res, next) {
       KeyConditionExpression: "#st = :st AND #ca >= :ca",
       ScanIndexForward: false
     };
-    const result = await dynamo.query(params).promise();
+    let result = await dynamo.query(params).promise();
+    const userParams = {
+      TableName: userTableName
+    };
+    const getUser = await dynamo.scan(userParams).promise();
+    let userData = {};
+    getUser.Items.map(function(i) {
+      userData[i.userId] = i.imgUrl;
+    });
+    result.userData = userData;
+    // console.log(result);
     res.json(result);
   } catch (err) {
     console.log(err);

@@ -17,9 +17,12 @@ const routes = [
     component: EditCard
   },
   {
-    path: "/:user/mypage",
+    path: "/user/:userId",
     name: "myPage",
-    component: MyPage
+    component: MyPage,
+    meta: {
+      isPublic: true
+    }
   },
   {
     path: "/:userId/snip/:snipId",
@@ -91,6 +94,5 @@ router.afterEach(async to => {
     });
     router.push("/");
   }
-  // next();
 });
 export default router;
