@@ -39,7 +39,7 @@
                     </v-container>
                     <v-container fluid text-center ma-0>
                       <v-btn
-                        color="#71b7ee"
+                        color="#00acee"
                         class="white--text"
                         width="100%"
                         :href="$store.getters.getApiUrl + 'auth/twitter'"
@@ -52,7 +52,7 @@
                     </v-container>
                     <v-container fluid text-center ma-0>
                       <v-btn
-                        color="#444444"
+                        color="#171515"
                         class="white--text"
                         width="100%"
                         :href="$store.getters.getApiUrl + 'auth/github'"
@@ -70,6 +70,7 @@
                         width="100%"
                         :href="$store.getters.getApiUrl + 'auth/qiita'"
                       >
+                        <v-icon>mdi-quora</v-icon>
                         <v-container>
                           Sign in with Qiita
                         </v-container>

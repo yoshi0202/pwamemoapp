@@ -13,7 +13,12 @@
     <v-container text-left fluid fill-height>
       <v-container pa-0 style="height:20%" class="d-flex align-center">
         <v-row class="py-0 ma-0" style="max-width:100%;max-height:100%" no-gutters>
-          <v-col cols="10" class="ma-0 pa-0">
+          <v-col cols="2" class="ma-0 pa-1">
+            <v-container ma-0 pa-0>
+              <img :src="userData[data.userId]" alt="avator" style="max-width:100%;height:auto;border-radius:50%" />
+            </v-container>
+          </v-col>
+          <v-col cols="8" class="ma-0 pa-0">
             <v-container fluid py-0>
               <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
             </v-container>
@@ -60,13 +65,17 @@ import Mixin from "../mixin/mixin";
 
 export default {
   Name: "Card",
+  created: function() {
+    console.log(this.userData);
+  },
   data: () => ({
     elevation: "0",
     thumbtackColor: "grey",
     retain: false
   }),
   props: {
-    data: Object
+    data: Object,
+    userData: Object
   },
   methods: {
     changeThumbtackStatus: function() {

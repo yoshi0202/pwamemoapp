@@ -24,7 +24,7 @@
         </v-btn>
       </span>
       <v-btn to="/addCard" outlined color="#FDB436">
-        <span class="mr-2">add Cards!</span>
+        <span class="mr-2">add Snippets!</span>
         <v-icon small>fas fa-edit</v-icon>
       </v-btn>
     </span>
@@ -40,7 +40,7 @@ export default {
   methods: {
     mypage: function() {
       const user = this.$store.getters.getLogin;
-      this.$router.push("/" + user.id + "/mypage");
+      this.$router.push("/user/" + user.userId);
     }
   }
 };

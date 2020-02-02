@@ -29,9 +29,9 @@ passport.use(
     },
     function(accessToken, refreshToken, profile, done) {
       if (isOauthUserRegisterd(profile.id, "google")) {
-        oauthUserUpdate(profile.id);
+        oauthUserUpdate(profile, profile.photos[0].value);
       } else {
-        oauthUserCreate(profile.id, "google");
+        oauthUserCreate(profile, profile.photos[0].value, "google");
       }
       if (profile) {
         return done(null, profile);
@@ -51,9 +51,9 @@ passport.use(
     },
     function(accessToken, refreshToken, profile, done) {
       if (isOauthUserRegisterd(profile.id, "github")) {
-        oauthUserUpdate(profile.id);
+        oauthUserUpdate(profile, profile.photos[0].value);
       } else {
-        oauthUserCreate(profile.id, "github");
+        oauthUserCreate(profile, profile.photos[0].value, "github");
       }
       if (profile) {
         return done(null, profile);
@@ -286,15 +286,35 @@ router.get("/qiita/callback", async function(req, res, next) {
     { headers: { "Content-Type": "application/json" } }
   );
   console.log(result.data);
-  const userResult = await axios.get("https://qiita.com/api/v2/authenticated_user", {
+  const user = await axios.get("https://qiita.com/api/v2/authenticated_user", {
     headers: {
       Authorization: `Bearer ${result.data.token}`,
       "Content-Type": "application/json"
     },
     data: {}
   });
-  console.log(userResult);
-  res.redirect(frontBaseUrl + "/");
+  if (await isOauthUserRegisterd(user.data.id, "qiita")) {
+    oauthUserUpdate(user.data, user.data.profile_image_url);
+  } else {
+    oauthUserCreate(user.data, user.data.profile_image_url, "qiita");
+  }
+  res.redirect(frontBaseUrl + "/?userId=" + user.data.id + "&loginType=qiita");
+});
+router.post("/qiita/signin", async function(req, res, next) {
+  const params = {
+    TableName: userTableName,
+    FilterExpression: "#u = :u AND #l = :l",
+    ExpressionAttributeNames: {
+      "#u": "userId",
+      "#l": "loginType"
+    },
+    ExpressionAttributeValues: {
+      ":u": req.body.userId,
+      ":l": req.body.loginType
+    }
+  };
+  const result = await dynamo.scan(params).promise();
+  res.json(result);
 });
 
 module.exports = router;
@@ -322,32 +342,38 @@ async function isOauthUserRegisterd(userId, provider) {
   }
 }
 
-function oauthUserCreate(userId, provider) {
+function oauthUserCreate(user, img, provider) {
+  console.log("create");
   let params = {
     TableName: userTableName,
     Item: {
-      userId: userId,
+      userId: user.id,
       loginToken: utils.getRandomToken(32),
       loginType: provider,
-      snipCounts: 0
+      snipCounts: 0,
+      imgUrl: img ? img : "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
     }
   };
+  console.log(params);
   dynamo.put(params).promise();
 }
 
-function oauthUserUpdate(userId) {
+function oauthUserUpdate(user, img) {
+  console.log("update");
   const updateParams = {
     TableName: userTableName,
     Key: {
-      userId: userId
+      userId: user.id
     },
     ExpressionAttributeNames: {
-      "#l": "loginToken"
+      "#l": "loginToken",
+      "#iu": "imgUrl"
     },
     ExpressionAttributeValues: {
-      ":l": utils.getRandomToken(32)
+      ":l": utils.getRandomToken(32),
+      ":iu": img ? img : "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
     },
-    UpdateExpression: "SET #l = :l"
+    UpdateExpression: "SET #l = :l, #iu = :iu"
   };
   dynamo.update(updateParams).promise();
 }
