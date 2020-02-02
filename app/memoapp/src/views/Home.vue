@@ -6,6 +6,7 @@
       </v-flex>
       <v-flex md10>
         <v-layout text-center wrap>
+          <Loading />
           <v-flex lg3 md6 xs12 pa-5 v-for="sd in snipData" :key="sd.createdAt" class="lg5-custom">
             <Card :data="sd" :userData="userData" />
           </v-flex>
@@ -19,13 +20,15 @@
 // @ is an alias to /src
 import Card from "@/components/Card";
 import CategoryMenu from "@/components/CategoryMenu";
+import Loading from "@/components/Loading";
 import axios from "axios";
 
 export default {
   name: "home",
   components: {
     Card,
-    CategoryMenu
+    CategoryMenu,
+    Loading
   },
   computed: {},
   created: async function() {
@@ -34,11 +37,13 @@ export default {
       const result = await axios.get(apiUrl + "snip");
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
+      this.$store.dispatch("changeLoading", false);
     } catch (err) {
       alert(JSON.stringify(err));
     }
   },
   data: () => ({
+    loading: true,
     snipData: [],
     userData: {},
     menu: [

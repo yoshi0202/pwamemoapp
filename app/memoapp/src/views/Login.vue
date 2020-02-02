@@ -124,7 +124,8 @@ export default {
           loginType: result.data.loginType,
           snipCounts: result.data.snipCounts,
           status: true,
-          loginToken: result.data.loginToken
+          loginToken: result.data.loginToken,
+          imgUrl: result.data.imgUrl
         });
         this.$router.push("/");
       } catch (err) {

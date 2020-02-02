@@ -40,15 +40,22 @@ router.get("/:userId/:snipId", async function(req, res, next) {
   try {
     const userId = req.params.userId;
     const snipId = Number(req.params.snipId);
-    var params = {
+    const params = {
       TableName: tableName,
       ExpressionAttributeNames: { "#u": "userId", "#si": "snipId" },
       ExpressionAttributeValues: { ":u": userId, ":si": snipId },
       KeyConditionExpression: "#u = :u AND #si = :si"
       // ScanIndexForward: false,
     };
-    const result = await dynamo.query(params).promise();
-    console.log(result);
+    let result = await dynamo.query(params).promise();
+    const userParams = {
+      TableName: userTableName,
+      ExpressionAttributeNames: { "#u": "userId" },
+      ExpressionAttributeValues: { ":u": userId },
+      KeyConditionExpression: "#u = :u"
+    };
+    const user = await dynamo.query(userParams).promise();
+    result.userData = user.Items[0].imgUrl;
     res.json(result);
   } catch (err) {
     console.log(err);

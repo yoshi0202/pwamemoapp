@@ -2,6 +2,7 @@
   <v-container fluid pa-0 ma-0>
     <v-layout>
       <v-flex md8 offset-md2 text-center>
+        <Loading />
         <v-container>
           <v-layout wrap align-center>
             <v-flex md12 xs12>
@@ -11,12 +12,15 @@
             </v-flex>
             <v-flex md12 xs12>
               <v-container text-right align-center pa-0>
-                <v-row>
-                  <v-col cols="7" class="text-left">
-                    <span class="subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
+                <v-row class="align-center" style="height:100px">
+                  <v-col cols="8" class="text-left align-center">
+                    <v-avatar>
+                      <img @click="toUserPage" :src="userData" alt="avator" style="cursor: pointer;" />
+                    </v-avatar>
+                    <span class="px-4 subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
                   </v-col>
                   <v-spacer></v-spacer>
-                  <v-col cols="5">
+                  <v-col cols="4">
                     <v-icon
                       v-if="ownSnip"
                       class="mx-3"
@@ -57,6 +61,7 @@
 import axios from "axios";
 import marked from "marked";
 import Mixin from "../mixin/mixin";
+import Loading from "@/components/Loading";
 
 export default {
   name: "showCard",
@@ -66,14 +71,17 @@ export default {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
     this.snipData = result.data.Items[0];
+    this.userData = result.data.userData;
     this.editParams = {
       userId: userId,
       snipId: snipId
     };
+    this.$store.dispatch("changeLoading", false);
   },
   data: function() {
     return {
       snipData: {},
+      userData: "",
       editParams: {},
       ownSnip: this.$route.params.userId === this.$store.getters.getUserId
     };
@@ -97,9 +105,14 @@ export default {
       } catch (err) {
         alert(JSON.stringify(err));
       }
+    },
+    toUserPage: function() {
+      this.$router.push("/user/" + this.snipData.userId);
     }
   },
-  components: {},
+  components: {
+    Loading
+  },
   mixins: [Mixin]
 };
 </script>
