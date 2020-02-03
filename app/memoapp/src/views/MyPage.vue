@@ -14,25 +14,46 @@
                     style="width:300px;height:300px;cursor: pointer;"
                     @click="imgClick"
                   />
-                  <input type="file" style="display:none" ref="fileUploads" name="avatar" @change="changeUserImg" />
+                  <input
+                    type="file"
+                    style="display:none"
+                    ref="fileUploads"
+                    name="avatar"
+                    @change="changeUserImg"
+                  />
                   <v-container headline text-left px-10 fluid>
                     {{ userData.userData.userId }}
-                    <v-container fluid body-1 ma-0 pa-0 font-weight-light>{{ userData.userData.userId }}</v-container>
+                    <v-container
+                      fluid
+                      body-1
+                      ma-0
+                      pa-0
+                      font-weight-light
+                    >{{ userData.userData.userId }}</v-container>
                     <v-container fluid ma-0 pa-0>
-                      <v-icon class="pr-5" color="#00acee" @click="toSns('https://twitter.com/codeplumdev')"
-                        >mdi-twitter</v-icon
-                      >
-                      <v-icon class="pr-5" color="#55C500" @click="toSns('https://qiita.com/yoshiplum')"
-                        >mdi-quora</v-icon
-                      >
-                      <v-icon class="pr-5" color="#171515" @click="toSns('https://github.com/yoshi0202')"
-                        >mdi-github-circle</v-icon
-                      >
+                      <v-icon
+                        class="pr-5"
+                        color="#00acee"
+                        @click="toSns('https://twitter.com/codeplumdev')"
+                      >mdi-twitter</v-icon>
+                      <v-icon
+                        class="pr-5"
+                        color="#55C500"
+                        @click="toSns('https://qiita.com/yoshiplum')"
+                      >mdi-quora</v-icon>
+                      <v-icon
+                        class="pr-5"
+                        color="#171515"
+                        @click="toSns('https://github.com/yoshi0202')"
+                      >mdi-github-circle</v-icon>
                     </v-container>
                     <v-divider></v-divider>
-                    <v-container subtitle-1 fluid px-0 style="word-break:break-all">
-                      DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription
-                    </v-container>
+                    <v-container
+                      subtitle-1
+                      fluid
+                      px-0
+                      style="word-break:break-all"
+                    >DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription</v-container>
                     <v-divider></v-divider>
                   </v-container>
                 </v-flex>
@@ -43,9 +64,7 @@
                     </v-card-title>
 
                     <v-tabs v-model="tab" background-color="transparent" color="#FDB436" grow dark>
-                      <v-tab v-for="item in items" :key="item">
-                        {{ item }}
-                      </v-tab>
+                      <v-tab v-for="item in items" :key="item">{{ item }}</v-tab>
                     </v-tabs>
 
                     <v-tabs-items v-model="tab">
@@ -59,16 +78,19 @@
 
                               <v-list-item-content>
                                 <v-list-item-title>{{ snippets.snipData.title }}</v-list-item-title>
-                                <v-list-item-subtitle>{{
+                                <v-list-item-subtitle>
+                                  {{
                                   changeUnixTimeToDate(snippets.createdAt)
-                                }}</v-list-item-subtitle>
+                                  }}
+                                </v-list-item-subtitle>
                               </v-list-item-content>
 
                               <v-list-item-action>
                                 <v-btn icon>
-                                  <v-icon @click="toSnip(snippets.userId, snippets.snipId)" color="grey lighten-1"
-                                    >mdi-chevron-double-right</v-icon
-                                  >
+                                  <v-icon
+                                    @click="toSnip(snippets.userId, snippets.snipId)"
+                                    color="grey lighten-1"
+                                  >mdi-chevron-double-right</v-icon>
                                 </v-btn>
                               </v-list-item-action>
                             </v-list-item>
@@ -107,7 +129,9 @@ export default {
     return {
       tab: null,
       items: ["MySnippets", "Favorites"],
-      userData: {},
+      userData: {
+        userData: ""
+      },
       userId: "",
       userImg: ""
     };

@@ -6,16 +6,24 @@
         <v-container>
           <v-layout wrap align-center>
             <v-flex md12 xs12>
-              <v-container text-left title pa-0 style="word-break:break-all">
-                {{ snipData.snipData.title }}
-              </v-container>
+              <v-container
+                text-left
+                title
+                pa-0
+                style="word-break:break-all"
+              >{{ snipData.snipData.title }}</v-container>
             </v-flex>
             <v-flex md12 xs12>
               <v-container text-right align-center pa-0>
                 <v-row class="align-center" style="height:100px">
                   <v-col cols="8" class="text-left align-center">
                     <v-avatar>
-                      <img @click="toUserPage" :src="userData" alt="avator" style="cursor: pointer;" />
+                      <img
+                        @click="toUserPage"
+                        :src="userData"
+                        alt="avator"
+                        style="cursor: pointer;"
+                      />
                     </v-avatar>
                     <span class="px-4 subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
                   </v-col>
@@ -25,8 +33,7 @@
                       v-if="ownSnip"
                       class="mx-3"
                       @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
-                      >fas fa-edit</v-icon
-                    >
+                    >fas fa-edit</v-icon>
                     <v-icon v-if="ownSnip" class="mx-3" @click="deleteCard">far fa-trash-alt</v-icon>
                   </v-col>
                 </v-row>
@@ -38,9 +45,17 @@
         <v-container text-left>
           <v-layout>
             <v-flex>
-              <v-chip color="#FFCC80" small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text">{{
+              <v-chip
+                color="#FFCC80"
+                small
+                v-for="tag in snipData.snipData.tags"
+                :key="tag"
+                class="mx-1 black--text"
+              >
+                {{
                 tag
-              }}</v-chip>
+                }}
+              </v-chip>
             </v-flex>
           </v-layout>
         </v-container>
@@ -80,7 +95,12 @@ export default {
   },
   data: function() {
     return {
-      snipData: {},
+      snipData: {
+        snipData: {
+          title: "",
+          contents: ""
+        }
+      },
       userData: "",
       editParams: {},
       ownSnip: this.$route.params.userId === this.$store.getters.getUserId
