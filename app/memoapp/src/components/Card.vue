@@ -1,7 +1,7 @@
 <template>
   <v-card
-    class="mx-auto snippy-card"
-    height="300px"
+    class="mx-auto snippy-card card-outter"
+    height="220px"
     :elevation="elevation"
     :ripple="false"
     :retain-focus-on-click="retain"
@@ -10,51 +10,42 @@
     @click="cardClick"
     active-class
   >
-    <v-container text-left fluid fill-height>
-      <v-container pa-0 style="height:20%" class="d-flex align-center">
-        <v-row class="py-0 ma-0" style="max-width:100%;max-height:100%" no-gutters>
-          <v-col cols="2" class="ma-0 pa-1">
-            <v-avatar>
-              <img :src="userData[data.userId]" alt="avator" />
-            </v-avatar>
-          </v-col>
-          <v-col cols="8" class="ma-0 pa-0">
-            <v-container fluid py-0>
-              <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
-            </v-container>
-          </v-col>
-          <v-spacer></v-spacer>
-          <v-col cols="2" class="ma-0 pa-0">
-            <v-container text-center>
-              <v-icon small :color="thumbtackColor" @click.stop="changeThumbtackStatus">fas fa-thumbtack</v-icon>
-            </v-container>
-          </v-col>
-        </v-row>
-      </v-container>
-      <v-container py-0>
-        <v-divider></v-divider>
-      </v-container>
-      <v-container style="height:60%" body-2 fluid pb-0 pt-1>
-        <v-clamp autoresize :max-lines="8"> {{ data.snipData.contents }} </v-clamp>
-      </v-container>
-      <v-container style="height:13%" px-0 ma-0 class="d-flex align-center" @click.stop="">
-        <perfect-scrollbar>
-          <v-flex style="white-space:nowrap">
-            <v-chip color="#FFCC80" small v-for="t in data.snipData.tags" :key="t" class="mx-3 black--text">{{
-              t
-            }}</v-chip>
-          </v-flex>
-        </perfect-scrollbar>
-      </v-container>
-      <v-container py-0>
-        <v-divider></v-divider>
-      </v-container>
-      <v-container class="d-flex align-center font-weight-thin text-center" style="height:10%" pa-0 ma-0 body-2>
-        <v-container text-center>
-          {{ changeUnixTimeToDate(data.createdAt) }}
-        </v-container>
-      </v-container>
+    <v-list-item>
+      <v-list-item-avatar size="40" color="grey" class="mr-0">
+        <img :src="userData[data.userId]" alt="avator" />
+      </v-list-item-avatar>
+      <v-card-title class="title py-0">
+        <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
+      </v-card-title>
+    </v-list-item>
+    <v-container py-0 text-right>
+      <p class="caption mx-1 my-0">@{{data.userId}}</p>
+      <!-- <perfect-scrollbar>
+        <v-flex style="white-space:nowrap">
+          <v-chip
+            color="#FFCC80"
+            small
+            v-for="t in data.snipData.tags"
+            :key="t"
+            class="mx-3 black--text"
+          >{{t}}</v-chip>
+        </v-flex>
+      </perfect-scrollbar>-->
+      <v-divider></v-divider>
     </v-container>
+    <v-card-text class="text--primary py-1 text-left">
+      <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
+    </v-card-text>
+    <v-card-actions class="card-actions" style="width:100%">
+      <v-layout align-center>
+        <v-flex text-left body-2>{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
+        <v-flex text-right>
+          <v-btn icon>
+            <v-icon size="23">mdi-pin</v-icon>
+          </v-btn>
+        </v-flex>
+      </v-layout>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -101,5 +92,13 @@ export default {
 <style>
 .snippy-card:focus::before {
   opacity: 0 !important;
+}
+.card-outter {
+  position: relative;
+  padding-bottom: 50px;
+}
+.card-actions {
+  position: absolute;
+  bottom: 0;
 }
 </style>

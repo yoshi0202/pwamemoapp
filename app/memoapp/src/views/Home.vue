@@ -1,13 +1,22 @@
 <template>
   <v-container>
     <v-layout text-center wrap>
-      <v-flex v-if="!$store.getters.getIsMobile" md2>
+      <v-flex v-if="!$store.getters.getIsMobile" md2 py-0 px-2>
         <CategoryMenu :menu="menu" />
       </v-flex>
       <v-flex md10>
         <v-layout text-center wrap>
           <Loading />
-          <v-flex lg3 md6 xs12 pa-5 v-for="sd in snipData" :key="sd.createdAt" class="lg5-custom">
+          <v-flex
+            lg3
+            md6
+            xs12
+            pt-5
+            px-1
+            v-for="sd in snipData"
+            :key="sd.createdAt"
+            class="lg5-custom"
+          >
             <Card :data="sd" :userData="userData" />
           </v-flex>
         </v-layout>
