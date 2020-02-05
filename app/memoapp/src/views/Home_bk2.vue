@@ -1,28 +1,27 @@
 <template>
   <v-container>
-    <v-row justify="center" no-gutters>
-      <v-col xs="12" sm="12" md="12" lg="12" xl="8">
-        <v-row justify="center" no-gutters>
-          <v-col v-if="!$store.getters.getIsMobile" cols="3">
-            <CategoryMenu :menu="menu" />
-          </v-col>
-          <v-col xs="12" sm="12" md="9" lg="9" xl="9">
-            <v-container pa-0 text-center>
-              <Loading />
-            </v-container>
-            <v-card
-              tile
-              outlined
-              v-for="sd in snipData"
-              :key="sd.createdAt"
-              class="border-bottom-none"
-            >
-              <Card :data="sd" :userData="userData" />
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
+    <v-layout text-center wrap>
+      <v-flex v-if="!$store.getters.getIsMobile" md2 py-0 px-2>
+        <CategoryMenu :menu="menu" />
+      </v-flex>
+      <v-flex md10>
+        <v-layout text-center wrap>
+          <Loading />
+          <v-flex
+            lg3
+            md6
+            xs12
+            pt-5
+            px-1
+            v-for="sd in snipData"
+            :key="sd.createdAt"
+            class="lg5-custom"
+          >
+            <Card :data="sd" :userData="userData" />
+          </v-flex>
+        </v-layout>
+      </v-flex>
+    </v-layout>
   </v-container>
 </template>
 
@@ -40,7 +39,7 @@ export default {
     CategoryMenu,
     Loading
   },
-  // computed: {},
+  computed: {},
   created: async function() {
     try {
       const apiUrl = this.$store.getters.getApiUrl + "api/";
@@ -53,7 +52,7 @@ export default {
     }
   },
   data: () => ({
-    //   loading: true,
+    loading: true,
     snipData: [],
     userData: {},
     menu: [
@@ -90,15 +89,12 @@ export default {
         img: "vue.svg"
       }
     ]
-  })
-  // methods: {}
+  }),
+  methods: {}
 };
 </script>
 
 <style>
-.border-bottom-none {
-  border-bottom: 0;
-}
 /* @media (min-width: 601px) and (max-width: 1920px) {
   .flex.lg5-custom {
     width: 20%;
