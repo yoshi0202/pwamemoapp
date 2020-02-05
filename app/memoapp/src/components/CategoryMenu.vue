@@ -1,10 +1,10 @@
 <template>
-  <v-container text-center py-5 px-0 style="position:sticky; top:64px;">
-    <v-card class="mx-auto" tile style="position:sticky; top:64px;">
-      <v-list flat>
-        <v-container text-center title>
-          Languages
-        </v-container>
+  <v-container text-center pa-0 ma-0 style="position:sticky; top:64px;">
+    <v-card outlined elevation="0" class="border-none">
+      <v-toolbar color="#147F9B" flat dense dark elavation="0" class="border-none">
+        <v-toolbar-title>Languages</v-toolbar-title>
+      </v-toolbar>
+      <v-list dense color="grey lighten-3" class="border-none">
         <v-list-item-group v-model="item" color="primary">
           <v-list-item v-for="(m, i) in menu" :key="i">
             <v-list-item-icon>
@@ -40,4 +40,9 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+.border-none {
+  border-right: 0 !important;
+  border-radius: 0 !important;
+}
+</style>

@@ -1,14 +1,12 @@
 <template>
   <v-card
-    class="mx-auto snippy-card card-outter"
-    height="220px"
-    :elevation="elevation"
+    class="mx-auto snippy-card card-outter border-bottom-none"
     :ripple="false"
     :retain-focus-on-click="retain"
     @mouseover="elevation = 10"
     @mouseleave="elevation = 0"
-    @click="cardClick"
     active-class
+    @click="show = !show"
   >
     <v-list-item>
       <v-list-item-avatar size="40" color="grey" class="mr-0">
@@ -19,7 +17,7 @@
       </v-card-title>
     </v-list-item>
     <v-container py-0 text-right>
-      <p class="caption mx-1 my-0">@{{data.userId}}</p>
+      <!-- <p class="caption mx-1 my-0">@{{data.userId}}</p> -->
       <!-- <perfect-scrollbar>
         <v-flex style="white-space:nowrap">
           <v-chip
@@ -33,19 +31,34 @@
       </perfect-scrollbar>-->
       <v-divider></v-divider>
     </v-container>
-    <v-card-text class="text--primary py-1 text-left">
-      <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
-    </v-card-text>
+    <!-- <v-card-text class="text--primary py-1 text-left">
+      <v-clamp autoresize :max-lines="2">{{ data.snipData.contents }}</v-clamp>
+    </v-card-text>-->
     <v-card-actions class="card-actions" style="width:100%">
       <v-layout align-center>
         <v-flex text-left body-2>{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
         <v-flex text-right>
-          <v-btn icon>
-            <v-icon size="23">mdi-pin</v-icon>
+          <!-- <v-container class="caption">@{{data.userId}}</v-container> -->
+          <span class="caption">@{{data.userId}}</span>
+          <v-btn icon @click.stop="changePinStatus">
+            <v-icon size="23" :color="pinColor">mdi-pin</v-icon>
           </v-btn>
+          <!-- <v-btn icon @click="show = !show">
+            <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+          </v-btn>-->
         </v-flex>
       </v-layout>
     </v-card-actions>
+    <v-expand-transition>
+      <div v-show="show">
+        <v-card-text class="text--primary py-1 text-left">
+          <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
+        </v-card-text>
+        <v-container text-right>
+          <v-btn small outlined @click.stop="cardClick" style="cursor:pointer">Read More</v-btn>
+        </v-container>
+      </div>
+    </v-expand-transition>
   </v-card>
 </template>
 
@@ -61,16 +74,17 @@ export default {
   },
   data: () => ({
     elevation: "0",
-    thumbtackColor: "grey",
-    retain: false
+    pinColor: "grey",
+    retain: false,
+    show: false
   }),
   props: {
     data: Object,
     userData: Object
   },
   methods: {
-    changeThumbtackStatus: function() {
-      this.thumbtackColor = this.thumbtackColor === "orange lighten-2" ? "grey" : "orange lighten-2";
+    changePinStatus: function() {
+      this.pinColor = this.pinColor === "orange lighten-2" ? "grey" : "orange lighten-2";
     },
     parseMd: function(sentence) {
       return marked(sentence).replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "");
@@ -100,5 +114,12 @@ export default {
 .card-actions {
   position: absolute;
   bottom: 0;
+}
+.card-userid {
+  position: absolute;
+  bottom: 30px;
+}
+.border-bottom-none {
+  border-bottom: 0 !important;
 }
 </style>
