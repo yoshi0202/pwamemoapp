@@ -10,9 +10,9 @@
   >
     <v-list-item>
       <v-list-item-avatar size="40" color="grey" class="mr-0">
-        <img :src="userData[data.userId]" alt="avator" />
+        <img :src="userData[data.userId].imgUrl" alt="avator" />
       </v-list-item-avatar>
-      <v-card-title class="title py-0">
+      <v-card-title class="subtitle-1 py-0">
         <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
       </v-card-title>
     </v-list-item>
@@ -29,7 +29,7 @@
           >{{t}}</v-chip>
         </v-flex>
       </perfect-scrollbar>-->
-      <v-divider></v-divider>
+      <!-- <v-divider></v-divider> -->
     </v-container>
     <!-- <v-card-text class="text--primary py-1 text-left">
       <v-clamp autoresize :max-lines="2">{{ data.snipData.contents }}</v-clamp>
@@ -39,13 +39,10 @@
         <v-flex text-left body-2>{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
         <v-flex text-right>
           <!-- <v-container class="caption">@{{data.userId}}</v-container> -->
-          <span class="caption">@{{data.userId}}</span>
+          <span class="caption">@{{ userData[data.userId].displayName }}</span>
           <v-btn icon @click.stop="changePinStatus">
             <v-icon size="23" :color="pinColor">mdi-pin</v-icon>
           </v-btn>
-          <!-- <v-btn icon @click="show = !show">
-            <v-icon>{{ show ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
-          </v-btn>-->
         </v-flex>
       </v-layout>
     </v-card-actions>
@@ -55,7 +52,7 @@
           <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
         </v-card-text>
         <v-container text-right>
-          <v-btn small outlined @click.stop="cardClick" style="cursor:pointer">Read More</v-btn>
+          <v-btn small outlined @click.stop="cardClick" color="#FDB436" style="cursor:pointer">Read More</v-btn>
         </v-container>
       </div>
     </v-expand-transition>

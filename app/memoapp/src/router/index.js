@@ -6,6 +6,7 @@ import showCard from "../views/showCard.vue";
 import Login from "../views/Login.vue";
 import SignUp from "../views/SignUp.vue";
 import MyPage from "../views/MyPage.vue";
+import EditMyPage from "../views/EditMyPage.vue";
 import Store from "@/store/index.js";
 import Axios from "axios";
 Vue.use(VueRouter);
@@ -23,6 +24,11 @@ const routes = [
     meta: {
       isPublic: true
     }
+  },
+  {
+    path: "/user/:userId/edit",
+    name: "editMyPage",
+    component: EditMyPage
   },
   {
     path: "/:userId/snip/:snipId",

@@ -24,7 +24,10 @@ router.get("/", async function(req, res, next) {
     const getUser = await dynamo.scan(userParams).promise();
     let userData = {};
     getUser.Items.map(function(i) {
-      userData[i.userId] = i.imgUrl;
+      userData[i.userId] = {
+        imgUrl: i.imgUrl,
+        displayName: i.displayName
+      };
     });
     result.userData = userData;
     // console.log(result);

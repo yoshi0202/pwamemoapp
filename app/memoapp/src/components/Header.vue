@@ -12,7 +12,7 @@
     <span v-else>
       <span v-if="$store.getters.getLoginStatus">
         <v-avatar>
-          <img :src="$store.getters.getImgUrl" alt="avator" @click="mypage" style="cursor:pointer" />
+          <img :src="$store.getters.getImgUrl" alt="avator" @click="myPage" style="cursor:pointer" />
         </v-avatar>
         <v-menu bottom left>
           <template v-slot:activator="{ on }">
@@ -22,27 +22,33 @@
           </template>
 
           <v-list>
-            <v-list-item @click="mypage" style="cursor:pointer">
-              <v-list-item-title>マイページ</v-list-item-title>
+            <v-list-item @click="myPage" style="cursor:pointer">
+              <v-list-item-title
+                ><span class="caption"><v-icon medium>mdi-account</v-icon>マイページ</span></v-list-item-title
+              >
             </v-list-item>
             <v-divider></v-divider>
             <v-list-item>
-              <v-list-item-title>設定</v-list-item-title>
+              <v-list-item-title @click="editPage" style="cursor:pointer"
+                ><span class="caption"><v-icon medium>mdi-tune</v-icon>設定</span></v-list-item-title
+              >
             </v-list-item>
             <v-divider></v-divider>
             <v-list-item @click="$emit('logout')" style="cursor:pointer">
-              <v-list-item-title>ログアウト</v-list-item-title>
+              <v-list-item-title>
+                <span class="caption"><v-icon medium>mdi-logout</v-icon>ログアウト</span></v-list-item-title
+              >
             </v-list-item>
           </v-list>
         </v-menu>
       </span>
       <span v-else>
         <!-- <v-btn class="ma-2" outlined color="#FDB436" to="/signUp"> -->
-        <v-btn outlined color="#FDB436" to="/signUp">
+        <v-btn outlined color="#FDB436" to="/signUp" class="white--text">
           <v-icon class="mr-2">mdi-account-plus</v-icon>
           <span>サインイン</span>
         </v-btn>
-        <v-btn class="ma-2" outlined color="#FDB436" to="/login">
+        <v-btn class="white--text ma-2" outlined color="#FDB436" to="/login">
           <v-icon class="mr-2">mdi-login-variant</v-icon>
           <span>ログイン</span>
         </v-btn>
@@ -60,9 +66,13 @@ export default {
   component: {},
   created: function() {},
   methods: {
-    mypage: function() {
+    myPage: function() {
       const user = this.$store.getters.getLogin;
       this.$router.push("/user/" + user.userId);
+    },
+    editPage: function() {
+      const user = this.$store.getters.getLogin;
+      this.$router.push("/user/" + user.userId + "/edit");
     }
   }
 };

@@ -10,13 +10,7 @@
             <v-container pa-0 text-center>
               <Loading />
             </v-container>
-            <v-card
-              tile
-              outlined
-              v-for="sd in snipData"
-              :key="sd.createdAt"
-              class="border-bottom-none"
-            >
+            <v-card tile outlined v-for="sd in snipData" :key="sd.createdAt" class="border-bottom-none">
               <Card :data="sd" :userData="userData" />
             </v-card>
           </v-col>
@@ -47,6 +41,7 @@ export default {
       const result = await axios.get(apiUrl + "snip");
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
+      console.log(this.userData);
       this.$store.dispatch("changeLoading", false);
     } catch (err) {
       alert(JSON.stringify(err));
