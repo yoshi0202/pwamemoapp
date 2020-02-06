@@ -5,7 +5,7 @@ const crypto = require("crypto");
 const bcrypt = require("bcrypt");
 const multer = require("multer");
 let multerS3 = require("multer-s3");
-const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
+const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", convertEmptyValues: true });
 const tableName = "snippy-snippets";
 const userTableName = "snippy-user";
 const storage = multer.memoryStorage();
@@ -66,6 +66,20 @@ router.get("/:userId", async function(req, res, next) {
   }
 });
 
+router.post("/:userId/profile/update", async function(req, res, next) {
+  try {
+    const updateParams = setUpdateUserParams(req.params.userId, req.body);
+    const result = await dynamo.update(updateParams).promise();
+    res.json({
+      result: "ok"
+    });
+  } catch (err) {
+    console.log(err);
+    res.status(500).json({
+      result: err
+    });
+  }
+});
 router.post("/:user/cards/:cardid/update", async function(req, res, next) {
   try {
     var updateParams = {
@@ -181,5 +195,30 @@ function getRandomToken(N) {
     .randomBytes(N)
     .toString("base64")
     .substring(0, N);
+}
+function setUpdateUserParams(userId, data) {
+  return {
+    TableName: userTableName,
+    Key: {
+      userId: userId
+    },
+    ExpressionAttributeNames: {
+      "#dn": "displayName",
+      "#d": "description",
+      "#u": "url",
+      "#t": "twitter",
+      "#g": "github",
+      "#q": "qiita"
+    },
+    ExpressionAttributeValues: {
+      ":dn": data.displayName,
+      ":d": data.description,
+      ":u": data.url,
+      ":t": data.twitter,
+      ":g": data.github,
+      ":q": data.qiita
+    },
+    UpdateExpression: "SET #dn = :dn ,  #d = :d , #u = :u , #t = :t , #g = :g , #q = :q"
+  };
 }
 module.exports = router;

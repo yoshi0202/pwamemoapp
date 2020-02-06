@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-container pa-0>
     <v-list-item v-for="li in logoutItems" :key="li">
       <v-list-item-icon>
         <v-icon>{{ li.icon }}</v-icon>
@@ -9,7 +9,7 @@
         <v-list-item-title @click="execAction(li.action)">{{ li.title }}</v-list-item-title>
       </v-list-item-content>
     </v-list-item>
-  </v-content>
+  </v-container>
 </template>
 
 <script>

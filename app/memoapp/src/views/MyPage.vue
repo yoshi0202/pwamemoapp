@@ -8,52 +8,44 @@
             <v-flex fluid>
               <v-layout wrap fluid>
                 <v-flex lg5 md5 sm12 fluid>
-                  <img
-                    :src="userData.userData.imgUrl"
-                    alt="avator"
-                    style="width:300px;height:300px;cursor: pointer;"
-                    @click="imgClick"
-                  />
-                  <input
-                    type="file"
-                    style="display:none"
-                    ref="fileUploads"
-                    name="avatar"
-                    @change="changeUserImg"
-                  />
+                  <img :src="userData.userData.imgUrl" alt="avator" style="width:300px;height:300px;" />
                   <v-container headline text-left px-10 fluid>
-                    {{ userData.userData.userId }}
-                    <v-container
-                      fluid
-                      body-1
-                      ma-0
-                      pa-0
-                      font-weight-light
-                    >{{ userData.userData.userId }}</v-container>
+                    {{ userData.userData.displayName }}
+                    <v-container fluid body-1 ma-0 pa-0 font-weight-light>@{{ userData.userData.userId }}</v-container>
                     <v-container fluid ma-0 pa-0>
                       <v-icon
+                        v-if="userData.userData.url"
+                        class="pr-5"
+                        color="cyan darken-3"
+                        @click="toSns(userData.userData.url)"
+                        >mdi-home</v-icon
+                      >
+                      <v-icon
+                        v-if="userData.userData.twitter"
                         class="pr-5"
                         color="#00acee"
-                        @click="toSns('https://twitter.com/codeplumdev')"
-                      >mdi-twitter</v-icon>
+                        @click="toSns(userData.userData.twitter)"
+                        >mdi-twitter</v-icon
+                      >
                       <v-icon
+                        v-if="userData.userData.qiita"
                         class="pr-5"
                         color="#55C500"
-                        @click="toSns('https://qiita.com/yoshiplum')"
-                      >mdi-quora</v-icon>
+                        @click="toSns(userData.userData.qiita)"
+                        >mdi-quora</v-icon
+                      >
                       <v-icon
+                        v-if="userData.userData.github"
                         class="pr-5"
                         color="#171515"
-                        @click="toSns('https://github.com/yoshi0202')"
-                      >mdi-github-circle</v-icon>
+                        @click="toSns(userData.userData.github)"
+                        >mdi-github-circle</v-icon
+                      >
                     </v-container>
                     <v-divider></v-divider>
-                    <v-container
-                      subtitle-1
-                      fluid
-                      px-0
-                      style="word-break:break-all"
-                    >DescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescriptionDescription</v-container>
+                    <v-container subtitle-1 fluid px-0 style="word-break:break-all">{{
+                      userData.userData.description
+                    }}</v-container>
                     <v-divider></v-divider>
                   </v-container>
                 </v-flex>
@@ -79,18 +71,15 @@
                               <v-list-item-content>
                                 <v-list-item-title>{{ snippets.snipData.title }}</v-list-item-title>
                                 <v-list-item-subtitle>
-                                  {{
-                                  changeUnixTimeToDate(snippets.createdAt)
-                                  }}
+                                  {{ changeUnixTimeToDate(snippets.createdAt) }}
                                 </v-list-item-subtitle>
                               </v-list-item-content>
 
                               <v-list-item-action>
                                 <v-btn icon>
-                                  <v-icon
-                                    @click="toSnip(snippets.userId, snippets.snipId)"
-                                    color="grey lighten-1"
-                                  >mdi-chevron-double-right</v-icon>
+                                  <v-icon @click="toSnip(snippets.userId, snippets.snipId)" color="grey lighten-1"
+                                    >mdi-chevron-double-right</v-icon
+                                  >
                                 </v-btn>
                               </v-list-item-action>
                             </v-list-item>
@@ -124,6 +113,7 @@ export default {
     const result = await axios.get(apiUrl + "user/" + userId);
     this.userData = result.data;
     this.$store.dispatch("changeLoading", false);
+    console.log(this.userData);
   },
   data: function() {
     return {

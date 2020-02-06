@@ -16,6 +16,7 @@ export default new Vuex.Store({
       email: "",
       loginType: "",
       snipCounts: "",
+      displayName: "",
       imgUrl: ""
     },
     isMobile: false,
@@ -60,7 +61,8 @@ export default new Vuex.Store({
         userId: "",
         email: "",
         loginType: "",
-        snipCounts: ""
+        snipCounts: "",
+        displayName: ""
       };
     },
     incrementsSnip(state) {
