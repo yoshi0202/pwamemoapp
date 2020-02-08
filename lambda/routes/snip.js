@@ -33,7 +33,8 @@ router.get("/category", async function(req, res, next) {
     getUser.Items.map(function(i) {
       userData[i.userId] = {
         imgUrl: i.imgUrl,
-        displayName: i.displayName
+        displayName: i.displayName,
+        pin: i.pin
       };
     });
     result.userData = userData;
@@ -62,7 +63,8 @@ router.get("/", async function(req, res, next) {
     getUser.Items.map(function(i) {
       userData[i.userId] = {
         imgUrl: i.imgUrl,
-        displayName: i.displayName
+        displayName: i.displayName,
+        pin: i.pin
       };
     });
     result.userData = userData;
@@ -195,4 +197,25 @@ router.delete("/destroy", async function(req, res, next) {
   }
 });
 
+//snip pin
+
+router.post("/pin", async function(req, res, next) {
+  const updateParams = {
+    TableName: "snippy-user",
+    Key: {
+      userId: "s7uKpSmJCxlkYb9t"
+    },
+    ExpressionAttributeNames: {
+      "#p": "pin"
+    },
+    ExpressionAttributeValues: {
+      ":p": [req.body.snipId]
+    },
+    UpdateExpression: "SET #p = list_append(#p, :p)"
+  };
+  await dynamo.update(updateParams).promise();
+  res.json({
+    result: "ok"
+  });
+});
 module.exports = router;

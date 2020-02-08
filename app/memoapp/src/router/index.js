@@ -7,11 +7,20 @@ import Login from "../views/Login.vue";
 import SignUp from "../views/SignUp.vue";
 import MyPage from "../views/MyPage.vue";
 import EditMyPage from "../views/EditMyPage.vue";
+import Top from "../views/Top.vue";
 import Store from "@/store/index.js";
 import Axios from "axios";
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/top",
+    name: "top",
+    component: Top,
+    meta: {
+      isPublic: true
+    }
+  },
   {
     path: "/addSnippets",
     name: "addSnippets",
