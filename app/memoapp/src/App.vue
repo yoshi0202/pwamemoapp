@@ -5,7 +5,7 @@
       <router-view />
     </v-content>
     <NavigationDrawer @logout="logout" />
-    <v-btn v-if="$route.path === '/'" color="#FDB436" right bottom fixed fab dark to="/addCard">
+    <v-btn v-if="$route.path === '/'" color="#FDB436" right bottom fixed fab dark to="/addSnippets">
       <v-icon dark>mdi-code-tags</v-icon>
     </v-btn>
   </v-app>
