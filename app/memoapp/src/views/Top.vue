@@ -10,7 +10,19 @@
         </template>
       </v-img>
     </v-content>
-    <v-content class="white">aiueo</v-content>
+    <v-content class="white">
+      <v-layout class="justify-center" wrap>
+        <v-flex xs12 sm12 md12 lg4 xl4>
+          <v-container text-center>aiueo</v-container>
+        </v-flex>
+        <v-flex xs12 sm12 md12 lg4 xl4>
+          <v-container text-center>aiueo</v-container>
+        </v-flex>
+        <v-flex xs12 sm12 md12 lg4 xl4>
+          <v-container text-center>aiueo</v-container>
+        </v-flex>
+      </v-layout>
+    </v-content>
     <v-content>aiueo</v-content>
     <v-content class="white">aiueo</v-content>
   </v-container>

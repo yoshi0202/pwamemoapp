@@ -27,7 +27,7 @@
                         <v-icon
                           v-if="userData.userData.url"
                           class="pr-5"
-                          color="cyan darken-3"
+                          color="purple lighten-2"
                           @click="toSns(userData.userData.url)"
                         >mdi-home</v-icon>
                         <v-icon

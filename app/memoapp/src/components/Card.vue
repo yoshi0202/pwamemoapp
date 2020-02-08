@@ -47,7 +47,7 @@
             style="cursor:pointer"
           >@{{ userData[data.userId].displayName }}</v-btn>
           <v-btn icon>
-            <v-icon size="23" :color="pinColor">{{ menuIcon }}</v-icon>
+            <v-icon size="23" color="grey">{{ menuIcon }}</v-icon>
           </v-btn>
         </v-flex>
       </v-layout>
@@ -59,7 +59,7 @@
         </v-card-text>
         <v-container text-right>
           <v-btn small text @click.stop="changePinStatus">
-            <v-icon color="red">mdi-heart-outline</v-icon>
+            <v-icon color="#C7B967">mdi-heart-outline</v-icon>
           </v-btn>
           <v-btn
             small
@@ -138,7 +138,7 @@ export default {
   bottom: 30px;
 }
 .border-bottom-none {
-  border-bottom: 0 !important;
+  border: 0 !important;
 }
 .v-btn {
   text-transform: none !important;
