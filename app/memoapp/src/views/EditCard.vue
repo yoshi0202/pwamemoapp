@@ -1,70 +1,72 @@
 <template>
-  <v-container fill-height fluid py-0>
-    <v-layout text-center wrap>
-      <v-flex md12>
-        <v-container fluid px-0>
-          <v-card elevation="0">
-            <v-form v-model="valid" lazy-validation ref="form">
-              <v-container pt-3 pb-0 px-10 fluid>
-                <v-text-field
-                  v-model="snipData.snipTitle"
-                  label="スニペットタイトル"
-                  outlined
-                  dense
-                  :rules="[rules.required]"
-                ></v-text-field>
-              </v-container>
-              <v-container pt-2 px-10 fluid>
-                <v-autocomplete
-                  v-model="snipData.snipTags"
-                  :items="categories"
-                  outlined
-                  eager
-                  dense
-                  chips
-                  small-chips
-                  label="カテゴリ"
-                  multiple
-                  auto-select-first
-                  :rules="[rules.min, rules.required]"
-                >
-                  <template v-slot:selection="data">
-                    <v-chip
-                      :key="JSON.stringify(data.item)"
-                      v-bind="data.attrs"
-                      :input-value="data.selected"
-                      :disabled="data.disabled"
-                      @click:close="data.parent.selectItem(data.item)"
-                    >
-                      <v-avatar left>
-                        <img :src="'/img/' + data.item + '.svg'" />
-                      </v-avatar>
-                      {{ data.item }}
-                    </v-chip>
-                  </template>
-                </v-autocomplete>
-              </v-container>
-            </v-form>
-          </v-card>
-        </v-container>
+  <v-content>
+    <v-container fill-height fluid py-0>
+      <v-layout text-center wrap>
+        <v-flex md12>
+          <v-container fluid px-0>
+            <v-card elevation="0">
+              <v-form v-model="valid" lazy-validation ref="form">
+                <v-container pt-3 pb-0 px-10 fluid>
+                  <v-text-field
+                    v-model="snipData.snipTitle"
+                    label="スニペットタイトル"
+                    outlined
+                    dense
+                    :rules="[rules.required]"
+                  ></v-text-field>
+                </v-container>
+                <v-container pt-2 px-10 fluid>
+                  <v-autocomplete
+                    v-model="snipData.snipTags"
+                    :items="categories"
+                    outlined
+                    eager
+                    dense
+                    chips
+                    small-chips
+                    label="カテゴリ"
+                    multiple
+                    auto-select-first
+                    :rules="[rules.min, rules.required]"
+                  >
+                    <template v-slot:selection="data">
+                      <v-chip
+                        :key="JSON.stringify(data.item)"
+                        v-bind="data.attrs"
+                        :input-value="data.selected"
+                        :disabled="data.disabled"
+                        @click:close="data.parent.selectItem(data.item)"
+                      >
+                        <v-avatar left>
+                          <img :src="'/img/' + data.item + '.svg'" />
+                        </v-avatar>
+                        {{ data.item }}
+                      </v-chip>
+                    </template>
+                  </v-autocomplete>
+                </v-container>
+              </v-form>
+            </v-card>
+          </v-container>
 
-        <mavon-editor
-          language="ja"
-          v-model="snipData.snipContents"
-          placeholder="カード内容を入力"
-          :toolbarsFlag="mobileFlg"
-          :subfield="mobileFlg"
-        />
-        <v-container v-if="editMode" mt-2>
-          <v-btn outlined color="purple lighten-2 " @click="update">UpdateSnippets</v-btn>
-        </v-container>
-        <v-container v-else mt-2>
-          <v-btn outlined color="purple lighten-2" @click="add">AddSnippets</v-btn>
-        </v-container>
-        <div v-html="parseContents"></div>
-      </v-flex>
-    </v-layout>
-  </v-container>
+          <mavon-editor
+            language="ja"
+            v-model="snipData.snipContents"
+            placeholder="カード内容を入力"
+            :toolbarsFlag="mobileFlg"
+            :subfield="mobileFlg"
+          />
+          <v-container v-if="editMode" mt-2>
+            <v-btn outlined color="purple lighten-2 " @click="update">UpdateSnippets</v-btn>
+          </v-container>
+          <v-container v-else mt-2>
+            <v-btn outlined color="purple lighten-2" @click="add">AddSnippets</v-btn>
+          </v-container>
+          <div v-html="parseContents"></div>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
