@@ -34,14 +34,28 @@ export default {
     CategoryMenu,
     Loading
   },
+  watch: {
+    async $route(to) {
+      this.$store.dispatch("changeLoading", true);
+      const apiUrl = this.$store.getters.getApiUrl + "api/";
+      const result = await axios.get(apiUrl + "snip/category?l=" + to.query.l);
+      this.$store.dispatch("changeLoading", false);
+      if (result.result !== "param error") {
+        this.snipData = result.data.Items;
+        this.userData = result.data.userData;
+      }
+    }
+  },
   // computed: {},
   created: async function() {
     try {
       const apiUrl = this.$store.getters.getApiUrl + "api/";
+      const categoryUrl = apiUrl + "category/categories";
+      const getCategories = await axios.get(categoryUrl);
+      getCategories.data.Items.map(v => this.menu.push(v.category));
       const result = await axios.get(apiUrl + "snip");
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
-      console.log(this.userData);
       this.$store.dispatch("changeLoading", false);
     } catch (err) {
       alert(JSON.stringify(err));
@@ -51,40 +65,7 @@ export default {
     //   loading: true,
     snipData: [],
     userData: {},
-    menu: [
-      {
-        name: "html",
-        img: "html-5.svg"
-      },
-      {
-        name: "Go",
-        img: "go.svg"
-      },
-      {
-        name: "Java",
-        img: "java.svg"
-      },
-      {
-        name: "JavaScript",
-        img: "javascript.svg"
-      },
-      {
-        name: "Node.JS",
-        img: "nodejs-icon.svg"
-      },
-      {
-        name: "PHP",
-        img: "php.svg"
-      },
-      {
-        name: "React",
-        img: "react.svg"
-      },
-      {
-        name: "Vue",
-        img: "vue.svg"
-      }
-    ]
+    menu: []
   })
   // methods: {}
 };

@@ -6,6 +6,42 @@ const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
 const utils = require("../utils/utils");
 
+router.get("/category", async function(req, res, next) {
+  try {
+    if (!req.query.l) {
+      res.json({
+        result: "param error"
+      });
+      return;
+    }
+    const params = {
+      TableName: tableName,
+      IndexName: "snipType-createdAt-index",
+      KeyConditionExpression: "#st = :st AND #ca >= :ca",
+      ExpressionAttributeNames: { "#st": "snipType", "#ca": "createdAt", "#sdt": "snipData", "#tag": "tags" },
+      // ExpressionAttributeNames: { "#st": "snipType", "#ca": "createdAt" },
+      ExpressionAttributeValues: { ":st": 0, ":ca": 0, ":sdt": req.query.l },
+      // ExpressionAttributeValues: { ":st": 0, ":ca": 0 }
+      FilterExpression: "contains (#sdt.#tag, :sdt)"
+    };
+    let result = await dynamo.query(params).promise();
+    const userParams = {
+      TableName: userTableName
+    };
+    const getUser = await dynamo.scan(userParams).promise();
+    let userData = {};
+    getUser.Items.map(function(i) {
+      userData[i.userId] = {
+        imgUrl: i.imgUrl,
+        displayName: i.displayName
+      };
+    });
+    result.userData = userData;
+    res.json(result);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 // all snip get
 router.get("/", async function(req, res, next) {
   try {

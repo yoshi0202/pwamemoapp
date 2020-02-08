@@ -38,10 +38,17 @@
       <v-layout align-center>
         <v-flex text-left body-2>{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
         <v-flex text-right>
-          <!-- <v-container class="caption">@{{data.userId}}</v-container> -->
-          <span class="caption">@{{ userData[data.userId].displayName }}</span>
-          <v-btn icon @click.stop="changePinStatus">
-            <v-icon size="23" :color="pinColor">mdi-pin</v-icon>
+          <v-btn
+            body-2
+            small
+            text
+            color="orange darken-2"
+            @click.stop="moveUserPage(data.userId)"
+            style="cursor:pointer"
+            >@{{ userData[data.userId].displayName }}</v-btn
+          >
+          <v-btn icon>
+            <v-icon size="23" :color="pinColor">mdi-menu-down</v-icon>
           </v-btn>
         </v-flex>
       </v-layout>
@@ -52,7 +59,8 @@
           <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
         </v-card-text>
         <v-container text-right>
-          <v-btn small outlined @click.stop="cardClick" color="#FDB436" style="cursor:pointer">Read More</v-btn>
+          <v-btn small text @click.stop="changePinStatus"><v-icon color="red">mdi-heart-outline</v-icon> </v-btn>
+          <v-btn small outlined @click.stop="cardClick" color="orange darken-2" style="cursor:pointer">Read More</v-btn>
         </v-container>
       </div>
     </v-expand-transition>
@@ -91,6 +99,9 @@ export default {
     },
     cardClick: function() {
       this.$router.push(this.data.userId + "/snip/" + this.data.snipId);
+    },
+    moveUserPage: function(id) {
+      this.$router.push("/user/" + id);
     }
   },
   components: {
@@ -100,7 +111,7 @@ export default {
 };
 </script>
 
-<style>
+<style scope>
 .snippy-card:focus::before {
   opacity: 0 !important;
 }
@@ -118,5 +129,8 @@ export default {
 }
 .border-bottom-none {
   border-bottom: 0 !important;
+}
+.v-btn {
+  text-transform: none !important;
 }
 </style>

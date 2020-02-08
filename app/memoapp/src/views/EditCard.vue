@@ -4,12 +4,45 @@
       <v-flex md12>
         <v-container fluid px-0>
           <v-card elevation="0">
-            <v-form>
+            <v-form v-model="valid" lazy-validation ref="form">
               <v-container pt-3 pb-0 px-10 fluid>
-                <v-text-field v-model="snipData.snipTitle" label="カードタイトル"></v-text-field>
+                <v-text-field
+                  v-model="snipData.snipTitle"
+                  label="スニペットタイトル"
+                  outlined
+                  dense
+                  :rules="[rules.required]"
+                ></v-text-field>
               </v-container>
               <v-container pt-2 px-10 fluid>
-                <input-tag v-model="snipData.snipTags" limit="5" placeholder="タグを入力(最大5つ)"></input-tag>
+                <v-autocomplete
+                  v-model="snipData.snipTags"
+                  :items="categories"
+                  outlined
+                  eager
+                  dense
+                  chips
+                  small-chips
+                  label="カテゴリ"
+                  multiple
+                  auto-select-first
+                  :rules="[rules.min, rules.required]"
+                >
+                  <template v-slot:selection="data">
+                    <v-chip
+                      :key="JSON.stringify(data.item)"
+                      v-bind="data.attrs"
+                      :input-value="data.selected"
+                      :disabled="data.disabled"
+                      @click:close="data.parent.selectItem(data.item)"
+                    >
+                      <v-avatar left>
+                        <img :src="'/img/' + data.item + '.svg'" />
+                      </v-avatar>
+                      {{ data.item }}
+                    </v-chip>
+                  </template>
+                </v-autocomplete>
               </v-container>
             </v-form>
           </v-card>
@@ -39,8 +72,10 @@ import axios from "axios";
 
 export default {
   name: "editCard",
+  watch: {},
   data: function() {
     return {
+      valid: true,
       snipData: {
         snipTitle: "",
         snipTags: [],
@@ -50,14 +85,27 @@ export default {
       mobileFlg: !this.$store.getters.getIsMobile,
       userId: this.$route.params.userId,
       snipId: this.$route.params.snipId,
-      editMode: false
+      editMode: false,
+      categories: [],
+      rules: {
+        required: v => !!v || "必須項目",
+        regex: v =>
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            v
+          ) || "E-mail must be valid",
+        min: v => (v && v.length <= 5) || "カテゴリは5個以内で選択してください。"
+      }
     };
   },
   mounted: async function() {
     try {
+      const apiUrl = this.$store.getters.getApiUrl + "api/";
+      const categoryUrl = apiUrl + "category/categories";
+      const getCategories = await axios.get(categoryUrl);
+      getCategories.data.Items.map(v => this.categories.push(v.category));
+      console.log(this.categories);
       if (this.userId && this.snipId) {
         this.editMode = true;
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
         const getResult = await axios.get(url);
         this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
