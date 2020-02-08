@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const aws = require("aws-sdk");
 const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
-const tableName = "snippy-snippets";
+const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
 const utils = require("../utils/utils");
 
@@ -42,7 +42,7 @@ router.get("/", async function(req, res, next) {
 router.get("/:userId/:snipId", async function(req, res, next) {
   try {
     const userId = req.params.userId;
-    const snipId = Number(req.params.snipId);
+    const snipId = req.params.snipId;
     const params = {
       TableName: tableName,
       ExpressionAttributeNames: { "#u": "userId", "#si": "snipId" },
@@ -69,13 +69,13 @@ router.get("/:userId/:snipId", async function(req, res, next) {
 // snip create
 router.post("/add", async function(req, res, next) {
   try {
-    console.log(req.body);
     const createdAt = Number(utils.getTimestamp());
     const params = {
       TableName: tableName,
       Item: {
         userId: req.body.userId,
-        snipId: Number(req.body.snipCounts),
+        // snipId: Number(req.body.snipCounts),
+        snipId: utils.createSnipId(),
         createdAt: createdAt,
         snipType: Number(req.body.snipType),
         snipData: {
@@ -86,24 +86,27 @@ router.post("/add", async function(req, res, next) {
       }
     };
     const result = await dynamo.put(params).promise();
-    const updateParams = {
-      TableName: userTableName,
-      Key: {
-        userId: req.body.userId
-      },
-      ExpressionAttributeNames: {
-        "#sc": "snipCounts"
-      },
-      ExpressionAttributeValues: {
-        ":sc": Number(req.body.snipCounts) + 1
-      },
-      UpdateExpression: "SET #sc = :sc"
-    };
-    await dynamo.update(updateParams).promise();
-    res.json(result);
+    // const updateParams = {
+    //   TableName: userTableName,
+    //   Key: {
+    //     userId: req.body.userId
+    //   },
+    //   ExpressionAttributeNames: {
+    //     "#sc": "snipCounts"
+    //   },
+    //   ExpressionAttributeValues: {
+    //     ":sc": Number(req.body.snipCounts) + 1
+    //   },
+    //   UpdateExpression: "SET #sc = :sc"
+    // };
+    // await dynamo.update(updateParams).promise();
+    // res.json(result);
+    res.json({
+      result: "ok"
+    });
   } catch (err) {
     console.log(err);
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -114,7 +117,7 @@ router.post("/update", async function(req, res, next) {
       TableName: tableName,
       Key: {
         userId: req.body.userId,
-        snipId: Number(req.body.snipId)
+        snipId: req.body.snipId
       },
       ExpressionAttributeNames: {
         "#s": "snipData",
@@ -145,7 +148,7 @@ router.delete("/destroy", async function(req, res, next) {
       TableName: tableName,
       Key: {
         userId: req.body.userId,
-        snipId: Number(req.body.snipId)
+        snipId: req.body.snipId
       }
     };
     const result = await dynamo.delete(deleteParams).promise();

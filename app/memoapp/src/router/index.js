@@ -13,8 +13,8 @@ Vue.use(VueRouter);
 
 const routes = [
   {
-    path: "/addCard",
-    name: "addCard",
+    path: "/addSnippets",
+    name: "addSnippets",
     component: EditCard
   },
   {

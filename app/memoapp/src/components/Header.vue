@@ -24,19 +24,34 @@
           <v-list>
             <v-list-item @click="myPage" style="cursor:pointer">
               <v-list-item-title
-                ><span class="caption"><v-icon medium>mdi-account</v-icon>マイページ</span></v-list-item-title
+                ><span class="caption"
+                  ><v-icon medium>mdi-account</v-icon>
+                  <span class="ml-3">
+                    マイページ
+                  </span>
+                </span></v-list-item-title
               >
             </v-list-item>
             <v-divider></v-divider>
             <v-list-item>
               <v-list-item-title @click="editPage" style="cursor:pointer"
-                ><span class="caption"><v-icon medium>mdi-tune</v-icon>設定</span></v-list-item-title
+                ><span class="caption"
+                  ><v-icon medium>mdi-tune</v-icon>
+                  <span class="ml-3">
+                    設定
+                  </span>
+                </span></v-list-item-title
               >
             </v-list-item>
             <v-divider></v-divider>
             <v-list-item @click="$emit('logout')" style="cursor:pointer">
               <v-list-item-title>
-                <span class="caption"><v-icon medium>mdi-logout</v-icon>ログアウト</span></v-list-item-title
+                <span class="caption"
+                  ><v-icon medium>mdi-logout</v-icon>
+                  <span class="ml-3">
+                    ログアウト
+                  </span>
+                </span></v-list-item-title
               >
             </v-list-item>
           </v-list>

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const aws = require("aws-sdk");
-const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
+const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", convertEmptyValues: true });
 const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth").OAuth2Strategy;
 const GitHubStrategy = require("passport-github").Strategy;
@@ -27,9 +27,10 @@ passport.use(
       clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
       callbackURL: apiBaseUrl + "/auth/google/callback"
     },
-    function(accessToken, refreshToken, profile, done) {
-      if (isOauthUserRegisterd(profile.id, "google")) {
-        oauthUserUpdate(profile, profile.photos[0].value);
+    async function(accessToken, refreshToken, profile, done) {
+      const isUserRegisterd = await isOauthUserRegisterd(profile.id, "google");
+      if (isUserRegisterd) {
+        oauthUserUpdate(isUserRegisterd);
       } else {
         oauthUserCreate(profile, profile.photos[0].value, "google");
       }
@@ -49,9 +50,10 @@ passport.use(
       clientSecret: process.env.GITHUB_OAUTH_CLIENT_SECRET,
       callbackURL: apiBaseUrl + "/auth/github/callback"
     },
-    function(accessToken, refreshToken, profile, done) {
-      if (isOauthUserRegisterd(profile.id, "github")) {
-        oauthUserUpdate(profile, profile.photos[0].value);
+    async function(accessToken, refreshToken, profile, done) {
+      const isUserRegisterd = await isOauthUserRegisterd(profile.id, "github");
+      if (isUserRegisterd) {
+        oauthUserUpdate(isUserRegisterd);
       } else {
         oauthUserCreate(profile, profile.photos[0].value, "github");
       }
@@ -95,7 +97,14 @@ router.post("/signUp", async function(req, res, next) {
         password: bcrypt.hashSync(req.body.password, 10),
         loginToken: utils.getRandomToken(32),
         loginType: "email",
-        snipCounts: 0
+        snipCounts: 0,
+        displayName: "No Name",
+        description: "",
+        github: "",
+        qiita: "",
+        twitter: "",
+        url: "",
+        imgUrl: "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
       }
     };
     await dynamo.put(params).promise();
@@ -105,11 +114,11 @@ router.post("/signUp", async function(req, res, next) {
       email: req.body.email,
       loginToken: utils.getRandomToken(32),
       loginType: "email",
-      snipCounts: 0
+      snipCounts: 0,
+      imgUrl: "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
     });
   } catch (err) {
-    console.log(JSON.stringify(err));
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -168,8 +177,7 @@ router.post("/login", async function(req, res, next) {
     };
     dynamo.update(updateParams).promise();
   } catch (err) {
-    console.log(err);
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -227,13 +235,13 @@ router.get(
 router.post("/github/signin", async function(req, res, next) {
   const params = {
     TableName: userTableName,
-    FilterExpression: "#u = :u AND #l = :l",
+    FilterExpression: "#o = :o AND #l = :l",
     ExpressionAttributeNames: {
-      "#u": "userId",
+      "#o": "oauthId",
       "#l": "loginType"
     },
     ExpressionAttributeValues: {
-      ":u": req.body.userId,
+      ":o": req.body.userId,
       ":l": req.body.loginType
     }
   };
@@ -255,13 +263,13 @@ router.get(
 router.post("/google/signin", async function(req, res, next) {
   const params = {
     TableName: userTableName,
-    FilterExpression: "#u = :u AND #l = :l",
+    FilterExpression: "#o = :o AND #l = :l",
     ExpressionAttributeNames: {
-      "#u": "userId",
+      "#o": "oauthId",
       "#l": "loginType"
     },
     ExpressionAttributeValues: {
-      ":u": req.body.userId,
+      ":o": req.body.userId,
       ":l": req.body.loginType
     }
   };
@@ -295,8 +303,9 @@ router.get("/qiita/callback", async function(req, res, next) {
     },
     data: {}
   });
-  if (await isOauthUserRegisterd(user.data.id, "qiita")) {
-    oauthUserUpdate(user.data, user.data.profile_image_url);
+  const isUserRegisterd = await isOauthUserRegisterd(user.data.id, "qiita");
+  if (isUserRegisterd) {
+    oauthUserUpdate(isUserRegisterd);
   } else {
     oauthUserCreate(user.data, user.data.profile_image_url, "qiita");
   }
@@ -305,13 +314,13 @@ router.get("/qiita/callback", async function(req, res, next) {
 router.post("/qiita/signin", async function(req, res, next) {
   const params = {
     TableName: userTableName,
-    FilterExpression: "#u = :u AND #l = :l",
+    FilterExpression: "#o = :o AND #l = :l",
     ExpressionAttributeNames: {
-      "#u": "userId",
+      "#o": "oauthId",
       "#l": "loginType"
     },
     ExpressionAttributeValues: {
-      ":u": req.body.userId,
+      ":o": req.body.userId,
       ":l": req.body.loginType
     }
   };
@@ -324,13 +333,13 @@ module.exports = router;
 async function isOauthUserRegisterd(userId, provider) {
   const params = {
     TableName: userTableName,
-    FilterExpression: "#u = :u AND #l = :l",
+    FilterExpression: "#o = :o AND #l = :l",
     ExpressionAttributeNames: {
-      "#u": "userId",
+      "#o": "oauthId",
       "#l": "loginType"
     },
     ExpressionAttributeValues: {
-      ":u": userId,
+      ":o": userId,
       ":l": provider
     }
   };
@@ -340,42 +349,52 @@ async function isOauthUserRegisterd(userId, provider) {
     return false;
   } else {
     console.log("user is existed");
-    return true;
+    return result;
   }
 }
 
 function oauthUserCreate(user, img, provider) {
-  console.log("create");
-  let params = {
-    TableName: userTableName,
-    Item: {
-      userId: user.id,
-      loginToken: utils.getRandomToken(32),
-      loginType: provider,
-      snipCounts: 0,
-      imgUrl: img ? img : "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
-    }
-  };
-  console.log(params);
-  dynamo.put(params).promise();
+  try {
+    let params = {
+      TableName: userTableName,
+      Item: {
+        userId: utils.createDefaultUserId(),
+        oauthId: user.id,
+        loginToken: utils.getRandomToken(32),
+        loginType: provider,
+        snipCounts: 0,
+        displayName: "No Name",
+        description: "",
+        github: "",
+        qiita: "",
+        twitter: "",
+        url: "",
+        imgUrl: img ? img : "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
+      }
+    };
+    dynamo.put(params).promise();
+  } catch (err) {
+    console.log(err);
+  }
 }
 
-function oauthUserUpdate(user, img) {
-  console.log("update");
-  const updateParams = {
-    TableName: userTableName,
-    Key: {
-      userId: user.id
-    },
-    ExpressionAttributeNames: {
-      "#l": "loginToken",
-      "#iu": "imgUrl"
-    },
-    ExpressionAttributeValues: {
-      ":l": utils.getRandomToken(32),
-      ":iu": img ? img : "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
-    },
-    UpdateExpression: "SET #l = :l, #iu = :iu"
-  };
-  dynamo.update(updateParams).promise();
+function oauthUserUpdate(dynamoResult) {
+  try {
+    const updateParams = {
+      TableName: userTableName,
+      Key: {
+        userId: dynamoResult.Items[0].userId
+      },
+      ExpressionAttributeNames: {
+        "#l": "loginToken"
+      },
+      ExpressionAttributeValues: {
+        ":l": utils.getRandomToken(32)
+      },
+      UpdateExpression: "SET #l = :l"
+    };
+    dynamo.update(updateParams).promise();
+  } catch (err) {
+    console.log(err);
+  }
 }

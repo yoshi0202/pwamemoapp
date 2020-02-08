@@ -19,8 +19,17 @@ function createDefaultUserId() {
     .map(n => S[n % S.length])
     .join("");
 }
+function createSnipId() {
+  const crypto = require("crypto");
+  const S = "abcdefghijklmnopqrstuvwxyz0123456789";
+  const N = 10;
+  return Array.from(crypto.randomFillSync(new Uint8Array(N)))
+    .map(n => S[n % S.length])
+    .join("");
+}
 module.exports = {
   getTimestamp: getTimestamp,
   getRandomToken: getRandomToken,
-  createDefaultUserId: createDefaultUserId
+  createDefaultUserId: createDefaultUserId,
+  createSnipId: createSnipId
 };
