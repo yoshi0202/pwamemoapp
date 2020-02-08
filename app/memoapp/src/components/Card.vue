@@ -6,7 +6,7 @@
     @mouseover="elevation = 10"
     @mouseleave="elevation = 0"
     active-class
-    @click="show = !show"
+    @click="changeMenuIconStatus"
   >
     <v-list-item>
       <v-list-item-avatar size="40" color="grey" class="mr-0">
@@ -42,13 +42,12 @@
             body-2
             small
             text
-            color="orange darken-2"
+            color="purple lighten-2"
             @click.stop="moveUserPage(data.userId)"
             style="cursor:pointer"
-            >@{{ userData[data.userId].displayName }}</v-btn
-          >
+          >@{{ userData[data.userId].displayName }}</v-btn>
           <v-btn icon>
-            <v-icon size="23" :color="pinColor">mdi-menu-down</v-icon>
+            <v-icon size="23" :color="pinColor">{{ menuIcon }}</v-icon>
           </v-btn>
         </v-flex>
       </v-layout>
@@ -59,8 +58,16 @@
           <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
         </v-card-text>
         <v-container text-right>
-          <v-btn small text @click.stop="changePinStatus"><v-icon color="red">mdi-heart-outline</v-icon> </v-btn>
-          <v-btn small outlined @click.stop="cardClick" color="orange darken-2" style="cursor:pointer">Read More</v-btn>
+          <v-btn small text @click.stop="changePinStatus">
+            <v-icon color="red">mdi-heart-outline</v-icon>
+          </v-btn>
+          <v-btn
+            small
+            outlined
+            @click.stop="cardClick"
+            color="purple lighten-2"
+            style="cursor:pointer"
+          >Read More</v-btn>
         </v-container>
       </div>
     </v-expand-transition>
@@ -74,14 +81,13 @@ import Mixin from "../mixin/mixin";
 
 export default {
   Name: "Card",
-  created: function() {
-    console.log(this.userData);
-  },
+  created: function() {},
   data: () => ({
     elevation: "0",
     pinColor: "grey",
     retain: false,
-    show: false
+    show: false,
+    menuIcon: "mdi-menu-down"
   }),
   props: {
     data: Object,
@@ -90,6 +96,10 @@ export default {
   methods: {
     changePinStatus: function() {
       this.pinColor = this.pinColor === "orange lighten-2" ? "grey" : "orange lighten-2";
+    },
+    changeMenuIconStatus: function() {
+      this.menuIcon = this.menuIcon === "mdi-menu-down" ? "mdi-menu-up" : "mdi-menu-down";
+      this.show = !this.show;
     },
     parseMd: function(sentence) {
       return marked(sentence).replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "");

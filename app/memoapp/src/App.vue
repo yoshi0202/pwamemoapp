@@ -1,11 +1,20 @@
 <template>
   <v-app>
     <Header @logout="logout" />
-    <v-content class="grey lighten-3">
-      <router-view />
-    </v-content>
+    <!-- <v-content class="grey lighten-3 pa-0 ma-0"> -->
+    <router-view />
+    <!-- </v-content> -->
     <NavigationDrawer @logout="logout" />
-    <v-btn v-if="$route.path === '/'" color="#FDB436" right bottom fixed fab dark to="/addSnippets">
+    <v-btn
+      v-if="$route.path === '/'"
+      color="purple lighten-2"
+      right
+      bottom
+      fixed
+      fab
+      dark
+      to="/addSnippets"
+    >
       <v-icon dark>mdi-code-tags</v-icon>
     </v-btn>
   </v-app>
@@ -39,6 +48,7 @@ export default {
         }
       });
       this.$store.dispatch("deleteLoginStatus");
+      this.$store.dispatch("changeLoading", false);
       this.$router.push("/");
     }
   }

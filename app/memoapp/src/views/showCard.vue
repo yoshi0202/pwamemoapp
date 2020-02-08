@@ -1,61 +1,78 @@
 <template>
-  <v-container fluid pa-0 ma-0>
-    <v-layout>
-      <v-flex md8 offset-md2 text-center>
-        <Loading />
-        <v-container>
-          <v-layout wrap align-center>
-            <v-flex md12 xs12>
-              <v-container text-left title pa-0 style="word-break:break-all">{{ snipData.snipData.title }}</v-container>
-            </v-flex>
-            <v-flex md12 xs12>
-              <v-container text-right align-center pa-0>
-                <v-row class="align-center" style="height:100px">
-                  <v-col cols="8" class="text-left align-center">
-                    <v-avatar>
-                      <img @click="toUserPage" :src="userData" alt="avator" style="cursor: pointer;" />
-                    </v-avatar>
-                    <span class="px-4 subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col cols="4">
-                    <v-icon
-                      v-if="ownSnip"
-                      class="mx-3"
-                      @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
-                      >fas fa-edit</v-icon
-                    >
-                    <v-icon v-if="ownSnip" class="mx-3" @click="deleteCard">far fa-trash-alt</v-icon>
-                  </v-col>
-                </v-row>
-              </v-container>
-            </v-flex>
-          </v-layout>
-          <v-divider></v-divider>
-        </v-container>
-        <v-container text-left>
-          <v-layout>
-            <v-flex>
-              <v-chip small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text" color="white">
-                <v-avatar left>
-                  <img :src="'/img/' + tag + '.svg'" />
-                </v-avatar>
-                {{ tag }}
-              </v-chip>
-            </v-flex>
-          </v-layout>
-        </v-container>
-        <v-container>
-          <v-card>
-            <v-container v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
-          </v-card>
-        </v-container>
-        <v-container>
-          <v-divider></v-divider>
-        </v-container>
-      </v-flex>
-    </v-layout>
-  </v-container>
+  <v-content class="grey lighten-3">
+    <v-container fluid pa-0 ma-0>
+      <v-layout>
+        <v-flex md8 offset-md2 text-center>
+          <Loading />
+          <v-container>
+            <v-layout wrap align-center>
+              <v-flex md12 xs12>
+                <v-container
+                  text-left
+                  title
+                  pa-0
+                  style="word-break:break-all"
+                >{{ snipData.snipData.title }}</v-container>
+              </v-flex>
+              <v-flex md12 xs12>
+                <v-container text-right align-center pa-0>
+                  <v-row class="align-center" style="height:100px">
+                    <v-col cols="8" class="text-left align-center">
+                      <v-avatar>
+                        <img
+                          @click="toUserPage"
+                          :src="userData"
+                          alt="avator"
+                          style="cursor: pointer;"
+                        />
+                      </v-avatar>
+                      <span class="px-4 subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
+                    </v-col>
+                    <v-spacer></v-spacer>
+                    <v-col cols="4">
+                      <v-icon
+                        v-if="ownSnip"
+                        class="mx-3"
+                        @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
+                      >fas fa-edit</v-icon>
+                      <v-icon v-if="ownSnip" class="mx-3" @click="deleteCard">far fa-trash-alt</v-icon>
+                    </v-col>
+                  </v-row>
+                </v-container>
+              </v-flex>
+            </v-layout>
+            <v-divider></v-divider>
+          </v-container>
+          <v-container text-left>
+            <v-layout>
+              <v-flex>
+                <v-chip
+                  small
+                  v-for="tag in snipData.snipData.tags"
+                  :key="tag"
+                  class="mx-1 black--text"
+                  color="white"
+                >
+                  <v-avatar left>
+                    <img :src="'/img/' + tag + '.svg'" />
+                  </v-avatar>
+                  {{ tag }}
+                </v-chip>
+              </v-flex>
+            </v-layout>
+          </v-container>
+          <v-container>
+            <v-card>
+              <v-container v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
+            </v-card>
+          </v-container>
+          <v-container>
+            <v-divider></v-divider>
+          </v-container>
+        </v-flex>
+      </v-layout>
+    </v-container>
+  </v-content>
 </template>
 
 <script>

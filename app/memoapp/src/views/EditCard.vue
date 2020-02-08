@@ -56,10 +56,10 @@
           :subfield="mobileFlg"
         />
         <v-container v-if="editMode" mt-2>
-          <v-btn @click="update">UpdateSnippets</v-btn>
+          <v-btn outlined color="purple lighten-2 " @click="update">UpdateSnippets</v-btn>
         </v-container>
         <v-container v-else mt-2>
-          <v-btn @click="add">AddSnippets</v-btn>
+          <v-btn outlined color="purple lighten-2" @click="add">AddSnippets</v-btn>
         </v-container>
         <div v-html="parseContents"></div>
       </v-flex>

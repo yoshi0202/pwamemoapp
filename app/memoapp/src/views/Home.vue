@@ -1,23 +1,31 @@
 <template>
-  <v-container>
-    <v-row justify="center" no-gutters>
-      <v-col xs="12" sm="12" md="12" lg="12" xl="8">
-        <v-row justify="center" no-gutters>
-          <v-col v-if="!$store.getters.getIsMobile" cols="3">
-            <CategoryMenu :menu="menu" />
-          </v-col>
-          <v-col xs="12" sm="12" md="9" lg="9" xl="9">
-            <v-container pa-0 text-center>
-              <Loading />
-            </v-container>
-            <v-card tile outlined v-for="sd in snipData" :key="sd.createdAt" class="border-bottom-none">
-              <Card :data="sd" :userData="userData" />
-            </v-card>
-          </v-col>
-        </v-row>
-      </v-col>
-    </v-row>
-  </v-container>
+  <v-content class="grey lighten-3">
+    <v-container>
+      <v-row justify="center" no-gutters>
+        <v-col xs="12" sm="12" md="12" lg="12" xl="8">
+          <v-row justify="center" no-gutters>
+            <v-col v-if="!$store.getters.getIsMobile" cols="3">
+              <CategoryMenu :menu="menu" />
+            </v-col>
+            <v-col xs="12" sm="12" md="9" lg="9" xl="9">
+              <v-container pa-0 text-center>
+                <Loading />
+              </v-container>
+              <v-card
+                tile
+                outlined
+                v-for="sd in snipData"
+                :key="sd.createdAt"
+                class="border-bottom-none"
+              >
+                <Card :data="sd" :userData="userData" />
+              </v-card>
+            </v-col>
+          </v-row>
+        </v-col>
+      </v-row>
+    </v-container>
+  </v-content>
 </template>
 
 <script>
@@ -36,13 +44,15 @@ export default {
   },
   watch: {
     async $route(to) {
-      this.$store.dispatch("changeLoading", true);
-      const apiUrl = this.$store.getters.getApiUrl + "api/";
-      const result = await axios.get(apiUrl + "snip/category?l=" + to.query.l);
-      this.$store.dispatch("changeLoading", false);
-      if (result.result !== "param error") {
-        this.snipData = result.data.Items;
-        this.userData = result.data.userData;
+      if (to.query.l) {
+        this.$store.dispatch("changeLoading", true);
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
+        const result = await axios.get(apiUrl + "snip/category?l=" + to.query.l);
+        this.$store.dispatch("changeLoading", false);
+        if (result.result !== "param error") {
+          this.snipData = result.data.Items;
+          this.userData = result.data.userData;
+        }
       }
     }
   },
