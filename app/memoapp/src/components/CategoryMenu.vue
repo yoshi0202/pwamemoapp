@@ -8,10 +8,10 @@
         <v-list-item-group v-model="item" color="primary">
           <v-list-item v-for="(m, i) in menu" :key="i">
             <v-list-item-icon>
-              <img :src="'img/' + m.img" style="max-width:30px;max-height:auto" />
+              <img :src="'img/' + m + '.svg'" style="max-width:30px;max-height:auto" />
             </v-list-item-icon>
             <v-list-item-content>
-              <v-list-item-title v-text="m.name"></v-list-item-title>
+              <v-list-item-title v-text="m"></v-list-item-title>
             </v-list-item-content>
           </v-list-item>
         </v-list-item-group>
@@ -35,7 +35,6 @@ export default {
     menu: Array
   },
   component: {},
-  created: function() {},
   methods: {}
 };
 </script>

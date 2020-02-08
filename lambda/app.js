@@ -10,6 +10,7 @@ const passport = require("passport");
 var snipRouter = require("./routes/snip");
 var userRouter = require("./routes/user");
 var authRouter = require("./routes/auth");
+var categoryRouter = require("./routes/category");
 
 var app = express();
 
@@ -32,6 +33,7 @@ app.use(passport.initialize());
 
 app.use("/api/snip", snipRouter);
 app.use("/api/user", userRouter);
+app.use("/api/category", categoryRouter);
 app.use("/auth", authRouter);
 
 app.use(function(req, res, next) {
