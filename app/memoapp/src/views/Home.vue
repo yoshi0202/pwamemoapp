@@ -34,6 +34,18 @@ export default {
     CategoryMenu,
     Loading
   },
+  watch: {
+    async $route(to) {
+      this.$store.dispatch("changeLoading", true);
+      const apiUrl = this.$store.getters.getApiUrl + "api/";
+      const result = await axios.get(apiUrl + "snip/category?l=" + to.query.l);
+      this.$store.dispatch("changeLoading", false);
+      if (result.result !== "param error") {
+        this.snipData = result.data.Items;
+        this.userData = result.data.userData;
+      }
+    }
+  },
   // computed: {},
   created: async function() {
     try {
@@ -44,7 +56,6 @@ export default {
       const result = await axios.get(apiUrl + "snip");
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
-      console.log(this.userData);
       this.$store.dispatch("changeLoading", false);
     } catch (err) {
       alert(JSON.stringify(err));
