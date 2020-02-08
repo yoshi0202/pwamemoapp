@@ -64,7 +64,8 @@ export default {
           userId: result.data.userId,
           email: result.data.email,
           loginType: result.data.loginType,
-          snipCounts: result.data.snipCounts
+          snipCounts: result.data.snipCounts,
+          imgUrl: result.data.imgUrl
         });
         this.$router.push("/");
       } catch (err) {
