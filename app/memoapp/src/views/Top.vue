@@ -10,13 +10,19 @@
         </template>
       </v-img>
     </v-content>
-    <v-content class="white">
+    <v-content class="white py-5">
       <v-layout class="justify-center" wrap>
+        <v-container py-0 title>Title</v-container>
         <v-flex xs12 sm12 md12 lg4 xl4>
-          <v-container text-center>aiueo</v-container>
+          <v-container
+            text-center
+          >テテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキスト</v-container>
         </v-flex>
         <v-flex xs12 sm12 md12 lg4 xl4>
-          <v-container text-center>aiueo</v-container>
+          <v-container py-0 title>Title</v-container>
+          <v-container
+            text-center
+          >テテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキストテキストテキストテキストテキストテキストテキストテキストテキストテキストテキストキスト</v-container>
         </v-flex>
         <v-flex xs12 sm12 md12 lg4 xl4>
           <v-container text-center>aiueo</v-container>

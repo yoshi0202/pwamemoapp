@@ -11,12 +11,18 @@
                   <v-flex xs12 md6>
                     <v-form ref="form">
                       <v-container pa-10 ma-0 fluid>
-                        <v-text-field v-model="email" label="Email"></v-text-field>
-                        <v-text-field v-model="password" label="Password" type="password"></v-text-field>
+                        <v-text-field v-model="email" outlined dense label="Email"></v-text-field>
+                        <v-text-field
+                          v-model="password"
+                          outlined
+                          dense
+                          label="Password"
+                          type="password"
+                        ></v-text-field>
                       </v-container>
                       <v-layout px-10>
                         <v-flex md-6>
-                          <v-btn dark large color="purple lighten-2" @click="login">Login</v-btn>
+                          <v-btn dark large outlined color="#C7B967" @click="login">Login</v-btn>
                         </v-flex>
                       </v-layout>
                     </v-form>
@@ -119,7 +125,8 @@ export default {
           snipCounts: result.data.snipCounts,
           status: true,
           loginToken: result.data.loginToken,
-          imgUrl: result.data.imgUrl
+          imgUrl: result.data.imgUrl,
+          displayName: result.data.displayName
         });
         this.$router.push("/");
       } catch (err) {

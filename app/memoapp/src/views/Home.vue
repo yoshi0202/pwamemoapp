@@ -42,27 +42,31 @@ export default {
     CategoryMenu,
     Loading
   },
+  props: {
+    menu: Array
+  },
   watch: {
     async $route(to) {
+      const apiUrl = this.$store.getters.getApiUrl + "api/";
+      this.$store.dispatch("changeLoading", true);
+      let result = "";
       if (to.query.l) {
-        this.$store.dispatch("changeLoading", true);
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
-        const result = await axios.get(apiUrl + "snip/category?l=" + to.query.l);
-        this.$store.dispatch("changeLoading", false);
-        if (result.result !== "param error") {
-          this.snipData = result.data.Items;
-          this.userData = result.data.userData;
-        }
+        result = await axios.get(apiUrl + "snip/category?l=" + to.query.l);
+      } else {
+        result = await axios.get(apiUrl + "snip");
       }
+      this.snipData = result.data.Items;
+      this.userData = result.data.userData;
+      this.$store.dispatch("changeLoading", false);
     }
   },
   // computed: {},
   created: async function() {
     try {
       const apiUrl = this.$store.getters.getApiUrl + "api/";
-      const categoryUrl = apiUrl + "category/categories";
-      const getCategories = await axios.get(categoryUrl);
-      getCategories.data.Items.map(v => this.menu.push(v.category));
+      // const categoryUrl = apiUrl + "category/categories";
+      // const getCategories = await axios.get(categoryUrl);
+      // getCategories.data.Items.map(v => this.menu.push(v.category));
       const result = await axios.get(apiUrl + "snip");
       this.snipData = result.data.Items;
       this.userData = result.data.userData;

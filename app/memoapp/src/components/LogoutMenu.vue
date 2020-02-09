@@ -1,8 +1,8 @@
 <template>
-  <v-container pa-0>
+  <v-container pa-0 text-center>
     <v-list-item v-for="li in logoutItems" :key="li">
       <v-list-item-icon>
-        <v-icon>{{ li.icon }}</v-icon>
+        <v-icon class="px-2">{{ li.icon }}</v-icon>
       </v-list-item-icon>
 
       <v-list-item-content>

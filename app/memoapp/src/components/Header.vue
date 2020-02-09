@@ -1,11 +1,27 @@
 <template>
   <v-app-bar app dark flat color="black" class="snippy-header">
-    <v-btn to="/" text color="purple lighten-2">
+    <v-btn to="/" text small color="purple lighten-2">
       <div class="d-flex align-center title">Snippy</div>
     </v-btn>
-    <v-btn to="/top" text color="purple lighten-2">
-      <div class="d-flex align-center caption">Top</div>
-    </v-btn>
+    <v-menu offset-y>
+      <template v-slot:activator="{ on }">
+        <v-btn small dark icon v-on="on">
+          <v-icon color="#C7B967">mdi-menu-down</v-icon>
+        </v-btn>
+      </template>
+
+      <v-list>
+        <v-list-item to="/top" style="cursor:pointer">
+          <v-list-item-title>
+            <span class="caption">
+              <v-icon medium>mdi-information-outline</v-icon>
+              <span class="ml-3">About</span>
+            </span>
+          </v-list-item-title>
+        </v-list-item>
+        <!-- <v-divider></v-divider> -->
+      </v-list>
+    </v-menu>
 
     <v-spacer></v-spacer>
 
@@ -21,7 +37,7 @@
         </v-avatar>
       </span>
       <span v-else>
-        <v-icon color="purple lighten-2" @click="$store.dispatch('toggleDrawer')">mdi-dots-vertical</v-icon>
+        <v-icon color="#C7B967" @click="$store.dispatch('toggleDrawer')">mdi-dots-vertical</v-icon>
       </span>
     </span>
     <span v-else>
@@ -32,7 +48,7 @@
         <v-menu bottom left>
           <template v-slot:activator="{ on }">
             <v-btn dark icon v-on="on">
-              <v-icon x-large color="purple lighten-2">mdi-menu-down</v-icon>
+              <v-icon x-large color="#C7B967">mdi-menu-down</v-icon>
             </v-btn>
           </template>
 

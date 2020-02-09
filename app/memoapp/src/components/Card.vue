@@ -59,7 +59,7 @@
         </v-card-text>
         <v-container text-right>
           <v-btn small text @click.stop="changePinStatus">
-            <v-icon color="#C7B967">mdi-heart-outline</v-icon>
+            <v-icon color="grey">mdi-heart-outline</v-icon>
           </v-btn>
           <v-btn
             small
