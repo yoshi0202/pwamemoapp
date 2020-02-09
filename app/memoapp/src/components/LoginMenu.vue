@@ -1,8 +1,8 @@
 <template>
-  <v-container pa-0>
+  <v-container pa-0 text-center>
     <v-list-item v-for="li in loginItems" :key="li.title">
       <v-list-item-icon>
-        <v-icon>{{ li.icon }}</v-icon>
+        <v-icon class="px-2">{{ li.icon }}</v-icon>
       </v-list-item-icon>
 
       <v-list-item-content>
@@ -17,8 +17,8 @@ export default {
   Name: "NavigationDrawer",
   data: () => ({
     loginItems: [
-      { title: "My Page", icon: "mdi-account", action: "mypage" },
-      { title: "Setting", icon: "mdi-tune", action: "setting" },
+      { title: "Profile", icon: "mdi-account", action: "mypage" },
+      { title: "Settings", icon: "mdi-tune", action: "setting" },
       { title: "Logout", icon: "mdi-logout", action: "logout" }
     ]
   }),

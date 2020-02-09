@@ -4,7 +4,14 @@
       <v-container fluid pa-0 ma-0>
         <v-list-item-content>
           <v-layout>
-            <v-list-item-title>Menu</v-list-item-title>
+            <v-list-item-title>
+              <v-avatar v-if="$store.getters.getLoginStatus">
+                <img :src="$store.getters.getImgUrl" alt="avator" style="cursor:pointer" />
+              </v-avatar>
+              <span class="caption">
+                <span class="ma-5">{{$store.getters.getDisplayName}}</span>
+              </span>
+            </v-list-item-title>
             <v-layout text-right>
               <v-icon @click="$store.dispatch('toggleDrawer')">mdi-close</v-icon>
             </v-layout>
@@ -22,15 +29,21 @@
         <LogoutMenu />
       </div>
     </v-list>
+    <v-divider></v-divider>
+    <CategoryMenu :menu="menu" />
   </v-navigation-drawer>
 </template>
 
 <script>
 import LoginMenu from "./LoginMenu";
 import LogoutMenu from "./LogoutMenu";
+import CategoryMenu from "./CategoryMenu";
 
 export default {
   Name: "NavigationDrawer",
+  props: {
+    menu: Array
+  },
   data: () => ({}),
   created: function() {},
   methods: {
@@ -40,7 +53,8 @@ export default {
   },
   components: {
     LoginMenu,
-    LogoutMenu
+    LogoutMenu,
+    CategoryMenu
   }
 };
 </script>

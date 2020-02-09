@@ -6,11 +6,11 @@
           <v-card outlined height="100%">
             <v-list-item style="background-color:#000000;" dark>
               <v-card-title class="py-3">
-                <h1 class="font-weight-bold headline basil--text">User Settings</h1>
+                <h1 class="font-weight-bold display-1 white--text">User Settings</h1>
               </v-card-title>
             </v-list-item>
             <v-container pa-5>
-              <v-container>
+              <v-container pa-0>
                 <v-layout wrap>
                   <v-flex xs12 sm12 md12 lg5 xl4>
                     <v-container fluid text-center>
@@ -82,8 +82,8 @@
                       <v-btn
                         outlined
                         @click="updateUser"
-                        color="purple lighten-2"
-                        style="bottom:20px; right:32px; position:absolute"
+                        color="#C7B967"
+                        style="bottom:20px; right:20px; position:absolute"
                       >Profile Update</v-btn>
                     </v-container>
                   </v-flex>

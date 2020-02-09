@@ -28,6 +28,9 @@ export default new Vuex.Store({
     getLogin(state) {
       return state.login;
     },
+    getDisplayName(state) {
+      return state.login.displayName;
+    },
     getLoginStatus(state) {
       return state.login.status;
     },
