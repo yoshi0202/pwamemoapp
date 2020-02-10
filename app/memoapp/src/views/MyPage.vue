@@ -108,7 +108,6 @@ export default {
     const result = await axios.get(apiUrl + "user/" + userId);
     this.userData = result.data;
     this.$store.dispatch("changeLoading", false);
-    console.log(this.userData);
   },
   data: function() {
     return {

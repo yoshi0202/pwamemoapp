@@ -27,9 +27,15 @@ function createSnipId() {
     .map(n => S[n % S.length])
     .join("");
 }
+function createErrorObj(status, err) {
+  const error = new Error(err);
+  error.status = status;
+  return error;
+}
 module.exports = {
   getTimestamp: getTimestamp,
   getRandomToken: getRandomToken,
   createDefaultUserId: createDefaultUserId,
-  createSnipId: createSnipId
+  createSnipId: createSnipId,
+  createErrorObj: createErrorObj
 };

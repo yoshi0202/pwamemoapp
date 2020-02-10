@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const aws = require("aws-sdk");
 const crypto = require("crypto");
-const bcrypt = require("bcrypt");
+const utils = require("../utils/utils");
 const multer = require("multer");
 let multerS3 = require("multer-s3");
 const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", convertEmptyValues: true });
@@ -70,11 +70,9 @@ router.get("/:userId", async function(req, res, next) {
       userData: userData.Items[0]
     };
     delete result.userData.password;
-    console.log(result);
     res.json(result);
   } catch (err) {
-    console.log(err);
-    res.json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -86,87 +84,7 @@ router.post("/:userId/profile/update", async function(req, res, next) {
       result: "ok"
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json({
-      result: err
-    });
-  }
-});
-router.post("/:user/cards/:cardid/update", async function(req, res, next) {
-  try {
-    var updateParams = {
-      TableName: tableName,
-      Key: {
-        user: Number(req.params.user),
-        cardId: Number(req.params.cardid)
-      },
-      ExpressionAttributeNames: {
-        "#c": "cardData"
-      },
-      ExpressionAttributeValues: {
-        ":c": {
-          contents: req.body.contents,
-          tags: req.body.tags,
-          title: req.body.title
-        }
-      },
-      UpdateExpression: "SET #c = :c"
-    };
-    const result = await dynamo.update(updateParams).promise();
-    res.json(result);
-  } catch (err) {
-    console.log(err);
-    res.json(err);
-  }
-});
-
-router.delete("/:user/cards/:cardid/destroy", async function(req, res, next) {
-  try {
-    var updateParams = {
-      TableName: tableName,
-      Key: {
-        user: Number(req.params.user),
-        cardId: Number(req.params.cardid)
-      }
-    };
-    const result = await dynamo.delete(updateParams).promise();
-    res.json(result);
-  } catch (err) {
-    console.log(err);
-    res.json(err);
-  }
-});
-router.post("/:id/cards/add", async function(req, res, next) {
-  try {
-    const user = Number(req.params.id);
-    const createdAt = Number(getTimestamp());
-    var params = {
-      TableName: tableName,
-      ExpressionAttributeNames: { "#u": "user", "#ci": "cardId" },
-      ExpressionAttributeValues: { ":user": user, ":cardId": 0 },
-      KeyConditionExpression: "#u = :user AND #ci >= :cardId"
-      // ScanIndexForward: false,
-    };
-    const userCardData = await dynamo.query(params).promise();
-    params = {
-      TableName: tableName,
-      Item: {
-        user: user,
-        cardId: Number(userCardData.Count),
-        createdAt: createdAt,
-        cardType: Number(req.body.cardType),
-        cardData: {
-          title: req.body.title,
-          subTitle: req.body.subTitle,
-          contents: req.body.contents,
-          tags: req.body.cardTags
-        }
-      }
-    };
-    const result = await dynamo.put(params).promise();
-    res.json(result);
-  } catch (err) {
-    res.json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -192,9 +110,7 @@ router.post("/:userId/changeImg", upload.single("avatar"), async function(req, r
       result: "ok"
     });
   } catch (err) {
-    res.json({
-      result: "ok"
-    });
+    next(utils.createErrorObj(500, err));
   }
 });
 // functions

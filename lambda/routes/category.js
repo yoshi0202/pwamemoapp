@@ -17,8 +17,7 @@ router.get("/categories", async function(req, res, next) {
     const category = await dynamo.query(params).promise();
     res.json(category);
   } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 

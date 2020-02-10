@@ -6,11 +6,12 @@ var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 var cors = require("cors");
 const passport = require("passport");
+const utils = require("./utils/utils");
 
-var snipRouter = require("./routes/snip");
-var userRouter = require("./routes/user");
-var authRouter = require("./routes/auth");
-var categoryRouter = require("./routes/category");
+const snipRouter = require("./routes/snip");
+const userRouter = require("./routes/user");
+const authRouter = require("./routes/auth");
+const categoryRouter = require("./routes/category");
 
 var app = express();
 
@@ -37,19 +38,16 @@ app.use("/api/category", categoryRouter);
 app.use("/auth", authRouter);
 
 app.use(function(req, res, next) {
-  res.status(404).json({
-    status: 404,
-    msg: "404 not found"
-  });
+  next(utils.createErrorObj(404, "404 not found"));
 });
 
 // error handler
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.status(err.status).json({
+    status: err.status,
+    err: err.message
+  });
   console.log(err);
-  // res.send(err);
 });
 
 app.listen(3000);

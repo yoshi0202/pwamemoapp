@@ -13,7 +13,7 @@
         <v-toolbar-title>Languages</v-toolbar-title>
       </v-toolbar>
       <v-list dense color="white" class="border-none">
-        <v-list-item-group v-model="int">
+        <v-list-item-group v-model="select">
           <v-list-item v-for="(m, i) in menu" :key="i" @click="changeCategory(m, i)" color="purple">
             <v-list-item-icon>
               <img :src="'img/' + m + '.svg'" style="max-width:40px;max-height:auto" />
@@ -29,34 +29,31 @@
 </template>
 
 <script>
-// import axios from "axios";
+import axios from "axios";
 
 export default {
   Name: "CategoryMenu",
+  watch: {},
   data: function() {
     return {
-      int: null
+      menu: [],
+      select: null
     };
   },
-  watch: {
-    // int: function(val) {
-    //   console.log(val);
-    // }
-  },
-  mounted: function() {
-    this.int = Number(this.$route.query.menuId);
-  },
-  props: {
-    menu: Array
+  created: async function() {
+    const apiUrl = this.$store.getters.getApiUrl + "api/";
+    const categoryUrl = apiUrl + "category/categories";
+    const getCategories = await axios.get(categoryUrl);
+    getCategories.data.Items.map(v => this.menu.push(v.category));
   },
   component: {},
   methods: {
-    changeCategory: async function(language, number) {
-      // const apiUrl = this.$store.getters.getApiUrl + "api/";
-      // const url = apiUrl + "snip/category/";
-      // const result = await axios.get(url + "?l="+language)
-      this.$router.push("/?l=" + language);
-      console.log(number);
+    changeCategory: async function(language) {
+      if (this.$store.getters.getIsMobile) {
+        this.$router.push("/?sort=New Snippets&category=" + language);
+      } else {
+        this.$emit("clickMenu", language);
+      }
     }
   }
 };

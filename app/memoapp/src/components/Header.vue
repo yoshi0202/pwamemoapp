@@ -12,11 +12,11 @@
       </template>
 
       <v-list dense>
-        <v-list-item to="/top" style="cursor:pointer">
+        <v-list-item to="/about" style="cursor:pointer">
           <v-list-item-title>
             <span class="caption">
               <v-icon medium>mdi-information-outline</v-icon>
-              <span class="ml-3">About</span>
+              <span class="ml-3">Snippyについて</span>
             </span>
           </v-list-item-title>
         </v-list-item>

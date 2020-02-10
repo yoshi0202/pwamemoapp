@@ -47,8 +47,7 @@
               <v-icon small color="black">mdi-pin</v-icon>
               {{ data.pinCounts }}
             </span>
-            <v-spacer></v-spacer>
-            <span class="body-2">
+            <span class="body-2 ml-10">
               <v-icon small color="black">mdi-eye</v-icon>
               {{ data.viewCounts }}
             </span>
