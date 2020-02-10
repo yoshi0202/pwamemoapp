@@ -12,44 +12,28 @@
       <v-list-item-avatar size="40" color="grey" class="mr-0">
         <img :src="userData[data.userId].imgUrl" alt="avator" />
       </v-list-item-avatar>
-      <v-card-title class="subtitle-1 py-0">
+      <v-card-title class="subtitle-1 py-0 font-weight-bold">
         <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
       </v-card-title>
     </v-list-item>
-    <v-container py-0 text-right>
-      <!-- <p class="caption mx-1 my-0">@{{data.userId}}</p> -->
-      <!-- <perfect-scrollbar>
-        <v-flex style="white-space:nowrap">
-          <v-chip
-            color="#FFCC80"
-            small
-            v-for="t in data.snipData.tags"
-            :key="t"
-            class="mx-3 black--text"
-          >{{t}}</v-chip>
-        </v-flex>
-      </perfect-scrollbar>-->
-      <!-- <v-divider></v-divider> -->
-    </v-container>
-    <!-- <v-card-text class="text--primary py-1 text-left">
-      <v-clamp autoresize :max-lines="2">{{ data.snipData.contents }}</v-clamp>
-    </v-card-text>-->
-    <v-card-actions class="card-actions" style="width:100%">
+    <v-container py-0 text-right> </v-container>
+    <v-card-actions class="card-actions px-3" style="width:100%">
       <v-layout align-center>
-        <v-flex text-left body-2>{{ changeUnixTimeToDate(data.createdAt) }}</v-flex>
-        <v-flex text-right>
-          <v-btn
-            body-2
-            small
-            text
-            color="purple lighten-2"
-            @click.stop="moveUserPage(data.userId)"
-            style="cursor:pointer"
-          >@{{ userData[data.userId].displayName }}</v-btn>
-          <v-btn icon>
-            <v-icon size="23" color="grey">{{ menuIcon }}</v-icon>
-          </v-btn>
-        </v-flex>
+        <span class="body-2 font-weight-thin">{{ changeUnixTimeToDate(data.createdAt) }}</span>
+        <v-spacer></v-spacer>
+        <v-btn
+          body-2
+          small
+          text
+          color="purple lighten-2"
+          class="pa-0"
+          @click.stop="moveUserPage(data.userId)"
+          style="cursor:pointer"
+          >@{{ userData[data.userId].displayName }}</v-btn
+        >
+        <v-btn icon class="pa-0">
+          <v-icon size="23" color="grey">{{ menuIcon }}</v-icon>
+        </v-btn>
       </v-layout>
     </v-card-actions>
     <v-expand-transition>
@@ -57,17 +41,21 @@
         <v-card-text class="text--primary py-1 text-left">
           <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
         </v-card-text>
-        <v-container text-right>
-          <!-- <v-btn small text @click.stop="changePinStatus">
-            <v-icon color="grey">mdi-heart-outline</v-icon>
-          </v-btn>-->
-          <v-btn
-            small
-            outlined
-            @click.stop="cardClick"
-            color="purple lighten-2"
-            style="cursor:pointer"
-          >Read More</v-btn>
+        <v-container py-1>
+          <v-layout class="align-center">
+            <span class="body-2">
+              <v-icon small color="black">mdi-pin</v-icon>
+              {{ data.pinCounts }}
+            </span>
+            <span class="body-2 ml-10">
+              <v-icon small color="black">mdi-eye</v-icon>
+              {{ data.viewCounts }}
+            </span>
+            <v-spacer></v-spacer>
+            <v-btn small outlined @click.stop="cardClick" color="purple lighten-2" style="cursor:pointer"
+              >Read More</v-btn
+            >
+          </v-layout>
         </v-container>
       </div>
     </v-expand-transition>
@@ -94,9 +82,6 @@ export default {
     userData: Object
   },
   methods: {
-    changePinStatus: function() {
-      this.pinColor = this.pinColor === "orange lighten-2" ? "grey" : "orange lighten-2";
-    },
     changeMenuIconStatus: function() {
       this.menuIcon = this.menuIcon === "mdi-menu-down" ? "mdi-menu-up" : "mdi-menu-down";
       this.show = !this.show;

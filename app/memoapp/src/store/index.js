@@ -22,7 +22,8 @@ export default new Vuex.Store({
     isMobile: false,
     drawer: false,
     url: process.env.VUE_APP_BASE_URL,
-    loading: true
+    loading: true,
+    errorMsg: null
   },
   getters: {
     getLogin(state) {
@@ -51,6 +52,9 @@ export default new Vuex.Store({
     },
     getLoadingStatus(state) {
       return state.loading;
+    },
+    getErrorMsg(state) {
+      return state.errorMsg;
     }
   },
   mutations: {
@@ -82,6 +86,9 @@ export default new Vuex.Store({
     },
     changeLoading(state, boolean) {
       state.loading = boolean;
+    },
+    updateErorrMsg(state, data) {
+      state.errorMsg = data;
     }
   },
   actions: {
@@ -105,6 +112,12 @@ export default new Vuex.Store({
     },
     changeLoading({ commit }, boolean) {
       commit("changeLoading", boolean);
+    },
+    updateErorrMsg({ commit }) {
+      commit("updateErorrMsg", "エラーが発生しました。もう一度やり直してください。");
+    },
+    initializeErrorMsg({ commit }) {
+      commit("updateErorrMsg", null);
     }
   },
   modules: {},

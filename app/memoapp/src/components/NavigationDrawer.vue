@@ -9,7 +9,7 @@
                 <img :src="$store.getters.getImgUrl" alt="avator" style="cursor:pointer" />
               </v-avatar>
               <span class="caption">
-                <span class="ma-5">{{$store.getters.getDisplayName}}</span>
+                <span class="ma-5">{{ $store.getters.getDisplayName }}</span>
               </span>
             </v-list-item-title>
             <v-layout text-right>
@@ -30,7 +30,7 @@
       </div>
     </v-list>
     <v-divider></v-divider>
-    <CategoryMenu :menu="menu" />
+    <CategoryMenu />
   </v-navigation-drawer>
 </template>
 
@@ -41,10 +41,10 @@ import CategoryMenu from "./CategoryMenu";
 
 export default {
   Name: "NavigationDrawer",
-  props: {
-    menu: Array
-  },
-  data: () => ({}),
+  props: {},
+  data: () => ({
+    drawer: false
+  }),
   created: function() {},
   methods: {
     logout: function() {

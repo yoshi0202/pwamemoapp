@@ -7,55 +7,47 @@ const userTableName = "snippy-user";
 const pinTableName = "snippy-pin";
 const utils = require("../utils/utils");
 
-router.get("/category", async function(req, res, next) {
-  try {
-    if (!req.query.l) {
-      res.json({
-        result: "param error"
-      });
-      return;
-    }
-    const params = {
-      TableName: tableName,
-      IndexName: "snipType-createdAt-index",
-      KeyConditionExpression: "#st = :st AND #ca >= :ca",
-      ExpressionAttributeNames: { "#st": "snipType", "#ca": "createdAt", "#sdt": "snipData", "#tag": "tags" },
-      // ExpressionAttributeNames: { "#st": "snipType", "#ca": "createdAt" },
-      ExpressionAttributeValues: { ":st": 0, ":ca": 0, ":sdt": req.query.l },
-      // ExpressionAttributeValues: { ":st": 0, ":ca": 0 }
-      FilterExpression: "contains (#sdt.#tag, :sdt)"
-    };
-    let result = await dynamo.query(params).promise();
-    const userParams = {
-      TableName: userTableName
-    };
-    const getUser = await dynamo.scan(userParams).promise();
-    let userData = {};
-    getUser.Items.map(function(i) {
-      userData[i.userId] = {
-        imgUrl: i.imgUrl,
-        displayName: i.displayName,
-        pin: i.pin
-      };
-    });
-    result.userData = userData;
-    res.json(result);
-  } catch (err) {
-    res.status(500).json(err);
-  }
-});
 // all snip get
 router.get("/", async function(req, res, next) {
   try {
-    const params = {
+    let indexName = "";
+    let sortKey = "";
+    switch (req.query.sort) {
+      case "New Snippets":
+        indexName = "snipType-createdAt-index";
+        sortKey = "createdAt";
+        break;
+
+      case "Most Viewd":
+        indexName = "snipType-viewCounts-index";
+        sortKey = "viewCounts";
+        break;
+
+      case "Most Pin Counts":
+        indexName = "snipType-pinCounts-index";
+        sortKey = "pinCounts";
+        break;
+
+      default:
+        // query param error
+        throw new Error("SortKey Parameter Error");
+        break;
+    }
+    let params = {
       TableName: tableName,
-      IndexName: "snipType-createdAt-index",
-      ExpressionAttributeNames: { "#st": "snipType", "#ca": "createdAt" },
-      ExpressionAttributeValues: { ":st": 0, ":ca": 0 },
-      KeyConditionExpression: "#st = :st AND #ca >= :ca",
+      IndexName: indexName,
+      ExpressionAttributeNames: { "#st": "snipType", "#s": sortKey },
+      ExpressionAttributeValues: { ":st": 0, ":s": 0 },
+      KeyConditionExpression: "#st = :st AND #s >= :s",
       ScanIndexForward: false
     };
-    let result = await dynamo.query(params).promise();
+    if (req.query.category) {
+      params.ExpressionAttributeNames["#tag"] = "tags";
+      params.ExpressionAttributeNames["#sdt"] = "snipData";
+      params.ExpressionAttributeValues[":sdt"] = req.query.category;
+      params.FilterExpression = "contains (#sdt.#tag, :sdt)";
+    }
+    const result = await dynamo.query(params).promise();
     const userParams = {
       TableName: userTableName
     };
@@ -69,11 +61,9 @@ router.get("/", async function(req, res, next) {
       };
     });
     result.userData = userData;
-    // console.log(result);
     res.json(result);
   } catch (err) {
-    console.log(err);
-    res.json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -99,9 +89,9 @@ router.get("/:userId/:snipId", async function(req, res, next) {
     const user = await dynamo.query(userParams).promise();
     result.userData = user.Items[0].imgUrl;
     res.json(result);
+    incrementViewCounts(userId, snipId);
   } catch (err) {
-    console.log(err);
-    res.json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -113,7 +103,6 @@ router.post("/add", async function(req, res, next) {
       TableName: tableName,
       Item: {
         userId: req.body.userId,
-        // snipId: Number(req.body.snipCounts),
         snipId: utils.createSnipId(),
         createdAt: createdAt,
         snipType: Number(req.body.snipType),
@@ -121,31 +110,17 @@ router.post("/add", async function(req, res, next) {
           title: req.body.snipTitle,
           contents: req.body.snipContents,
           tags: req.body.snipTags
-        }
+        },
+        pinCounts: 0,
+        viewCounts: 0
       }
     };
-    const result = await dynamo.put(params).promise();
-    // const updateParams = {
-    //   TableName: userTableName,
-    //   Key: {
-    //     userId: req.body.userId
-    //   },
-    //   ExpressionAttributeNames: {
-    //     "#sc": "snipCounts"
-    //   },
-    //   ExpressionAttributeValues: {
-    //     ":sc": Number(req.body.snipCounts) + 1
-    //   },
-    //   UpdateExpression: "SET #sc = :sc"
-    // };
-    // await dynamo.update(updateParams).promise();
-    // res.json(result);
+    await dynamo.put(params).promise();
     res.json({
       result: "ok"
     });
   } catch (err) {
-    console.log(err);
-    res.status(500).json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -175,8 +150,7 @@ router.post("/update", async function(req, res, next) {
     const result = await dynamo.update(updateParams).promise();
     res.json(result);
   } catch (err) {
-    console.log(err);
-    res.json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -193,8 +167,7 @@ router.delete("/destroy", async function(req, res, next) {
     const result = await dynamo.delete(deleteParams).promise();
     res.json(result);
   } catch (err) {
-    console.log(err);
-    res.json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -213,11 +186,12 @@ router.post("/pin", async function(req, res, next) {
       }
     };
     await dynamo.put(putParams).promise();
+    await incrementPinCounts(req.body.snipUserId, req.body.snipId);
     res.json({
       result: "ok"
     });
   } catch (err) {
-    res.status(500).json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -230,10 +204,13 @@ router.delete("/pin", async function(req, res, next) {
         snipId: req.body.snipId
       }
     };
-    const result = await dynamo.delete(deleteParams).promise();
-    res.json(result);
+    await dynamo.delete(deleteParams).promise();
+    await decrementPinCounts(req.body.snipUserId, req.body.snipId);
+    res.json({
+      result: "ok"
+    });
   } catch (err) {
-    res.status(500).json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
@@ -250,8 +227,83 @@ router.get("/pin", async function(req, res, next) {
     const result = await dynamo.get(scanParams).promise();
     res.json(result);
   } catch (err) {
-    res.status(500).json(err);
+    next(utils.createErrorObj(500, err));
   }
 });
 
 module.exports = router;
+
+async function incrementPinCounts(userId, snipId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: tableName,
+        Key: {
+          userId: userId,
+          snipId: snipId
+        },
+        ExpressionAttributeValues: {
+          ":p": 1
+        },
+        ExpressionAttributeNames: {
+          "#p": "pinCounts"
+        },
+        UpdateExpression: "SET #p = #p + :p"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+async function decrementPinCounts(userId, snipId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: tableName,
+        Key: {
+          userId: userId,
+          snipId: snipId
+        },
+        ExpressionAttributeValues: {
+          ":p": 1
+        },
+        ExpressionAttributeNames: {
+          "#p": "pinCounts"
+        },
+        UpdateExpression: "SET #p = #p - :p"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+async function incrementViewCounts(userId, snipId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: tableName,
+        Key: {
+          userId: userId,
+          snipId: snipId
+        },
+        ExpressionAttributeValues: {
+          ":v": 1
+        },
+        ExpressionAttributeNames: {
+          "#v": "viewCounts"
+        },
+        UpdateExpression: "SET #v = #v + :v"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}

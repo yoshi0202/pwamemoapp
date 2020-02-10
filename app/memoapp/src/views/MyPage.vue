@@ -13,40 +13,29 @@
             <v-container py-5>
               <!-- <v-container> -->
               <v-layout wrap>
-                <v-flex xs12 sm12 md12 lg5 xl4>
-                  <v-container fluid text-center>
+                <v-flex xs12 sm12 md4 lg5 xl4>
+                  <v-container style="max-width:100%">
                     <v-img
                       :src="userData.userData.imgUrl"
                       alt="avator"
                       aspect-ratio="1"
                       class="grey lighten-2"
-                      max-width="500"
-                      max-height="500"
+                      max-height="100%"
                     >
-                      <template v-slot:placeholder></template>
                     </v-img>
                   </v-container>
                   <v-container headline text-left px-10 fluid>
                     {{ userData.userData.displayName }}
-                    <v-container
-                      fluid
-                      body-1
-                      ma-0
-                      pa-0
-                      font-weight-light
-                    >@{{ userData.userData.userId }}</v-container>
+                    <v-container fluid body-1 ma-0 pa-0 font-weight-light>@{{ userData.userData.userId }}</v-container>
                     <UserPageIcons :userData="userData" />
                     <v-divider></v-divider>
-                    <v-container
-                      subtitle-1
-                      fluid
-                      px-0
-                      style="word-break:break-all"
-                    >{{userData.userData.description}}</v-container>
+                    <v-container subtitle-1 fluid px-0 style="word-break:break-all">{{
+                      userData.userData.description
+                    }}</v-container>
                     <v-divider></v-divider>
                   </v-container>
                 </v-flex>
-                <v-flex xs12 sm12 md12 lg7 xl8>
+                <v-flex xs12 sm12 md8 lg7 xl8>
                   <v-container pa-0>
                     <v-card color="black">
                       <v-card-title class="text-center justify-center">
@@ -63,7 +52,9 @@
                           <v-card color="basil" flat v-for="snippets in key" :key="snippets.snipId">
                             <v-list two-line subheader>
                               <v-list-item
-                                @click="toSnip(snippets.snipUserId ? snippets.snipUserId : snippets.userId , snippets.snipId)"
+                                @click="
+                                  toSnip(snippets.snipUserId ? snippets.snipUserId : snippets.userId, snippets.snipId)
+                                "
                               >
                                 <v-list-item-avatar>
                                   <v-img
@@ -73,15 +64,16 @@
 
                                 <v-list-item-content>
                                   <v-list-item-title>{{ snippets.snipData.title }}</v-list-item-title>
-                                  <v-list-item-subtitle>{{ changeUnixTimeToDate(snippets.createdAt) }}</v-list-item-subtitle>
+                                  <v-list-item-subtitle>{{
+                                    changeUnixTimeToDate(snippets.createdAt)
+                                  }}</v-list-item-subtitle>
                                 </v-list-item-content>
 
                                 <v-list-item-action>
                                   <v-btn icon>
-                                    <v-icon
-                                      @click="toSnip(snippets.userId, snippets.snipId)"
-                                      color="grey lighten-1"
-                                    >mdi-chevron-double-right</v-icon>
+                                    <v-icon @click="toSnip(snippets.userId, snippets.snipId)" color="grey lighten-1"
+                                      >mdi-chevron-double-right</v-icon
+                                    >
                                   </v-btn>
                                 </v-list-item-action>
                               </v-list-item>
@@ -116,7 +108,6 @@ export default {
     const result = await axios.get(apiUrl + "user/" + userId);
     this.userData = result.data;
     this.$store.dispatch("changeLoading", false);
-    console.log(this.userData);
   },
   data: function() {
     return {

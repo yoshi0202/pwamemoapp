@@ -7,47 +7,30 @@
           <v-container>
             <v-layout wrap align-center>
               <v-flex md12 xs12>
-                <v-container
-                  text-left
-                  title
-                  pa-0
-                  style="word-break:break-all"
-                >{{ snipData.snipData.title }}</v-container>
+                <v-container text-left title pa-0 style="word-break:break-all">{{
+                  snipData.snipData.title
+                }}</v-container>
               </v-flex>
               <v-flex md12 xs12>
                 <v-container text-right align-center pa-0>
                   <v-row class="align-center" style="height:100px">
                     <v-col cols="8" class="text-left align-center">
                       <v-avatar>
-                        <img
-                          @click="toUserPage"
-                          :src="userData"
-                          alt="avator"
-                          style="cursor: pointer;"
-                        />
+                        <img @click="toUserPage" :src="userData" alt="avator" style="cursor: pointer;" />
                       </v-avatar>
                       <span class="px-4 subtitle-2">{{ changeUnixTimeToDate(snipData.createdAt) }}</span>
                     </v-col>
                     <v-spacer></v-spacer>
                     <v-col cols="4">
-                      <v-icon
-                        large
-                        class="mx-3"
-                        :color="pin.pinColor"
-                        @click="clickSnipPin"
-                      >{{pin.pinIcon}}</v-icon>
+                      <v-icon large class="mx-3" :color="pin.pinColor" @click="clickSnipPin">{{ pin.pinIcon }}</v-icon>
                       <v-icon
                         large
                         v-if="ownSnip"
                         class="mx-3"
                         @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
-                      >mdi-playlist-edit</v-icon>
-                      <v-icon
-                        large
-                        v-if="ownSnip"
-                        class="mx-3"
-                        @click="deleteCard"
-                      >mdi-trash-can-outline</v-icon>
+                        >mdi-playlist-edit</v-icon
+                      >
+                      <v-icon large v-if="ownSnip" class="mx-3" @click="deleteCard">mdi-trash-can-outline</v-icon>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -58,13 +41,7 @@
           <v-container text-left>
             <v-layout>
               <v-flex>
-                <v-chip
-                  small
-                  v-for="tag in snipData.snipData.tags"
-                  :key="tag"
-                  class="mx-1 black--text"
-                  color="white"
-                >
+                <v-chip small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text" color="white">
                   <v-avatar left>
                     <img :src="'/img/' + tag + '.svg'" />
                   </v-avatar>
@@ -165,7 +142,8 @@ export default {
           await axios.delete(apiUrl + "snip/pin", {
             data: {
               userId: this.$store.getters.getUserId,
-              snipId: this.$route.params.snipId
+              snipId: this.$route.params.snipId,
+              snipUserId: this.snipData.userId
             }
           });
           this.pin = {
