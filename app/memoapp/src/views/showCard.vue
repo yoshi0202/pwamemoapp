@@ -31,11 +31,23 @@
                     <v-spacer></v-spacer>
                     <v-col cols="4">
                       <v-icon
+                        large
+                        class="mx-3"
+                        :color="pin.pinColor"
+                        @click="clickSnipPin"
+                      >{{pin.pinIcon}}</v-icon>
+                      <v-icon
+                        large
                         v-if="ownSnip"
                         class="mx-3"
                         @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
-                      >fas fa-edit</v-icon>
-                      <v-icon v-if="ownSnip" class="mx-3" @click="deleteCard">far fa-trash-alt</v-icon>
+                      >mdi-playlist-edit</v-icon>
+                      <v-icon
+                        large
+                        v-if="ownSnip"
+                        class="mx-3"
+                        @click="deleteCard"
+                      >mdi-trash-can-outline</v-icon>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -94,6 +106,15 @@ export default {
       userId: userId,
       snipId: snipId
     };
+    const pinResult = await axios.get(
+      apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
+    );
+    if (pinResult.data.Item)
+      this.pin = {
+        isPin: true,
+        pinIcon: "mdi-pin",
+        pinColor: "#C7B967"
+      };
     this.$store.dispatch("changeLoading", false);
   },
   data: function() {
@@ -106,7 +127,12 @@ export default {
       },
       userData: "",
       editParams: {},
-      ownSnip: this.$route.params.userId === this.$store.getters.getUserId
+      ownSnip: this.$route.params.userId === this.$store.getters.getUserId,
+      pin: {
+        isPin: false,
+        pinIcon: "mdi-pin-outline",
+        pinColor: "grey"
+      }
     };
   },
   methods: {
@@ -131,6 +157,40 @@ export default {
     },
     toUserPage: function() {
       this.$router.push("/user/" + this.snipData.userId);
+    },
+    clickSnipPin: async function() {
+      try {
+        const apiUrl = this.$store.getters.getApiUrl + "api/";
+        if (this.pin.isPin) {
+          await axios.delete(apiUrl + "snip/pin", {
+            data: {
+              userId: this.$store.getters.getUserId,
+              snipId: this.$route.params.snipId
+            }
+          });
+          this.pin = {
+            isPin: false,
+            pinIcon: "mdi-pin-outline",
+            pinColor: "grey"
+          };
+        } else {
+          await axios.post(apiUrl + "snip/pin", {
+            userId: this.$store.getters.getUserId,
+            snipId: this.$route.params.snipId,
+            snipUserId: this.snipData.userId,
+            snipData: this.snipData.snipData,
+            createdAt: this.snipData.createdAt,
+            userImgUrl: this.userData
+          });
+          this.pin = {
+            isPin: true,
+            pinIcon: "mdi-pin",
+            pinColor: "#C7B967"
+          };
+        }
+      } catch (err) {
+        alert(JSON.stringify(err));
+      }
     }
   },
   components: {
