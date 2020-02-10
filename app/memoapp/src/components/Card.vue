@@ -58,9 +58,9 @@
           <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
         </v-card-text>
         <v-container text-right>
-          <v-btn small text @click.stop="changePinStatus">
+          <!-- <v-btn small text @click.stop="changePinStatus">
             <v-icon color="grey">mdi-heart-outline</v-icon>
-          </v-btn>
+          </v-btn>-->
           <v-btn
             small
             outlined

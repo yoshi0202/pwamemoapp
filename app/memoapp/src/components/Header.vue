@@ -1,6 +1,7 @@
 <template>
   <v-app-bar app dark flat color="black" class="snippy-header">
-    <v-btn to="/" text small color="purple lighten-2">
+    <!-- <v-container text-center pa-0></v-container> -->
+    <v-btn to="/" text small color="purple lighten-2" class="text-center">
       <div class="d-flex align-center title">Snippy</div>
     </v-btn>
     <v-menu offset-y>
@@ -19,7 +20,6 @@
             </span>
           </v-list-item-title>
         </v-list-item>
-        <!-- <v-divider></v-divider> -->
       </v-list>
     </v-menu>
 

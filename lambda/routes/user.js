@@ -8,6 +8,7 @@ let multerS3 = require("multer-s3");
 const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", convertEmptyValues: true });
 const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
+const pinTableName = "snippy-pin";
 const storage = multer.memoryStorage();
 const s3 = new aws.S3({
   bucket: "snippy.site"
@@ -50,10 +51,21 @@ router.get("/:userId", async function(req, res, next) {
       FilterExpression: "#u = :u"
     };
     const userData = await dynamo.scan(params).promise();
+    params = {
+      TableName: pinTableName,
+      ExpressionAttributeNames: {
+        "#u": "userId"
+      },
+      ExpressionAttributeValues: {
+        ":u": userId
+      },
+      FilterExpression: "#u = :u"
+    };
+    const pinData = await dynamo.scan(params).promise();
     const result = {
       snippets: {
         userSnippets: snippets.Items,
-        favorites: []
+        pins: pinData.Items
       },
       userData: userData.Items[0]
     };

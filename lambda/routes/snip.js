@@ -4,6 +4,7 @@ const aws = require("aws-sdk");
 const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
 const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
+const pinTableName = "snippy-pin";
 const utils = require("../utils/utils");
 
 router.get("/category", async function(req, res, next) {
@@ -198,24 +199,59 @@ router.delete("/destroy", async function(req, res, next) {
 });
 
 //snip pin
-
 router.post("/pin", async function(req, res, next) {
-  const updateParams = {
-    TableName: "snippy-user",
-    Key: {
-      userId: "s7uKpSmJCxlkYb9t"
-    },
-    ExpressionAttributeNames: {
-      "#p": "pin"
-    },
-    ExpressionAttributeValues: {
-      ":p": [req.body.snipId]
-    },
-    UpdateExpression: "SET #p = list_append(#p, :p)"
-  };
-  await dynamo.update(updateParams).promise();
-  res.json({
-    result: "ok"
-  });
+  try {
+    const putParams = {
+      TableName: pinTableName,
+      Item: {
+        userId: req.body.userId,
+        snipId: req.body.snipId,
+        snipData: req.body.snipData,
+        snipUserId: req.body.snipUserId,
+        createdAt: req.body.createdAt,
+        userImgUrl: req.body.userImgUrl
+      }
+    };
+    await dynamo.put(putParams).promise();
+    res.json({
+      result: "ok"
+    });
+  } catch (err) {
+    res.status(500).json(err);
+  }
 });
+
+router.delete("/pin", async function(req, res, next) {
+  try {
+    const deleteParams = {
+      TableName: pinTableName,
+      Key: {
+        userId: req.body.userId,
+        snipId: req.body.snipId
+      }
+    };
+    const result = await dynamo.delete(deleteParams).promise();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
+//get snip pin status
+router.get("/pin", async function(req, res, next) {
+  try {
+    const scanParams = {
+      TableName: pinTableName,
+      Key: {
+        userId: req.query.userId,
+        snipId: req.query.snipId
+      }
+    };
+    const result = await dynamo.get(scanParams).promise();
+    res.json(result);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
+
 module.exports = router;
