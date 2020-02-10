@@ -92,7 +92,7 @@ export default {
   },
   created: async function() {
     try {
-      const category = this.$route.query.category ? this.$route : "";
+      const category = this.$route.query.category ? this.$route.query.category : "";
       const result = await axios.get(apiUrl + "snip?sort=New Snippets&category=" + category);
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
