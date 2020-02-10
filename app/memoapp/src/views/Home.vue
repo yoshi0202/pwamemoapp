@@ -5,19 +5,36 @@
         <v-col xs="12" sm="12" md="12" lg="12" xl="8">
           <v-row justify="center" no-gutters>
             <v-col v-if="!$store.getters.getIsMobile" cols="3">
-              <CategoryMenu :menu="menu" />
+              <v-container pa-0 my-12 style="position:sticky; top:64px;">
+                <CategoryMenu :menu="menu" />
+              </v-container>
             </v-col>
             <v-col xs="12" sm="12" md="9" lg="9" xl="9">
               <v-container pa-0 text-center>
                 <Loading />
               </v-container>
-              <v-card
-                tile
-                outlined
-                v-for="sd in snipData"
-                :key="sd.createdAt"
-                class="border-bottom-none"
-              >
+              <v-layout>
+                <v-spacer></v-spacer>
+                <v-card
+                  color="transparent"
+                  tile
+                  outlined
+                  :width="!$store.getters.getIsMobile ? '40%' : '100%'"
+                  class="border-bottom-none pb-3"
+                >
+                  <v-select
+                    color="purple lighten-2"
+                    item-color="purple"
+                    dense
+                    hide-details
+                    label="Sort by"
+                    value="New Snippets"
+                    :menu-props="{ bottom: true, offsetY: true }"
+                    :items="['New Snippets', 'Most Viewd', 'Most Pin Counts']"
+                  ></v-select>
+                </v-card>
+              </v-layout>
+              <v-card tile outlined v-for="sd in snipData" :key="sd.createdAt" class="border-bottom-none">
                 <Card :data="sd" :userData="userData" />
               </v-card>
             </v-col>

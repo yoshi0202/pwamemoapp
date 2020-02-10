@@ -1,20 +1,20 @@
 <template>
-  <v-container text-center pa-0 ma-0 style="position:sticky; top:64px;">
+  <v-container text-center pa-0 ma-0>
     <v-card outlined elevation="0" class="border-none">
       <v-toolbar
         v-if="!$store.getters.getIsMobile"
         color="black"
+        dark
         flat
         dense
-        dark
         elavation="0"
-        class="border-none"
+        class="border-none font-weight-medium"
       >
         <v-toolbar-title>Languages</v-toolbar-title>
       </v-toolbar>
       <v-list dense color="white" class="border-none">
         <v-list-item-group v-model="int">
-          <v-list-item v-for="(m, i) in menu" :key="i" @click="changeCategory(m, i)">
+          <v-list-item v-for="(m, i) in menu" :key="i" @click="changeCategory(m, i)" color="purple">
             <v-list-item-icon>
               <img :src="'img/' + m + '.svg'" style="max-width:40px;max-height:auto" />
             </v-list-item-icon>

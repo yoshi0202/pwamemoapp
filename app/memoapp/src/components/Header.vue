@@ -11,7 +11,7 @@
         </v-btn>
       </template>
 
-      <v-list>
+      <v-list dense>
         <v-list-item to="/top" style="cursor:pointer">
           <v-list-item-title>
             <span class="caption">
@@ -62,8 +62,8 @@
               </v-list-item-title>
             </v-list-item>
             <v-divider></v-divider>
-            <v-list-item>
-              <v-list-item-title @click="editPage" style="cursor:pointer">
+            <v-list-item @click="editPage" style="cursor:pointer">
+              <v-list-item-title>
                 <span class="caption">
                   <v-icon medium>mdi-tune</v-icon>
                   <span class="ml-3">設定</span>
@@ -84,11 +84,11 @@
       </span>
       <span v-else>
         <!-- <v-btn class="ma-2" outlined color="#FDB436" to="/signUp"> -->
-        <v-btn outlined color="purple lighten-2" to="/signUp" class="white--text">
+        <v-btn outlined color="white" to="/signUp" class="white--text">
           <v-icon class="mr-2">mdi-account-plus</v-icon>
-          <span>サインイン</span>
+          <span>ユーザ登録</span>
         </v-btn>
-        <v-btn class="purple--text text--lighten-2 ma-2" outlined to="/login">
+        <v-btn class="white--text ma-2" to="/login">
           <v-icon class="mr-2">mdi-login-variant</v-icon>
           <span>ログイン</span>
         </v-btn>

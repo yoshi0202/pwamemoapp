@@ -72,8 +72,7 @@ router.get("/", async function(req, res, next) {
     // console.log(result);
     res.json(result);
   } catch (err) {
-    console.log(err);
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -99,9 +98,10 @@ router.get("/:userId/:snipId", async function(req, res, next) {
     const user = await dynamo.query(userParams).promise();
     result.userData = user.Items[0].imgUrl;
     res.json(result);
+    incrementViewCounts(userId, snipId);
   } catch (err) {
     console.log(err);
-    res.json(err);
+    res.status(500).json(err);
   }
 });
 
@@ -121,25 +121,12 @@ router.post("/add", async function(req, res, next) {
           title: req.body.snipTitle,
           contents: req.body.snipContents,
           tags: req.body.snipTags
-        }
+        },
+        pinCounts: 0,
+        viewCounts: 0
       }
     };
     const result = await dynamo.put(params).promise();
-    // const updateParams = {
-    //   TableName: userTableName,
-    //   Key: {
-    //     userId: req.body.userId
-    //   },
-    //   ExpressionAttributeNames: {
-    //     "#sc": "snipCounts"
-    //   },
-    //   ExpressionAttributeValues: {
-    //     ":sc": Number(req.body.snipCounts) + 1
-    //   },
-    //   UpdateExpression: "SET #sc = :sc"
-    // };
-    // await dynamo.update(updateParams).promise();
-    // res.json(result);
     res.json({
       result: "ok"
     });
@@ -213,6 +200,7 @@ router.post("/pin", async function(req, res, next) {
       }
     };
     await dynamo.put(putParams).promise();
+    await incrementPinCounts(req.body.snipUserId, req.body.snipId);
     res.json({
       result: "ok"
     });
@@ -230,8 +218,11 @@ router.delete("/pin", async function(req, res, next) {
         snipId: req.body.snipId
       }
     };
-    const result = await dynamo.delete(deleteParams).promise();
-    res.json(result);
+    await dynamo.delete(deleteParams).promise();
+    await decrementPinCounts(req.body.snipUserId, req.body.snipId);
+    res.json({
+      result: "ok"
+    });
   } catch (err) {
     res.status(500).json(err);
   }
@@ -255,3 +246,78 @@ router.get("/pin", async function(req, res, next) {
 });
 
 module.exports = router;
+
+async function incrementPinCounts(userId, snipId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: tableName,
+        Key: {
+          userId: userId,
+          snipId: snipId
+        },
+        ExpressionAttributeValues: {
+          ":p": 1
+        },
+        ExpressionAttributeNames: {
+          "#p": "pinCounts"
+        },
+        UpdateExpression: "SET #p = #p + :p"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+async function decrementPinCounts(userId, snipId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: tableName,
+        Key: {
+          userId: userId,
+          snipId: snipId
+        },
+        ExpressionAttributeValues: {
+          ":p": 1
+        },
+        ExpressionAttributeNames: {
+          "#p": "pinCounts"
+        },
+        UpdateExpression: "SET #p = #p - :p"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+async function incrementViewCounts(userId, snipId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: tableName,
+        Key: {
+          userId: userId,
+          snipId: snipId
+        },
+        ExpressionAttributeValues: {
+          ":v": 1
+        },
+        ExpressionAttributeNames: {
+          "#v": "viewCounts"
+        },
+        UpdateExpression: "SET #v = #v + :v"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}

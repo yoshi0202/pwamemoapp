@@ -31,25 +31,27 @@
                           </v-row>
                         </template>
                       </v-img>
-                      <input
-                        type="file"
-                        style="display:none"
-                        ref="fileUploads"
-                        name="avatar"
-                        @change="changeUserImg"
-                      />
+                      <input type="file" style="display:none" ref="fileUploads" name="avatar" @change="changeUserImg" />
                     </v-container>
                   </v-flex>
                   <v-flex xs12 sm12 md12 lg7 xl8>
                     <form>
                       <v-text-field
+                        color="purple lighten-2"
                         v-model="userData.userData.displayName"
                         outlined
                         label="表示名"
                         dense
                       ></v-text-field>
-                      <v-textarea v-model="userData.userData.description" outlined label="説明" dense></v-textarea>
+                      <v-textarea
+                        color="purple lighten-2"
+                        v-model="userData.userData.description"
+                        outlined
+                        label="説明"
+                        dense
+                      ></v-textarea>
                       <v-text-field
+                        color="purple lighten-2"
                         v-model="userData.userData.url"
                         outlined
                         label="URL"
@@ -57,6 +59,7 @@
                         dense
                       ></v-text-field>
                       <v-text-field
+                        color="purple lighten-2"
                         outlined
                         label="Twitter"
                         dense
@@ -64,6 +67,7 @@
                         v-model="userData.userData.twitter"
                       ></v-text-field>
                       <v-text-field
+                        color="purple lighten-2"
                         outlined
                         label="GitHub"
                         dense
@@ -71,6 +75,7 @@
                         v-model="userData.userData.github"
                       ></v-text-field>
                       <v-text-field
+                        color="purple lighten-2"
                         outlined
                         label="Qiita"
                         dense
@@ -84,7 +89,8 @@
                         @click="updateUser"
                         color="#C7B967"
                         style="bottom:20px; right:20px; position:absolute"
-                      >Profile Update</v-btn>
+                        >Profile Update</v-btn
+                      >
                     </v-container>
                   </v-flex>
                 </v-layout>
