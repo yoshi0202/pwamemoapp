@@ -73,26 +73,32 @@ import Loading from "@/components/Loading";
 export default {
   name: "showCard",
   created: async function() {
-    const userId = this.$route.params.userId;
-    const snipId = this.$route.params.snipId;
-    const apiUrl = this.$store.getters.getApiUrl + "api/";
-    const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
-    this.snipData = result.data.Items[0];
-    this.userData = result.data.userData;
-    this.editParams = {
-      userId: userId,
-      snipId: snipId
-    };
-    const pinResult = await axios.get(
-      apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
-    );
-    if (pinResult.data.Item)
-      this.pin = {
-        isPin: true,
-        pinIcon: "mdi-pin",
-        pinColor: "#C7B967"
+    try {
+      const userId = this.$route.params.userId;
+      const snipId = this.$route.params.snipId;
+      const apiUrl = this.$store.getters.getApiUrl + "api/";
+      const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
+      this.snipData = result.data.Items[0];
+      this.userData = result.data.userData;
+      this.editParams = {
+        userId: userId,
+        snipId: snipId
       };
-    this.$store.dispatch("changeLoading", false);
+      if (this.$store.getters.getLoginStatus) {
+        const pinResult = await axios.get(
+          apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
+        );
+        if (pinResult.data.Item)
+          this.pin = {
+            isPin: true,
+            pinIcon: "mdi-pin",
+            pinColor: "#C7B967"
+          };
+      }
+      this.$store.dispatch("changeLoading", false);
+    } catch (error) {
+      this.$store.dispatch("changeLoading", false);
+    }
   },
   data: function() {
     return {
@@ -137,6 +143,10 @@ export default {
     },
     clickSnipPin: async function() {
       try {
+        if (!this.$store.getters.getLoginStatus) {
+          this.$router.push("/login");
+          return;
+        }
         const apiUrl = this.$store.getters.getApiUrl + "api/";
         if (this.pin.isPin) {
           await axios.delete(apiUrl + "snip/pin", {

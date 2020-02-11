@@ -1,87 +1,118 @@
 <template>
   <v-content>
-    <v-container fill-height fluid py-0>
-      <v-layout text-center wrap>
-        <v-flex md12>
-          <v-container fluid px-0>
-            <v-card elevation="0">
-              <v-form v-model="valid" lazy-validation ref="form">
-                <v-container pt-3 pb-0 px-10 fluid>
-                  <v-text-field
-                    v-model="snipData.snipTitle"
-                    label="スニペットタイトル"
-                    outlined
-                    dense
-                    :rules="[rules.required]"
-                  ></v-text-field>
-                </v-container>
-                <v-container pt-2 px-10 fluid>
-                  <v-autocomplete
-                    v-model="snipData.snipTags"
-                    :items="categories"
-                    outlined
-                    eager
-                    dense
-                    chips
-                    small-chips
-                    label="カテゴリ"
-                    multiple
-                    auto-select-first
-                    :rules="[rules.min, rules.required]"
-                  >
-                    <template v-slot:selection="data">
-                      <v-chip
-                        :key="JSON.stringify(data.item)"
-                        v-bind="data.attrs"
-                        :input-value="data.selected"
-                        :disabled="data.disabled"
-                        @click:close="data.parent.selectItem(data.item)"
-                      >
-                        <v-avatar left>
-                          <img :src="'/img/' + data.item + '.svg'" />
-                        </v-avatar>
-                        {{ data.item }}
-                      </v-chip>
-                    </template>
-                  </v-autocomplete>
-                </v-container>
-              </v-form>
+    <v-container fluid pa-0 ma-0 fill-height>
+      <v-card outlined tile elevation="0" class="pa-0" height="100%" width="100%">
+        <v-card tile elevation="0" class="mx-1 my-2">
+          <v-text-field
+            v-model="snipData.snipTitle"
+            label="スニペットタイトル"
+            outlined
+            hide-details
+            :rules="[rules.required]"
+            class="my-2"
+            color="purple lighten-2"
+          ></v-text-field>
+          <v-autocomplete
+            v-model="snipData.snipTags"
+            :items="categories"
+            hide-details
+            outlined
+            eager
+            dense
+            chips
+            small-chips
+            label="カテゴリ(5つまで選択)"
+            multiple
+            auto-select-first
+            class="my-2"
+            color="purple lighten-2"
+            item-color="purple"
+            :rules="[rules.min, rules.required]"
+          >
+            <template v-slot:selection="data">
+              <v-chip
+                :key="JSON.stringify(data.item)"
+                v-bind="data.attrs"
+                :input-value="data.selected"
+                :disabled="data.disabled"
+                @click:close="data.parent.selectItem(data.item)"
+              >
+                <v-avatar left>
+                  <img :src="'/img/' + data.item + '.svg'" />
+                </v-avatar>
+                {{ data.item }}
+              </v-chip>
+            </template>
+          </v-autocomplete>
+        </v-card>
+        <v-layout wrap style="max-height:100%">
+          <v-flex xs12 sm12 md6 lg6>
+            <v-card tile elevation="0" class="mx-1 pa-0">
+              <v-textarea
+                v-model="snipData.snippets"
+                rows="5"
+                label="スニペットを入力(5行以内だと表示の時に省略されません)"
+                dense
+                outlined
+                hide-details
+                :rules="[rules.required]"
+                class="my-1"
+                color="purple lighten-2"
+              ></v-textarea>
             </v-card>
-          </v-container>
-
+          </v-flex>
+          <v-flex xs12 sm12 md6 lg6>
+            <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="118px">
+              <div class="fill-height overflow-y-auto">
+                <pre
+                  v-highlightjs="snipData.snippets"
+                  style="height:100%;background-color:#272822"
+                ><code class="javascript" style="background-color:#272822;width:100%; height:100%"></code></pre>
+              </div>
+            </v-card>
+          </v-flex>
+        </v-layout>
+        <v-card tile outlined elevation="0" class="ma-1" :height="editorVh" max-width="100%">
           <mavon-editor
             language="ja"
+            code_style="monokai"
+            :externalLink="false"
             v-model="snipData.snipContents"
-            placeholder="カード内容を入力"
+            placeholder="スニペットの説明を記載"
             :toolbarsFlag="mobileFlg"
             :subfield="mobileFlg"
           />
-          <v-container v-if="editMode" mt-2>
-            <v-btn outlined color="purple lighten-2 " @click="update">UpdateSnippets</v-btn>
-          </v-container>
-          <v-container v-else mt-2>
-            <v-btn outlined color="purple lighten-2" @click="add">AddSnippets</v-btn>
-          </v-container>
-          <div v-html="parseContents"></div>
-        </v-flex>
-      </v-layout>
+        </v-card>
+      </v-card>
     </v-container>
+    <v-footer fixed class="font-weight-medium" color="black">
+      <v-card width="100%" tile elevation="0" color="transparent" class="text-right">
+        <v-btn dark v-if="editMode" color="purple lighten-2" @click="update" class="font-weight-bold"
+          >スニペットを更新</v-btn
+        >
+        <v-btn v-else dark class="font-weight-bold" color="purple lighten-2" @click="add">スニペットを追加</v-btn>
+      </v-card>
+    </v-footer>
   </v-content>
 </template>
 
 <script>
 import axios from "axios";
+import Store from "@/store/index.js";
+const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "editCard",
   watch: {},
   data: function() {
     return {
+      editorVh: this.$store.getters.getIsMobile ? "40vh" : "60vh",
       valid: true,
       snipData: {
         snipTitle: "",
         snipTags: [],
-        snipContents: ""
+        snipContents: "",
+        snippets: "スニペットプレビュー"
       },
       parseContents: "",
       mobileFlg: !this.$store.getters.getIsMobile,
@@ -101,13 +132,15 @@ export default {
   },
   mounted: async function() {
     try {
-      const apiUrl = this.$store.getters.getApiUrl + "api/";
       const categoryUrl = apiUrl + "category/categories";
       const getCategories = await axios.get(categoryUrl);
       getCategories.data.Items.map(v => this.categories.push(v.category));
-      console.log(this.categories);
       if (this.userId && this.snipId) {
         this.editMode = true;
+        if (this.userId !== this.$store.getters.getUserId) {
+          this.$router.push("/");
+          return;
+        }
         const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
         const getResult = await axios.get(url);
         this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
@@ -121,7 +154,6 @@ export default {
   methods: {
     update: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const url = apiUrl + "snip/update";
         await axios.post(url, {
           userId: this.userId,
@@ -137,7 +169,6 @@ export default {
     },
     add: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const url = apiUrl + "snip/add";
         const userInfo = this.$store.getters.getLogin;
         await axios.post(url, {
@@ -159,12 +190,12 @@ export default {
 </script>
 
 <style>
-@media (min-width: 1264px) {
-  .markdown-body {
-    height: 70%;
-  }
-}
 .markdown-body {
+  max-height: 100%;
+  height: 100%;
   z-index: 0 !important;
+}
+code:before {
+  content: "" !important;
 }
 </style>
