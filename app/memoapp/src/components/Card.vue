@@ -39,7 +39,7 @@
     <v-expand-transition>
       <div v-show="show">
         <v-card-text class="text--primary py-1 text-left">
-          <v-clamp autoresize :max-lines="3">{{ data.snipData.contents }}</v-clamp>
+          <v-clamp autoresize :max-lines="5">{{ data.snipData.contents }}</v-clamp>
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
@@ -52,9 +52,7 @@
               {{ data.viewCounts }}
             </span>
             <v-spacer></v-spacer>
-            <v-btn small outlined @click.stop="cardClick" color="purple lighten-2" style="cursor:pointer"
-              >Read More</v-btn
-            >
+            <v-btn outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3 ">詳細</v-btn>
           </v-layout>
         </v-container>
       </div>

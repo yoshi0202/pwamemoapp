@@ -85,11 +85,13 @@
                     </form>
                     <v-container>
                       <v-btn
-                        outlined
+                        dark
+                        large
                         @click="updateUser"
-                        color="#C7B967"
+                        class="font-weight-bold"
+                        color="purple lighten-2"
                         style="bottom:20px; right:20px; position:absolute"
-                        >Profile Update</v-btn
+                        >プロフィールを更新する</v-btn
                       >
                     </v-container>
                   </v-flex>

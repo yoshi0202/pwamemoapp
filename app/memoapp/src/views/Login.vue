@@ -4,31 +4,38 @@
       <v-layout align-center>
         <v-flex md6 offset-md3>
           <v-container>
-            <v-card>
-              <v-container text-center headline pt-10>Snippy</v-container>
-              <v-container text-center fluid pa-0 ma-0>
+            <v-card outlined tile>
+              <v-card-title class="font-weight-bold headline white--text" style="background-color:black">
+                <v-container text-center pa-0>ログイン</v-container>
+              </v-card-title>
+              <v-container text-center fluid px-0 py-5>
                 <v-layout wrap>
-                  <v-flex xs12 md6>
-                    <v-form ref="form">
-                      <v-container pa-10 ma-0 fluid>
-                        <v-text-field v-model="email" outlined dense label="Email"></v-text-field>
+                  <v-flex xs12 sm12 md6>
+                    <v-form>
+                      <v-container pt-6 px-5>
+                        <v-text-field
+                          v-model="email"
+                          outlined
+                          dense
+                          label="Email"
+                          color="purple lighten-2"
+                          :rules="[rules.required]"
+                        ></v-text-field>
                         <v-text-field
                           v-model="password"
                           outlined
                           dense
                           label="Password"
                           type="password"
+                          color="purple lighten-2"
+                          :rules="[rules.required]"
                         ></v-text-field>
+                        <v-btn dark large color="purple lighten-2" class="font-weight-bold" @click="login"
+                          >ログイン</v-btn
+                        >
                       </v-container>
-                      <v-layout px-10>
-                        <v-flex md-6>
-                          <v-btn dark large outlined color="#C7B967" @click="login">Login</v-btn>
-                        </v-flex>
-                      </v-layout>
                     </v-form>
                   </v-flex>
-                  <!-- <v-divider vertical></v-divider> -->
-                  <!-- <v-spacer></v-spacer> -->
                   <v-flex xs12 md6>
                     <v-container fluid fill-height ma-0>
                       <v-container fluid text-center ma-0>
@@ -80,7 +87,7 @@
                 </v-layout>
               </v-container>
               <v-container fluid text-center ma-0>
-                <v-btn text color="purple lighten-2" to="/signUp">create new account</v-btn>
+                <v-btn text color="purple lighten-2" to="/signUp">アカウントをお持ちでない場合</v-btn>
               </v-container>
             </v-card>
           </v-container>
@@ -97,7 +104,14 @@ export default {
   data: function() {
     return {
       email: "",
-      password: ""
+      password: "",
+      rules: {
+        required: v => !!v || "必須項目",
+        regex: v =>
+          /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
+            v
+          ) || "E-mail must be valid"
+      }
     };
   },
   created: function() {},

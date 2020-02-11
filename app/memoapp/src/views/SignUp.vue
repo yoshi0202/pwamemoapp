@@ -4,28 +4,36 @@
       <v-layout align-center>
         <v-flex md6 offset-md3>
           <v-container>
-            <v-card>
-              <v-container text-center headline pt-10>Snippy</v-container>
-              <v-container text-center body-1 pt-10>SignUp</v-container>
+            <v-card outlined tile>
+              <v-card-title class="font-weight-bold headline white--text" style="background-color:black">
+                <v-container text-center pa-0>ユーザ登録</v-container>
+              </v-card-title>
               <v-container text-center fluid>
-                <v-form ref="form">
-                  <v-container pa-10>
-                    <v-text-field v-model="email" label="Email"></v-text-field>
-                    <v-text-field v-model="password" label="Password" type="password"></v-text-field>
-                    <v-text-field v-model="reTypePassword" label="Retype Password" type="password"></v-text-field>
+                <v-form>
+                  <v-container py-5 px-12>
+                    <v-text-field color="purple lighten-2" outlined dense v-model="email" label="Email"></v-text-field>
+                    <v-text-field
+                      color="purple lighten-2"
+                      outlined
+                      dense
+                      v-model="password"
+                      label="Password"
+                      type="password"
+                    ></v-text-field>
+                    <v-text-field
+                      color="purple lighten-2"
+                      outlined
+                      dense
+                      v-model="reTypePassword"
+                      label="Retype Password"
+                      type="password"
+                    ></v-text-field>
                   </v-container>
-                  <v-layout px-10>
-                    <v-flex md-6>
-                      <v-btn large color="purple lighten-2" dark @click="signup">SignUp</v-btn>
-                    </v-flex>
-                    <v-flex md-6>
-                      <v-btn large color="secondary" to="home">Cancel</v-btn>
-                    </v-flex>
-                  </v-layout>
+                  <v-btn large color="purple lighten-2" dark @click="signup" class="font-weight-bold">登録する </v-btn>
                 </v-form>
               </v-container>
               <v-container fluid text-center>
-                <v-btn text color="purple lighten-2" to="/login">Login</v-btn>
+                <v-btn text color="purple lighten-2" to="/login">アカウントをお持ちですか？</v-btn>
               </v-container>
             </v-card>
           </v-container>
