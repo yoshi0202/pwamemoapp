@@ -71,6 +71,8 @@
 
 <script>
 import axios from "axios";
+import Store from "@/store/index.js";
+const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "editCard",
@@ -101,13 +103,15 @@ export default {
   },
   mounted: async function() {
     try {
-      const apiUrl = this.$store.getters.getApiUrl + "api/";
       const categoryUrl = apiUrl + "category/categories";
       const getCategories = await axios.get(categoryUrl);
       getCategories.data.Items.map(v => this.categories.push(v.category));
-      console.log(this.categories);
       if (this.userId && this.snipId) {
         this.editMode = true;
+        if (this.userId !== this.$store.getters.getUserId) {
+          this.$router.push("/");
+          return;
+        }
         const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
         const getResult = await axios.get(url);
         this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
@@ -121,7 +125,6 @@ export default {
   methods: {
     update: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const url = apiUrl + "snip/update";
         await axios.post(url, {
           userId: this.userId,
@@ -137,7 +140,6 @@ export default {
     },
     add: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         const url = apiUrl + "snip/add";
         const userInfo = this.$store.getters.getLogin;
         await axios.post(url, {

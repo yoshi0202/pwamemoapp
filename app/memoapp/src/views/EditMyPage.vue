@@ -105,13 +105,17 @@
 
 <script>
 import axios from "axios";
-// import Loading from "@/components/Loading";
+import Store from "@/store/index.js";
+const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "EditMyPage",
-  created: async function() {
+  mounted: async function() {
     const userId = this.$route.params.userId;
-    const apiUrl = this.$store.getters.getApiUrl + "api/";
+    if (userId !== this.$store.getters.getUserId) {
+      this.$router.push("/");
+      return;
+    }
     const result = await axios.get(apiUrl + "user/" + userId);
     this.userData = result.data;
     this.$store.dispatch("changeLoading", false);
@@ -126,12 +130,6 @@ export default {
     };
   },
   methods: {
-    // toSnip: function(userId, snippetsId) {
-    //   this.$router.push("/" + userId + "/snip/" + snippetsId);
-    // },
-    // toSns: function(path) {
-    //   window.open(path, "_blank");
-    // },
     changeUserImg: async function(e) {
       const apiUrl = this.$store.getters.getApiUrl + "api/";
       e.preventDefault();
@@ -172,13 +170,6 @@ export default {
 </script>
 
 <style scoped>
-/* Helper classes */
-/* .basil {
-  background-color: #147f9b !important;
-}
-.basil--text {
-  color: white !important;
-} */
 .input-border {
   /* border-radius: 0; */
   border-top-left-radius: 0;

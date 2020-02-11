@@ -5,7 +5,7 @@
     <router-view />
     <!-- </v-content> -->
     <NavigationDrawer @logout="logout" v-if="$store.getters.getIsMobile" />
-    <v-btn v-if="$route.path === '/'" color="purple lighten-2" right bottom fixed fab dark to="/addSnippets">
+    <v-btn v-if="$route.name === 'home'" color="purple lighten-2" right bottom fixed fab dark to="/addSnippets">
       <v-icon dark>mdi-code-tags</v-icon>
     </v-btn>
   </v-app>
