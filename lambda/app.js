@@ -1,6 +1,7 @@
 var createError = require("http-errors");
 var express = require("express");
 const session = require("express-session");
+var DynamoDBStore = require("connect-dynamodb")({ session: session });
 var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
@@ -15,12 +16,28 @@ const categoryRouter = require("./routes/category");
 
 var app = express();
 
+const DynamoDBStoreOptions = {
+  table: "snippy-session",
+  hashKey: "sessionId", //ハッシュキー　デフォルトは"id"
+  AWSConfigJSON: {
+    region: "ap-northeast-1",
+    correctClockSkew: true,
+    httpOptions: {
+      secureProtocol: "TLSv1_method",
+      ciphers: "ALL"
+    }
+  }
+  // reapInterval: 24 * 60* 60 * 1000 //セッション情報の保持時間
+};
+
 app.use(
   session({
+    store: new DynamoDBStore(DynamoDBStoreOptions),
+    name: "snippy-session",
     secret: "some secret",
     resave: true,
-    saveUninitialized: true,
-    cookie: { secure: true }
+    saveUninitialized: false,
+    cookie: { secure: process.env.SECURE_COOKIE }
   })
 );
 
@@ -43,8 +60,8 @@ app.use(function(req, res, next) {
 
 // error handler
 app.use(function(err, req, res, next) {
-  res.status(err.status).json({
-    status: err.status,
+  res.status(err.status || 500).json({
+    status: err.status || 500,
     err: err.message
   });
   console.log(err);

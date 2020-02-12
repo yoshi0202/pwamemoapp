@@ -73,10 +73,13 @@ passport.use(
       consumerSecret: process.env.TWITTER_CONSUMER_SECRET,
       callbackURL: apiBaseUrl + "/auth/twitter/callback"
     },
-    function(accessToken, refreshToken, profile, done) {
-      console.log(accessToken);
-      console.log(profile);
-      console.log(refreshToken);
+    async function(accessToken, refreshToken, profile, done) {
+      const isUserRegisterd = await isOauthUserRegisterd(profile.id, "twitter");
+      if (isUserRegisterd) {
+        oauthUserUpdate(isUserRegisterd);
+      } else {
+        oauthUserCreate(profile, profile.photos[0].value, "twitter");
+      }
       if (profile) {
         return done(null, profile);
       } else {
@@ -214,12 +217,29 @@ router.get("/twitter", passport.authenticate("twitter", { scope: ["email"] }));
 router.get(
   "/twitter/callback",
   passport.authenticate("twitter", {
+    session: false,
     failureRedirect: frontBaseUrl + "/login"
   }),
   function(req, res) {
-    res.redirect(frontBaseUrl + "/");
+    res.redirect(frontBaseUrl + "/?userId=" + res.req.user.id + "&loginType=twitter");
   }
 );
+router.post("/twitter/signin", async function(req, res, next) {
+  const params = {
+    TableName: userTableName,
+    FilterExpression: "#o = :o AND #l = :l",
+    ExpressionAttributeNames: {
+      "#o": "oauthId",
+      "#l": "loginType"
+    },
+    ExpressionAttributeValues: {
+      ":o": req.body.userId,
+      ":l": req.body.loginType
+    }
+  };
+  const result = await dynamo.scan(params).promise();
+  res.json(result);
+});
 
 router.get("/github", passport.authenticate("github", { scope: ["email", "profile"] }));
 router.get(
