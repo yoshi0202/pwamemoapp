@@ -61,7 +61,7 @@
               ></v-textarea>
             </v-card>
           </v-flex>
-          <v-flex xs12 sm12 md6 lg6>
+          <v-flex v-if="!$store.getters.getIsMobile" xs12 sm12 md6 lg6>
             <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="118px">
               <div class="fill-height overflow-y-auto">
                 <pre
@@ -72,7 +72,7 @@
             </v-card>
           </v-flex>
         </v-layout>
-        <v-card tile outlined elevation="0" class="ma-1" :height="editorVh" max-width="100%">
+        <v-card tile outlined elevation="0" class="ma-1" max-width="100%" :style="{ height: editorVh }">
           <mavon-editor
             language="ja"
             code_style="monokai"
@@ -106,7 +106,7 @@ export default {
   watch: {},
   data: function() {
     return {
-      editorVh: this.$store.getters.getIsMobile ? "40vh" : "60vh",
+      editorVh: "calc(100% - 300px)",
       valid: true,
       snipData: {
         snipTitle: "",
