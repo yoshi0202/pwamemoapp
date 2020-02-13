@@ -2,7 +2,7 @@ import Vue from "vue";
 import VueRouter from "vue-router";
 import Home from "../views/Home.vue";
 import EditCard from "../views/EditCard.vue";
-import showCard from "../views/showCard.vue";
+import ShowCard from "../views/ShowCard.vue";
 import Login from "../views/Login.vue";
 import SignUp from "../views/SignUp.vue";
 import MyPage from "../views/MyPage.vue";
@@ -41,8 +41,8 @@ const routes = [
   },
   {
     path: "/:userId/snip/:snipId",
-    name: "showCard",
-    component: showCard,
+    name: "ShowCard",
+    component: ShowCard,
     meta: {
       isPublic: true
     }

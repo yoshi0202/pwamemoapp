@@ -109,7 +109,8 @@ router.post("/add", async function(req, res, next) {
         snipData: {
           title: req.body.snipTitle,
           contents: req.body.snipContents,
-          tags: req.body.snipTags
+          tags: req.body.snipTags,
+          snippets: req.body.snippets
         },
         pinCounts: 0,
         viewCounts: 0
@@ -141,7 +142,8 @@ router.post("/update", async function(req, res, next) {
         ":s": {
           title: req.body.snipTitle,
           tags: req.body.snipTags,
-          contents: req.body.snipContents
+          contents: req.body.snipContents || "",
+          snippets: req.body.snippets || ""
         },
         ":ca": Number(utils.getTimestamp())
       },

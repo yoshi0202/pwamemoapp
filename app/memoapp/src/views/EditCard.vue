@@ -49,8 +49,9 @@
           <v-flex xs12 sm12 md6 lg6>
             <v-card tile elevation="0" class="mx-1 pa-0">
               <v-textarea
+                wrap="soft"
                 v-model="snipData.snippets"
-                rows="5"
+                :rows="$store.getters.getIsMobile ? 5 : 15"
                 label="スニペットを入力(5行以内だと表示の時に省略されません)"
                 dense
                 outlined
@@ -62,7 +63,7 @@
             </v-card>
           </v-flex>
           <v-flex v-if="!$store.getters.getIsMobile" xs12 sm12 md6 lg6>
-            <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="118px">
+            <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="297px">
               <div class="fill-height overflow-y-auto">
                 <pre
                   v-highlightjs="snipData.snippets"
@@ -72,16 +73,17 @@
             </v-card>
           </v-flex>
         </v-layout>
-        <v-card tile outlined elevation="0" class="ma-1" max-width="100%" :style="{ height: editorVh }">
+        <v-card tile outlined elevation="0" :class="wrapperClass" max-width="100%">
           <mavon-editor
             language="ja"
-            code_style="monokai"
+            code_style="monokai-sublime"
             :externalLink="externalLink"
             v-model="snipData.snipContents"
             placeholder="スニペットの説明を記載(markdownが使えます)"
             :toolbarsFlag="mobileFlg"
             :subfield="mobileFlg"
-            class="markdown-edit"
+            :shortCut="false"
+            :class="editorClass"
           />
         </v-card>
       </v-card>
@@ -107,7 +109,6 @@ export default {
   watch: {},
   data: function() {
     return {
-      editorVh: "calc(100% - 310px)",
       valid: true,
       snipData: {
         snipTitle: "",
@@ -139,7 +140,9 @@ export default {
         hljs_lang: function() {
           return "/highlightjs/highlight.pack.js";
         }
-      }
+      },
+      editorClass: this.$store.getters.getIsMobile ? "markdown-edit-mobile" : "markdown-edit",
+      wrapperClass: this.$store.getters.getIsMobile ? "editor-wrapper-mobile ma-1" : "editor-wrapper ma-1"
     };
   },
   mounted: async function() {
@@ -158,6 +161,7 @@ export default {
         this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
         this.snipData.snipTags = getResult.data.Items[0].snipData.tags;
         this.snipData.snipContents = getResult.data.Items[0].snipData.contents;
+        this.snipData.snippets = getResult.data.Items[0].snipData.snippets;
       }
     } catch (err) {
       alert(JSON.stringify(err));
@@ -172,7 +176,8 @@ export default {
           snipId: this.snipId,
           snipTitle: this.snipData.snipTitle,
           snipTags: this.snipData.snipTags,
-          snipContents: this.snipData.snipContents
+          snipContents: this.snipData.snipContents,
+          snippets: this.snipData.snippets
         });
         this.$router.push("/");
       } catch (err) {
@@ -189,6 +194,7 @@ export default {
           snipContents: this.snipData.snipContents,
           snipType: 0,
           snipCounts: userInfo.snipCounts,
+          snippets: this.snipData.snippets,
           userId: userInfo.userId
         });
         this.$store.dispatch("incrementsSnipCounts");
@@ -203,8 +209,18 @@ export default {
 
 <style>
 .markdown-edit {
-  height: calc(100vh - 370px);
+  height: calc(100vh - 550px);
   z-index: 0 !important;
+}
+.editor-wrapper {
+  max-height: calc(100% - 480px);
+}
+.markdown-edit-mobile {
+  height: calc(100vh - 360px);
+  z-index: 0 !important;
+}
+.editor-wrapper-mobile {
+  max-height: calc(100% - 360px);
 }
 .auto-textarea-wrapper .auto-textarea-input {
   font-family: "Roboto , sans-serif" !important;
