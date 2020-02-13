@@ -30,7 +30,22 @@
                         @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
                         >mdi-playlist-edit</v-icon
                       >
-                      <v-icon large v-if="ownSnip" class="mx-3" @click="deleteCard">mdi-trash-can-outline</v-icon>
+                      <v-menu top offset-y>
+                        <template v-slot:activator="{ on }">
+                          <v-icon large v-on="on" v-if="ownSnip" class="mx-3">mdi-trash-can-outline</v-icon>
+                        </template>
+
+                        <v-list dense>
+                          <v-list-item @click="deleteSnip" style="cursor:pointer">
+                            <v-list-item-title>
+                              <span class="caption">
+                                <v-icon medium color="red">mdi-exclamation</v-icon>
+                                <span class="ml-3 red--text font-weight-bold">削除</span>
+                              </span>
+                            </v-list-item-title>
+                          </v-list-item>
+                        </v-list>
+                      </v-menu>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -73,7 +88,7 @@ import Mixin from "../mixin/mixin";
 import Loading from "@/components/Loading";
 
 export default {
-  name: "showCard",
+  name: "ShowCard",
   created: async function() {
     try {
       const userId = this.$route.params.userId;
@@ -126,7 +141,7 @@ export default {
         breaks: true
       });
     },
-    deleteCard: async function() {
+    deleteSnip: async function() {
       try {
         const apiUrl = this.$store.getters.getApiUrl + "api/";
         await axios.delete(apiUrl + "snip/destroy", {

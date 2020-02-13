@@ -12,7 +12,7 @@ import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 import VueCarousel from "vue-carousel";
 
 import VueHighlightJS from "vue-highlightjs";
-import "highlight.js/styles/monokai.css";
+import "highlight.js/styles/monokai-sublime.css";
 
 Vue.config.productionTip = false;
 

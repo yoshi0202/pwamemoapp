@@ -21,14 +21,7 @@
       <v-layout align-center>
         <span class="body-2 font-weight-thin">{{ changeUnixTimeToDate(data.createdAt) }}</span>
         <v-spacer></v-spacer>
-        <v-btn
-          body-2
-          small
-          text
-          color="purple lighten-2"
-          class="pa-0"
-          @click.stop="moveUserPage(data.userId)"
-          style="cursor:pointer"
+        <v-btn body-2 small text color="purple lighten-2" class="pa-0" @click.stop="moveUserPage(data.userId)"
           >@{{ userData[data.userId].displayName }}</v-btn
         >
         <v-btn icon class="pa-0">
@@ -38,8 +31,16 @@
     </v-card-actions>
     <v-expand-transition>
       <div v-show="show">
-        <v-card-text class="text--primary py-1 text-left">
-          <v-clamp autoresize :max-lines="5">{{ data.snipData.contents }}</v-clamp>
+        <v-card-text
+          v-if="data.snipData.snippets"
+          class="text--primary py-1 text-left overflow-y-auto"
+          style="max-height:200px; cursor:text"
+          @click.stop=""
+        >
+          <pre
+            v-highlightjs="data.snipData.snippets"
+            style="height:100%"
+          ><code class="javascript" style="background-color:#272822;width:100%; height:100%"></code></pre>
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
