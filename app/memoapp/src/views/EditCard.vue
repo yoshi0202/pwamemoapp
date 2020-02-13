@@ -66,7 +66,7 @@
               <div class="fill-height overflow-y-auto">
                 <pre
                   v-highlightjs="snipData.snippets"
-                  style="height:100%;background-color:#272822"
+                  style="height:100%"
                 ><code class="javascript" style="background-color:#272822;width:100%; height:100%"></code></pre>
               </div>
             </v-card>
@@ -76,11 +76,12 @@
           <mavon-editor
             language="ja"
             code_style="monokai"
-            :externalLink="false"
+            :externalLink="externalLink"
             v-model="snipData.snipContents"
-            placeholder="スニペットの説明を記載"
+            placeholder="スニペットの説明を記載(markdownが使えます)"
             :toolbarsFlag="mobileFlg"
             :subfield="mobileFlg"
+            class="markdown-edit"
           />
         </v-card>
       </v-card>
@@ -106,7 +107,7 @@ export default {
   watch: {},
   data: function() {
     return {
-      editorVh: "calc(100% - 300px)",
+      editorVh: "calc(100% - 310px)",
       valid: true,
       snipData: {
         snipTitle: "",
@@ -127,6 +128,17 @@ export default {
             v
           ) || "E-mail must be valid",
         min: v => (v && v.length <= 5) || "カテゴリは5個以内で選択してください。"
+      },
+      externalLink: {
+        hljs_js: function() {
+          return "/highlightjs/highlight.pack.js";
+        },
+        hljs_css: function() {
+          return "/highlightjs/monokai-sublime.css";
+        },
+        hljs_lang: function() {
+          return "/highlightjs/highlight.pack.js";
+        }
       }
     };
   },
@@ -190,12 +202,17 @@ export default {
 </script>
 
 <style>
-.markdown-body {
-  max-height: 100%;
-  height: 100%;
+.markdown-edit {
+  height: calc(100vh - 370px);
   z-index: 0 !important;
 }
+.auto-textarea-wrapper .auto-textarea-input {
+  font-family: "Roboto , sans-serif" !important;
+}
 code:before {
+  content: "" !important;
+}
+code:after {
   content: "" !important;
 }
 </style>
