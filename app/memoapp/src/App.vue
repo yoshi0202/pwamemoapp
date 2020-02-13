@@ -1,6 +1,7 @@
 <template>
   <v-app>
-    <Header @logout="logout" />
+    <Header @logout="logout" v-if="!$store.getters.getIsMobile" />
+    <MobileHeader @logout="logout" v-else />
     <!-- <v-content class="grey lighten-3 pa-0 ma-0"> -->
     <router-view />
     <!-- </v-content> -->
@@ -13,6 +14,7 @@
 
 <script>
 import Header from "./components/Header";
+import MobileHeader from "./components/MobileHeader";
 import NavigationDrawer from "./components/NavigationDrawer";
 import axios from "axios";
 
@@ -21,6 +23,7 @@ export default {
 
   components: {
     Header,
+    MobileHeader,
     NavigationDrawer
   },
 

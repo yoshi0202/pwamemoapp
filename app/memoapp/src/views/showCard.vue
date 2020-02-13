@@ -52,7 +52,9 @@
           </v-container>
           <v-container>
             <v-card>
-              <v-container v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
+              <v-container>
+                <v-container class="markdown-body" v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
+              </v-container>
             </v-card>
           </v-container>
           <v-container>
