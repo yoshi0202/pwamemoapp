@@ -16,7 +16,10 @@
 export default {
   Name: "LogoutMenu",
   data: () => ({
-    logoutItems: [{ title: "Login", icon: "mdi-login", action: "/login" }]
+    logoutItems: [
+      { title: "ユーザ登録", icon: "mdi-account-plus", action: "/signUP" },
+      { title: "ログイン", icon: "mdi-login", action: "/login" }
+    ]
   }),
   created: function() {},
   methods: {

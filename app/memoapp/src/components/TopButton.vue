@@ -1,5 +1,5 @@
 <template>
-  <v-container pa-0>
+  <span :class="margin">
     <v-btn to="/" text small color="purple lighten-2" class="text-center pa-0">
       <div class="d-flex align-center title pa-0">Snippy</div>
     </v-btn>
@@ -21,12 +21,17 @@
         </v-list-item>
       </v-list>
     </v-menu>
-  </v-container>
+  </span>
 </template>
 
 <script>
 export default {
-  Name: "TopButton"
+  Name: "TopButton",
+  data: function() {
+    return {
+      margin: this.$store.getters.getIsMobile ? "mr-0" : "mr-5"
+    };
+  }
 };
 </script>
 

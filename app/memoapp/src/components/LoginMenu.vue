@@ -17,9 +17,9 @@ export default {
   Name: "NavigationDrawer",
   data: () => ({
     loginItems: [
-      { title: "Profile", icon: "mdi-account", action: "mypage" },
-      { title: "Settings", icon: "mdi-tune", action: "setting" },
-      { title: "Logout", icon: "mdi-logout", action: "logout" }
+      { title: "マイページ", icon: "mdi-account", action: "mypage" },
+      { title: "設定", icon: "mdi-tune", action: "setting" },
+      { title: "ログアウト", icon: "mdi-logout", action: "logout" }
     ]
   }),
   created: function() {},
