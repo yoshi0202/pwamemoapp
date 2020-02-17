@@ -31,6 +31,7 @@
           >
             <template v-slot:selection="data">
               <v-chip
+                small
                 :key="JSON.stringify(data.item)"
                 v-bind="data.attrs"
                 :input-value="data.selected"
@@ -213,17 +214,21 @@ export default {
   z-index: 0 !important;
 }
 .editor-wrapper {
-  max-height: calc(100% - 480px);
+  max-height: calc(100vh - 550px);
 }
 .markdown-edit-mobile {
   height: calc(100vh - 360px);
   z-index: 0 !important;
 }
 .editor-wrapper-mobile {
-  max-height: calc(100% - 360px);
+  max-height: calc(100vh - 360px);
 }
 .auto-textarea-wrapper .auto-textarea-input {
   font-family: "Roboto , sans-serif" !important;
+}
+.v-note-wrapper {
+  /* min-height: calc(100% - 600px); */
+  min-height: calc(100vh - 550px) !important;
 }
 code:before {
   content: "" !important;

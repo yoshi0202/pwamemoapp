@@ -9,6 +9,7 @@
     "deploy": "npm run build && aws s3 cp dist/ s3://snippy.site/ --recursive --cache-control max-age=0"
   },
   "dependencies": {
+    "algoliasearch": "^4.0.3",
     "axios": "^0.19.0",
     "core-js": "^3.4.4",
     "ismobilejs": "^1.0.3",

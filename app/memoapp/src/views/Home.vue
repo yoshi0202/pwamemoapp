@@ -14,6 +14,9 @@
               <v-container pa-0 text-center>
                 <Loading />
               </v-container>
+              <v-container px-0 v-if="$store.getters.getIsMobile">
+                <Search />
+              </v-container>
               <v-layout>
                 <v-spacer></v-spacer>
                 <v-card
@@ -50,6 +53,7 @@
 import Card from "@/components/Card";
 import CategoryMenu from "@/components/CategoryMenu";
 import Loading from "@/components/Loading";
+import Search from "@/components/Search";
 import axios from "axios";
 import Store from "@/store/index.js";
 const apiUrl = Store.getters.getApiUrl + "api/";
@@ -59,7 +63,8 @@ export default {
   components: {
     Card,
     CategoryMenu,
-    Loading
+    Loading,
+    Search
   },
   props: {},
   watch: {

@@ -30,3 +30,5 @@ services:
       - TWITTER_CONSUMER_SECRET
       - FRONT_BASE_URL
       - API_BASE_URL
+      - ALGOLIA_APP_ID
+      - ALGOLIA_API_KEY

@@ -1,6 +1,7 @@
 <template>
   <v-card
     class="mx-auto snippy-card card-outter border-bottom-none"
+    elevation="0"
     :ripple="false"
     :retain-focus-on-click="retain"
     @mouseover="elevation = 10"
@@ -122,7 +123,7 @@ export default {
   bottom: 30px;
 }
 .border-bottom-none {
-  border: 0 !important;
+  /* border: 0 !important; */
 }
 .v-btn {
   text-transform: none !important;

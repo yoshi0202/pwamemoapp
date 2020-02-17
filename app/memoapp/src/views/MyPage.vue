@@ -4,7 +4,7 @@
       <v-layout class="justify-center" wrap>
         <v-flex xs12 sm12 md12 lg10 xl8>
           <Loading />
-          <v-card outlined height="100%">
+          <v-card outlined tile height="100%">
             <v-list-item style="background-color:#000000;" dark>
               <v-card-title class="py-3">
                 <h1 class="font-weight-bold display-1 white--text">Profile</h1>
@@ -37,9 +37,9 @@
                 </v-flex>
                 <v-flex xs12 sm12 md8 lg7 xl8>
                   <v-container pa-0>
-                    <v-card color="black">
+                    <v-card tile color="black">
                       <v-card-title class="text-center justify-center">
-                        <h3 class="headline white--text">Snippets</h3>
+                        <h3 class="headline white--text">UserSnippets</h3>
                       </v-card-title>
 
                       <v-tabs v-model="tab" background-color="white" color="purple lighten-2" grow>
@@ -49,7 +49,7 @@
                       <v-tabs-items v-model="tab">
                         <v-tab-item v-for="(key, i) in userData.snippets" :key="i">
                           <v-divider></v-divider>
-                          <v-card color="basil" flat v-for="snippets in key" :key="snippets.snipId">
+                          <v-card flat v-for="snippets in key" :key="snippets.snipId">
                             <v-list two-line subheader>
                               <v-list-item
                                 @click="

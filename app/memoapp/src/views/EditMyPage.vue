@@ -3,10 +3,10 @@
     <v-container fill-height>
       <v-layout class="justify-center" wrap>
         <v-flex xs12 sm12 md12 lg10 xl8>
-          <v-card outlined height="100%">
+          <v-card outlined tile height="100%">
             <v-list-item style="background-color:#000000;" dark>
               <v-card-title class="py-3">
-                <h1 class="font-weight-bold display-1 white--text">User Settings</h1>
+                <h1 class="font-weight-bold display-1 white--text">Edit Profile</h1>
               </v-card-title>
             </v-list-item>
             <v-container pa-5>

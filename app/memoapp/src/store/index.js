@@ -23,7 +23,9 @@ export default new Vuex.Store({
     drawer: false,
     url: process.env.VUE_APP_BASE_URL,
     loading: true,
-    errorMsg: null
+    errorMsg: null,
+    algoliaAppId: process.env.VUE_APP_ALGOLIA_APP_ID,
+    algoliaApiKey: process.env.VUE_APP_ALGOLIA_API_KEY
   },
   getters: {
     getLogin(state) {
@@ -52,6 +54,12 @@ export default new Vuex.Store({
     },
     getLoadingStatus(state) {
       return state.loading;
+    },
+    getAlgoliaAppId(state) {
+      return state.algoliaAppId;
+    },
+    getAlgoliaApiKey(state) {
+      return state.algoliaApiKey;
     },
     getErrorMsg(state) {
       return state.errorMsg;
