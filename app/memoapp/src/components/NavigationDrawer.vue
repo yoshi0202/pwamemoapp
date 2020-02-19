@@ -30,6 +30,20 @@
       </div>
     </v-list>
     <v-divider></v-divider>
+    <v-list dense>
+      <v-container pa-0 text-center>
+        <v-list-item to="/about">
+          <v-list-item-icon>
+            <v-icon class="px-2">mdi-information-outline</v-icon>
+          </v-list-item-icon>
+
+          <v-list-item-content>
+            <v-list-item-title>Snippyについて</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+      </v-container>
+    </v-list>
+    <v-divider></v-divider>
     <CategoryMenu />
   </v-navigation-drawer>
 </template>

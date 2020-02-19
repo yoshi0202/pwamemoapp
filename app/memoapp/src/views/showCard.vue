@@ -1,23 +1,25 @@
 <template>
   <v-content>
-    <v-container fill-height>
+    <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
+      <Loading />
+    </v-container>
+    <v-container v-else fill-height>
       <v-layout class="justify-center" wrap>
         <v-flex xs12 sm12 md12 lg10 xl8 text-center>
-          <Loading />
-          <v-container>
+          <v-container pa-0>
             <v-card tile outlined height="100%">
               <v-list-item style="background-color:#000000;" dark>
                 <v-card-title class="py-3 ma-0 px-0" style="width:100%">
-                  <v-container pa-0 ma-0 d-flex justify-space-between>
+                  <v-container pa-0 ma-0 d-flex justify-space-between font-weight-bold headline>
                     {{ snipData.snipData.title }}
                     <v-spacer></v-spacer>
-                    <v-icon class="mx-3" :color="pin.pinColor" @click="clickSnipPin">{{ pin.pinIcon }}</v-icon>
+                    <v-btn small dark icon @click="clickSnipPin">
+                      <v-icon :color="pin.pinColor" class>{{ pin.pinIcon }}</v-icon>
+                    </v-btn>
                     <v-menu offset-y v-if="ownSnip">
                       <template v-slot:activator="{ on }">
                         <v-btn small dark icon v-on="on">
-                          <v-icon color="#C7B967">
-                            mdi-dots-vertical
-                          </v-icon>
+                          <v-icon color="#C7B967" class="ml-3">mdi-dots-vertical</v-icon>
                         </v-btn>
                       </template>
                       <v-list dense>
@@ -33,25 +35,10 @@
                           </v-list-item-title>
                         </v-list-item>
                         <v-list-item style="cursor:pointer" @click="overlay = !overlay">
-                          <!-- <v-menu top offset-y> -->
-                          <!-- <template v-slot:activator="{ on }"> -->
                           <span class="caption">
-                            <v-icon v-on="on" medium color="red">mdi-trash-can-outline</v-icon>
+                            <v-icon medium color="red">mdi-trash-can-outline</v-icon>
                             <span class="ml-3 red--text">削除</span>
                           </span>
-                          <!-- </template> -->
-
-                          <!-- <v-list dense>
-                              <v-list-item @click="deleteSnip" style="cursor:pointer">
-                                <v-list-item-title>
-                                  <span class="caption">
-                                    <v-icon medium color="red">mdi-exclamation</v-icon>
-                                    <span class="ml-3 red--text font-weight-bold">削除</span>
-                                  </span>
-                                </v-list-item-title>
-                              </v-list-item>
-                            </v-list>
-                          </v-menu> -->
                         </v-list-item>
                       </v-list>
                     </v-menu>
@@ -60,40 +47,66 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-avatar size="50" color="grey">
-                  <img @click="toUserPage" :src="userData" alt="avator" style="cursor: pointer;" />
+                  <img
+                    @click="toUserPage"
+                    :src="userData.imgUrl"
+                    alt="avator"
+                    style="cursor: pointer;"
+                  />
                 </v-list-item-avatar>
                 <v-list-item-content class="fluid">
                   <v-layout wrap>
                     <v-flex mb12 xs12>
-                      <v-container text-left>@xxxxxxxxxxxxxxxxxx</v-container>
+                      <v-container py-0 text-left font-weight-bold title>@{{userData.displayName}}</v-container>
                     </v-flex>
                     <v-flex mb12 xs12 class="text-left">
-                      <v-container text-left font-weight-thin>
-                        {{ changeUnixTimeToDate(snipData.createdAt) }}
-                      </v-container>
+                      <v-container
+                        text-left
+                        font-weight-thin
+                      >{{ changeUnixTimeToDate(snipData.createdAt) }}</v-container>
                     </v-flex>
                   </v-layout>
                 </v-list-item-content>
               </v-list-item>
-              <v-container text-left>
-                <v-chip small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text" color="grey">
+              <v-container px-5 d-flex justify-start align-center>
+                <v-chip
+                  small
+                  v-for="tag in snipData.snipData.tags"
+                  :key="tag"
+                  class="mx-1 black--text"
+                  color="grey"
+                >
                   <v-avatar left>
                     <img :src="'/img/' + tag + '.svg'" />
                   </v-avatar>
                   {{ tag }}
                 </v-chip>
+                <v-spacer></v-spacer>
+                <span class="px-3">
+                  <div class="twitter">
+                    <a
+                      href="//twitter.com/share"
+                      data-text="コードスニペット共有サイト[Snippy]"
+                      :data-url="$router.currentRoute.path"
+                      data-lang="ja"
+                    >
+                      <v-icon large color="blue">mdi-twitter</v-icon>
+                    </a>
+                  </div>
+                </span>
               </v-container>
               <v-container text-left pb-0 v-if="snipData.snipData.snippets">
                 <v-container py-0>
-                  <pre
-                    v-highlightjs="snipData.snipData.snippets"
-                    style="height:100%"
-                  ><code class="javascript tile" style="background-color:#272822;width:100%; height:100%"></code></pre>
+                  <pre v-highlightjs="snipData.snipData.snippets" style="height:100%"><code class="javascript tile" style="background-color:#272822;width:100%; height:100%"></code></pre>
                 </v-container>
               </v-container>
               <v-container>
                 <v-divider></v-divider>
-                <v-container class="markdown-body" v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
+                <v-container
+                  class="markdown-body"
+                  v-html="parseMd(snipData.snipData.contents)"
+                  text-left
+                ></v-container>
               </v-container>
             </v-card>
           </v-container>
@@ -101,16 +114,10 @@
       </v-layout>
     </v-container>
     <v-overlay opacity="0.9" :value="overlay">
-      <v-container>
-        このスニペットを削除しますか？
-      </v-container>
+      <v-container>このスニペットを削除しますか？</v-container>
       <v-container text-center>
-        <v-btn class="mr-5" outlined color="red" @click="deleteSnip">
-          削除
-        </v-btn>
-        <v-btn color="grey" @click="overlay = false">
-          キャンセル
-        </v-btn>
+        <v-btn class="mr-5" outlined color="red" @click="deleteSnip">削除</v-btn>
+        <v-btn color="grey" @click="overlay = false">キャンセル</v-btn>
       </v-container>
     </v-overlay>
   </v-content>

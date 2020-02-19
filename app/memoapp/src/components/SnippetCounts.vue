@@ -1,20 +1,26 @@
 <template>
   <v-card outlined tile color="transparent">
     <v-container text-center px-0 ma-0>
-      <v-card tile elevation="0" outlined color="black " dark v-if="!$store.getters.getIsMobile">
-        <v-container py-2 transparent subtitle-1 font-weight-bold text-right>カテゴリ</v-container>
+      <v-card tile elevation="0" outlined color="black" dark v-if="!$store.getters.getIsMobile">
+        <v-container py-2 transparent subtitle-1 font-weight-bold text-right>スニペット投稿数ランキング</v-container>
       </v-card>
-      <v-card outlined tile elevation="0" class="border-none" color="transparent">
+      <v-card :loading="true" outlined tile elevation="0" class="border-none" color="white">
         <v-list dense color="transparent" class="border-none">
           <v-list-item-group color="purple" v-model="select">
-            <v-list-item v-for="(m, i) in menu" :key="i" @click="changeCategory(m, i)">
+            <v-list-item v-for="(m,i) in menu" :key="i">
               <v-list-item-icon class="text-left">
-                <img :src="'img/' + m + '.svg'" style="width:30px;max-width:30px;max-height:auto" />
+                <v-avator>
+                  <img :src="m.imgUrl" style="width:30px;max-width:30px;max-height:auto" />
+                </v-avator>
               </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title v-text="m" class="text-right font-weight-bold caption"></v-list-item-title>
+                <v-list-item-title
+                  v-text="m.displayName"
+                  class="text-right font-weight-bold caption"
+                ></v-list-item-title>
               </v-list-item-content>
             </v-list-item>
+            <v-divider></v-divider>
           </v-list-item-group>
         </v-list>
       </v-card>
@@ -27,19 +33,20 @@
 import axios from "axios";
 
 export default {
-  Name: "CategoryMenu",
+  Name: "SnippetCounts",
   watch: {},
   data: function() {
     return {
       menu: [],
-      select: null
+      select: 1
     };
   },
   created: async function() {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
-    const categoryUrl = apiUrl + "category/categories";
-    const getCategories = await axios.get(categoryUrl);
-    getCategories.data.Items.map(v => this.menu.push(v.category));
+    const snipCounts = apiUrl + "ranking/snipCounts";
+    const getSnipCounts = await axios.get(snipCounts);
+    // getSnipCounts.data.Items.map(v => this.menu.push(v.displayName));
+    this.menu = getSnipCounts.data.Items;
   },
   component: {},
   methods: {
@@ -55,10 +62,4 @@ export default {
 </script>
 
 <style>
-.border-none {
-  /* border-right: 0 !important;
-  border-left: 0 !important;
-  border-bottom: 0 !important;
-  border-radius: 0 !important; */
-}
 </style>

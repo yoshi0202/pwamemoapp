@@ -13,6 +13,7 @@ const snipRouter = require("./routes/snip");
 const userRouter = require("./routes/user");
 const authRouter = require("./routes/auth");
 const categoryRouter = require("./routes/category");
+const rankingRouter = require("./routes/ranking");
 
 var app = express();
 
@@ -30,6 +31,7 @@ const DynamoDBStoreOptions = {
   // reapInterval: 24 * 60* 60 * 1000 //セッション情報の保持時間
 };
 
+// app.set("trust proxy", 1); // trust first proxy
 app.use(
   session({
     store: new DynamoDBStore(DynamoDBStoreOptions),
@@ -37,7 +39,8 @@ app.use(
     secret: "some secret",
     resave: true,
     saveUninitialized: false,
-    cookie: { secure: process.env.SECURE_COOKIE }
+    cookie: { secure: false }
+    // cookie: { secure: true }
   })
 );
 
@@ -52,6 +55,7 @@ app.use(passport.initialize());
 app.use("/api/snip", snipRouter);
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
+app.use("/api/ranking", rankingRouter);
 app.use("/auth", authRouter);
 
 app.use(function(req, res, next) {

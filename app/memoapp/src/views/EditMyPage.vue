@@ -1,6 +1,9 @@
 <template>
   <v-content>
-    <v-container fill-height>
+    <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
+      <Loading />
+    </v-container>
+    <v-container v-else fill-height>
       <v-layout class="justify-center" wrap>
         <v-flex xs12 sm12 md12 lg10 xl8>
           <v-card outlined tile height="100%">
@@ -31,7 +34,13 @@
                           </v-row>
                         </template>
                       </v-img>
-                      <input type="file" style="display:none" ref="fileUploads" name="avatar" @change="changeUserImg" />
+                      <input
+                        type="file"
+                        style="display:none"
+                        ref="fileUploads"
+                        name="avatar"
+                        @change="changeUserImg"
+                      />
                     </v-container>
                   </v-flex>
                   <v-flex xs12 sm12 md12 lg7 xl8>
@@ -91,8 +100,7 @@
                         class="font-weight-bold"
                         color="purple lighten-2"
                         style="bottom:20px; right:20px; position:absolute"
-                        >プロフィールを更新する</v-btn
-                      >
+                      >プロフィールを更新する</v-btn>
                     </v-container>
                   </v-flex>
                 </v-layout>
@@ -108,11 +116,12 @@
 <script>
 import axios from "axios";
 import Store from "@/store/index.js";
+import Loading from "@/components/Loading";
 const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "EditMyPage",
-  mounted: async function() {
+  created: async function() {
     const userId = this.$route.params.userId;
     if (userId !== this.$store.getters.getUserId) {
       this.$router.push("/");
@@ -166,7 +175,7 @@ export default {
     }
   },
   components: {
-    // Loading
+    Loading
   }
 };
 </script>

@@ -3,7 +3,7 @@
     <v-btn to="/" text small color="purple lighten-2" class="text-center pa-0">
       <div class="d-flex align-center title pa-0">Snippy</div>
     </v-btn>
-    <v-menu offset-y>
+    <v-menu offset-y v-if="!$store.getters.getIsMobile">
       <template v-slot:activator="{ on }">
         <v-btn small dark icon v-on="on">
           <v-icon color="#C7B967">mdi-menu-down</v-icon>
@@ -29,7 +29,7 @@ export default {
   Name: "TopButton",
   data: function() {
     return {
-      margin: this.$store.getters.getIsMobile ? "mr-0" : "mr-5"
+      margin: this.$store.getters.getIsMobile ? "ml-5" : "mr-5"
     };
   }
 };
