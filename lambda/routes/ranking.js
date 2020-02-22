@@ -19,7 +19,41 @@ router.get("/snipCounts", async function(req, res, next) {
       Limit: 5
     };
     const result = await dynamo.query(params).promise();
+    res.json(result);
+  } catch (err) {
+    next(utils.createErrorObj(500, err));
+  }
+});
+router.get("/currentryViewed", async function(req, res, next) {
+  try {
+    let params = {
+      TableName: tableName,
+      IndexName: "snipType-viewedAt-index",
+      ExpressionAttributeNames: { "#s": "snipType", "#v": "viewedAt" },
+      ExpressionAttributeValues: { ":s": 0, ":v": 0 },
+      KeyConditionExpression: "#s = :s AND #v > :v",
+      ScanIndexForward: false,
+      Limit: 5
+    };
+    const result = await dynamo.query(params).promise();
     console.log(result);
+    res.json(result);
+  } catch (err) {
+    next(utils.createErrorObj(500, err));
+  }
+});
+router.get("/currentryPin", async function(req, res, next) {
+  try {
+    let params = {
+      TableName: pinTableName,
+      IndexName: "pinFlg-pinCreatedAt-index",
+      ExpressionAttributeNames: { "#pf": "pinFlg", "#pc": "pinCreatedAt" },
+      ExpressionAttributeValues: { ":pf": 1, ":pc": 0 },
+      KeyConditionExpression: "#pf = :pf AND #pc > :pc",
+      ScanIndexForward: false,
+      Limit: 5
+    };
+    const result = await dynamo.query(params).promise();
     res.json(result);
   } catch (err) {
     next(utils.createErrorObj(500, err));

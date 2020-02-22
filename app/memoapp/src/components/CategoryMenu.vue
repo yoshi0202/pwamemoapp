@@ -1,20 +1,46 @@
 <template>
   <v-card outlined tile color="transparent">
     <v-container text-center px-0 ma-0>
-      <v-card tile elevation="0" outlined color="black " dark v-if="!$store.getters.getIsMobile">
-        <v-container py-2 transparent subtitle-1 font-weight-bold text-right>カテゴリ</v-container>
+      <v-card tile elevation="0" class="menu-card mb-1" v-if="!$store.getters.getIsMobile">
+        <v-container
+          py-2
+          transparent
+          subtitle-1
+          font-weight-bold
+          text-left
+          blue-grey--text
+          text--darken-3
+          d-flex
+          align-center
+          justify-space-between
+        >
+          <v-icon>mdi-view-list</v-icon>
+          <span>カテゴリ</span>
+          <span></span>
+        </v-container>
       </v-card>
-      <v-card outlined tile elevation="0" class="border-none" color="transparent">
-        <v-list dense color="transparent" class="border-none">
+      <v-card tile elevation="0" color="white">
+        <v-list outlined dense class="py-0">
           <v-list-item-group color="purple" v-model="select">
-            <v-list-item v-for="(m, i) in menu" :key="i" @click="changeCategory(m, i)">
-              <v-list-item-icon class="text-left">
-                <img :src="'img/' + m + '.svg'" style="width:30px;max-width:30px;max-height:auto" />
-              </v-list-item-icon>
-              <v-list-item-content>
-                <v-list-item-title v-text="m" class="text-right font-weight-bold caption"></v-list-item-title>
-              </v-list-item-content>
-            </v-list-item>
+            <template v-for="(m, i) in menu">
+              <v-list-item :key="m" @click="changeCategory(m, i)">
+                <template v-slot:default>
+                  <v-list-item-avatar tile size="20px">
+                    <img :src="'img/' + m + '.svg'" />
+                  </v-list-item-avatar>
+                  <v-list-item-content>
+                    <v-list-item-title
+                      v-text="m"
+                      class="text-left font-weight-bold caption blue-grey--text text--darken-3"
+                    ></v-list-item-title>
+                  </v-list-item-content>
+                  <v-list-item-action>
+                    <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>
+                  </v-list-item-action>
+                </template>
+              </v-list-item>
+              <v-divider v-if="i + 1 < menu.length" :key="i"></v-divider>
+            </template>
           </v-list-item-group>
         </v-list>
       </v-card>
@@ -53,12 +79,3 @@ export default {
   }
 };
 </script>
-
-<style>
-.border-none {
-  /* border-right: 0 !important;
-  border-left: 0 !important;
-  border-bottom: 0 !important;
-  border-radius: 0 !important; */
-}
-</style>

@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-content class="grey lighten-3">
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
@@ -19,7 +19,7 @@
                   <v-container style="max-width:100%">
                     <v-img
                       :src="userData.userData.imgUrl"
-                      alt="avator"
+                      alt="avatar"
                       aspect-ratio="1"
                       class="grey lighten-2"
                       max-height="100%"
@@ -73,11 +73,9 @@
 
                                 <v-list-item-content>
                                   <v-list-item-title>{{ snippets.snipData.title }}</v-list-item-title>
-                                  <v-list-item-subtitle>
-                                    {{
-                                    changeUnixTimeToDate(snippets.createdAt)
-                                    }}
-                                  </v-list-item-subtitle>
+                                  <v-list-item-subtitle
+                                    v-text="changeUnixTime(snippets.createdAt, 'getFullTimestamp')"
+                                  ></v-list-item-subtitle>
                                 </v-list-item-content>
 
                                 <v-list-item-action>
@@ -161,11 +159,4 @@ export default {
 </script>
 
 <style scoped>
-/* Helper classes */
-.basil {
-  background-color: #147f9b !important;
-}
-.basil--text {
-  color: white !important;
-}
 </style>

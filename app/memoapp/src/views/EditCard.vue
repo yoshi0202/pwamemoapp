@@ -1,100 +1,117 @@
 <template>
   <v-content>
-    <v-container fluid pa-0 ma-0 fill-height>
-      <v-card outlined tile elevation="0" class="pa-0" height="100%" width="100%">
-        <v-card tile elevation="0" class="mx-1 my-2">
-          <v-text-field
-            v-model="snipData.snipTitle"
-            label="スニペットタイトル"
+    <v-form v-model="valid">
+      <v-container fluid pa-0 ma-0 fill-height>
+        <v-card outlined tile elevation="0" class="pa-0" height="100%" width="100%">
+          <v-card tile elevation="0" class="mx-1 my-2">
+            <v-text-field
+              v-model="snipData.snipTitle"
+              label="スニペットタイトル"
+              outlined
+              hide-details
+              :rules="[rules.required]"
+              class="my-2"
+              color="purple lighten-2"
+            ></v-text-field>
+            <v-autocomplete
+              v-model="snipData.snipTags"
+              :items="categories"
+              hide-details
+              outlined
+              dense
+              small-chips
+              label="カテゴリ"
+              auto-select-first
+              class="my-2"
+              color="purple lighten-2"
+              item-color="purple"
+              :rules="[rules.required]"
+              return-object
+            >
+              <template v-slot:selection="data">
+                <v-chip
+                  small
+                  :key="JSON.stringify(data.item)"
+                  v-bind="data.attrs"
+                  :input-value="data.selected"
+                  :disabled="data.disabled"
+                  @click:close="data.parent.selectItem(data.item)"
+                >
+                  <v-avatar left>
+                    <img :src="'/img/' + data.item + '.svg'" />
+                  </v-avatar>
+                  {{ data.item }}
+                </v-chip>
+              </template>
+            </v-autocomplete>
+          </v-card>
+          <v-layout wrap style="max-height:100%">
+            <v-flex xs12 sm12 md6 lg6>
+              <v-card tile elevation="0" class="mx-1 pa-0">
+                <v-textarea
+                  wrap="soft"
+                  v-model="snipData.snippets"
+                  :rows="$store.getters.getIsMobile ? 5 : 15"
+                  label="スニペットを入力(5行以内だと表示の時に省略されません)"
+                  dense
+                  outlined
+                  hide-details
+                  :rules="[rules.required]"
+                  class="my-1"
+                  color="purple lighten-2"
+                ></v-textarea>
+              </v-card>
+            </v-flex>
+            <v-flex v-if="!$store.getters.getIsMobile" xs12 sm12 md6 lg6>
+              <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="297px">
+                <div class="fill-height overflow-y-auto">
+                  <pre v-highlightjs="snipData.snippets" style="height:100%"><code class="html" style="background-color:#272822;width:100%; height:100%"></code></pre>
+                </div>
+              </v-card>
+            </v-flex>
+          </v-layout>
+          <v-card
+            tile
             outlined
-            hide-details
-            :rules="[rules.required]"
-            class="my-2"
-            color="purple lighten-2"
-          ></v-text-field>
-          <v-autocomplete
-            v-model="snipData.snipTags"
-            :items="categories"
-            hide-details
-            outlined
-            eager
-            dense
-            chips
-            small-chips
-            label="カテゴリ(5つまで選択)"
-            multiple
-            auto-select-first
-            class="my-2"
-            color="purple lighten-2"
-            item-color="purple"
-            :rules="[rules.min, rules.required]"
+            elevation="0"
+            :class="wrapperClass"
+            max-width="100%"
+            :color="validColor"
           >
-            <template v-slot:selection="data">
-              <v-chip
-                small
-                :key="JSON.stringify(data.item)"
-                v-bind="data.attrs"
-                :input-value="data.selected"
-                :disabled="data.disabled"
-                @click:close="data.parent.selectItem(data.item)"
-              >
-                <v-avatar left>
-                  <img :src="'/img/' + data.item + '.svg'" />
-                </v-avatar>
-                {{ data.item }}
-              </v-chip>
-            </template>
-          </v-autocomplete>
+            <mavon-editor
+              language="ja"
+              code_style="monokai-sublime"
+              :externalLink="externalLink"
+              v-model="snipData.snipContents"
+              placeholder="スニペットの説明を記載(markdownが使えます)"
+              :toolbarsFlag="mobileFlg"
+              :subfield="mobileFlg"
+              :shortCut="false"
+              :class="editorClass"
+              :toolbars="toolbars"
+            />
+          </v-card>
         </v-card>
-        <v-layout wrap style="max-height:100%">
-          <v-flex xs12 sm12 md6 lg6>
-            <v-card tile elevation="0" class="mx-1 pa-0">
-              <v-textarea
-                wrap="soft"
-                v-model="snipData.snippets"
-                :rows="$store.getters.getIsMobile ? 5 : 15"
-                label="スニペットを入力(5行以内だと表示の時に省略されません)"
-                dense
-                outlined
-                hide-details
-                :rules="[rules.required]"
-                class="my-1"
-                color="purple lighten-2"
-              ></v-textarea>
-            </v-card>
-          </v-flex>
-          <v-flex v-if="!$store.getters.getIsMobile" xs12 sm12 md6 lg6>
-            <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="297px">
-              <div class="fill-height overflow-y-auto">
-                <pre
-                  v-highlightjs="snipData.snippets"
-                  style="height:100%"
-                ><code class="javascript" style="background-color:#272822;width:100%; height:100%"></code></pre>
-              </div>
-            </v-card>
-          </v-flex>
-        </v-layout>
-        <v-card tile outlined elevation="0" :class="wrapperClass" max-width="100%">
-          <mavon-editor
-            language="ja"
-            code_style="monokai-sublime"
-            :externalLink="externalLink"
-            v-model="snipData.snipContents"
-            placeholder="スニペットの説明を記載(markdownが使えます)"
-            :toolbarsFlag="mobileFlg"
-            :subfield="mobileFlg"
-            :shortCut="false"
-            :class="editorClass"
-          />
-        </v-card>
-      </v-card>
-    </v-container>
+      </v-container>
+    </v-form>
     <v-footer fixed class="font-weight-medium" color="black">
       <v-card width="100%" tile elevation="0" color="transparent" class="text-right">
-        <v-btn dark v-if="editMode" color="purple lighten-2" @click="update" class="font-weight-bold"
-          >スニペットを更新</v-btn
-        >
-        <v-btn v-else dark class="font-weight-bold" color="purple lighten-2" @click="add">スニペットを追加</v-btn>
+        <v-btn
+          :disabled="!valid || !snipData.snipContents || !snipData.snipTags || !snipData.snippets.replace(/\s+/g, '') || !snipData.snipTitle.replace(/\s+/g, '')"
+          dark
+          v-if="editMode"
+          color="purple lighten-2"
+          @click="update"
+          class="font-weight-bold"
+        >スニペットを更新</v-btn>
+        <v-btn
+          :disabled="!valid || !snipData.snipContents || !snipData.snipTags || !snipData.snippets.replace(/\s+/g, '') || !snipData.snipTitle.replace(/\s+/g, '')"
+          v-else
+          dark
+          class="font-weight-bold"
+          color="purple lighten-2"
+          @click="add"
+        >スニペットを追加</v-btn>
       </v-card>
     </v-footer>
   </v-content>
@@ -111,11 +128,12 @@ export default {
   data: function() {
     return {
       valid: true,
+      validColor: null,
       snipData: {
         snipTitle: "",
         snipTags: [],
         snipContents: "",
-        snippets: "スニペットプレビュー"
+        snippets: ""
       },
       parseContents: "",
       mobileFlg: !this.$store.getters.getIsMobile,
@@ -143,10 +161,14 @@ export default {
         }
       },
       editorClass: this.$store.getters.getIsMobile ? "markdown-edit-mobile" : "markdown-edit",
-      wrapperClass: this.$store.getters.getIsMobile ? "editor-wrapper-mobile ma-1" : "editor-wrapper ma-1"
+      wrapperClass: this.$store.getters.getIsMobile ? "editor-wrapper-mobile ma-1" : "editor-wrapper ma-1",
+      toolbars: {
+        preview: true,
+        subfield: true
+      }
     };
   },
-  mounted: async function() {
+  created: async function() {
     try {
       const categoryUrl = apiUrl + "category/categories";
       const getCategories = await axios.get(categoryUrl);
@@ -160,7 +182,7 @@ export default {
         const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
         const getResult = await axios.get(url);
         this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
-        this.snipData.snipTags = getResult.data.Items[0].snipData.tags;
+        this.snipData.snipTags = getResult.data.Items[0].snipData.tags[0];
         this.snipData.snipContents = getResult.data.Items[0].snipData.contents;
         this.snipData.snippets = getResult.data.Items[0].snipData.snippets;
       }
@@ -201,7 +223,7 @@ export default {
         this.$store.dispatch("incrementsSnipCounts");
         this.$router.push("/");
       } catch (err) {
-        alert(JSON.stringify(err));
+        // alert(JSON.stringify(err));
       }
     }
   }

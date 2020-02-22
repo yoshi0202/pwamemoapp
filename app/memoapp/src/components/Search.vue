@@ -14,15 +14,15 @@
       @click="blankModel"
     >
       <template v-slot:item="{ item }">
-        <v-list-item-avatar class="headline font-weight-light white--text">
+        <!-- <v-list-item-avatar class="headline font-weight-light white--text">
           <v-img :src="'/img/' + item.tags[0] + '.svg'" max-height="20" aspect-ratio="1" contain></v-img>
         </v-list-item-avatar>
         <v-list-item-content>
           <v-list-item-title v-text="item.title"></v-list-item-title>
         </v-list-item-content>
-      </template>
-      <!-- <v-list-item @click="clickTitle(item.userId, item.snipId)"> -->
-      <!-- <v-list-item>
+        </template>-->
+        <v-list-item @click="clickTitle(item.userId, item.snipId)">
+          <!-- <v-list-item> -->
           <v-list-item-avatar color="puple lighten-2" class="caption">
             <v-img :src="'/img/' + item.tags[0] + '.svg'" max-height="20" aspect-ratio="1" contain></v-img>
           </v-list-item-avatar>
@@ -30,7 +30,7 @@
             <v-list-item-title v-text="item.title"></v-list-item-title>
           </v-list-item-content>
         </v-list-item>
-      </template>-->
+      </template>
       <!-- <template v-slot:no-data>
         <v-list-item>
           <v-list-item-title>結果なし</v-list-item-title>
@@ -62,20 +62,23 @@ export default {
     // console.log(`items:${v}`);
     // },
     search: async function(v) {
-      if (v) {
+      if (!v) return (this.items = []);
+      if (this.searching) return;
+      this.searching = true;
+      let self = this;
+      setTimeout(async () => {
         const { hits } = await index.search(v);
-        // console.log(hits);
+        console.log(hits);
         for (const h of hits) {
           let obj = {
             ...h.snipData,
             snipId: h.snipId,
             userId: h.userId
           };
-          this.items.push(obj);
+          self.items.push(obj);
         }
-      } else {
-        this.items = [];
-      }
+        self.searching = false;
+      }, 1000);
     }
   },
   data: function() {
@@ -84,7 +87,9 @@ export default {
       items: [],
       search: null,
       model: null,
-      solo: !this.$store.getters.getIsMobile
+      solo: !this.$store.getters.getIsMobile,
+      outlined: !this.$store.getters.getIsMobile,
+      searching: false
     };
   },
   methods: {

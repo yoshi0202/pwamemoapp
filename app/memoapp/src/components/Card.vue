@@ -1,6 +1,7 @@
 <template>
   <v-card
     class="ma-0 snippy-card card-outter"
+    outlined
     tile
     elevation="0"
     :ripple="false"
@@ -12,16 +13,20 @@
   >
     <v-list-item>
       <v-list-item-avatar size="40" color="grey" class="mr-0">
-        <img :src="userData[data.userId].imgUrl" alt="avator" />
+        <img :src="userData[data.userId].imgUrl" alt="avatar" />
       </v-list-item-avatar>
-      <v-card-title class="subtitle-1 py-0 font-weight-black d-flex justify-space-between">
+      <v-card-title
+        class="blue-grey--text text--darken-3 subtitle-1 py-0 font-weight-bold d-flex justify-space-between"
+      >
         <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
       </v-card-title>
     </v-list-item>
     <v-container py-0 text-right></v-container>
     <v-card-actions class="card-actions px-3" style="width:100%">
       <v-layout align-center>
-        <span class="body-2 font-weight-thin">{{ changeUnixTimeToDate(data.createdAt) }}</span>
+        <span
+          class="body-2 font-weight-thin blue-grey--text text--darken-3"
+        >{{ changeUnixTime(data.createdAt, "getFullTimestamp") }}</span>
         <v-spacer></v-spacer>
         <v-btn
           body-2
@@ -51,21 +56,22 @@
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
-            <span class="body-2">
-              <v-icon small color="black">mdi-pin</v-icon>
+            <span class="body-2 blue-grey--text text--darken-3">
+              <v-icon small>mdi-pin</v-icon>
               {{ data.pinCounts }}
             </span>
-            <span class="body-2 ml-10">
-              <v-icon small color="black">mdi-eye</v-icon>
+            <span class="body-2 ml-10 blue-grey--text text--darken-3">
+              <v-icon small>mdi-eye</v-icon>
               {{ data.viewCounts }}
             </span>
             <v-spacer></v-spacer>
             <v-btn
+              small
               outlined
               @click.stop="cardClick"
               color="purple lighten-2"
               class="font-weight-bold mx-3"
-            >詳細</v-btn>
+            >Show</v-btn>
           </v-layout>
         </v-container>
       </div>

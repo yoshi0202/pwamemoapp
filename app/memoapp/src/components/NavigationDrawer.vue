@@ -6,7 +6,7 @@
           <v-layout>
             <v-list-item-title>
               <v-avatar v-if="$store.getters.getLoginStatus">
-                <img :src="$store.getters.getImgUrl" alt="avator" style="cursor:pointer" />
+                <img :src="$store.getters.getImgUrl" alt="avatar" style="cursor:pointer" />
               </v-avatar>
               <span class="caption">
                 <span class="ma-5">{{ $store.getters.getDisplayName }}</span>
@@ -31,15 +31,18 @@
     </v-list>
     <v-divider></v-divider>
     <v-list dense>
-      <v-container pa-0 text-center>
+      <v-container pa-0 text-left>
         <v-list-item to="/about">
-          <v-list-item-icon>
+          <v-list-item-avatar tile size="20px">
             <v-icon class="px-2">mdi-information-outline</v-icon>
-          </v-list-item-icon>
+          </v-list-item-avatar>
 
           <v-list-item-content>
             <v-list-item-title>Snippyについて</v-list-item-title>
           </v-list-item-content>
+          <v-list-item-action>
+            <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>
+          </v-list-item-action>
         </v-list-item>
       </v-container>
     </v-list>

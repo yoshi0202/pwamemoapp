@@ -12,10 +12,22 @@ const index = client.initIndex("snippets");
 
 router.get("/algolia", async function(req, res, next) {
   try {
-    indexName = "snipType-createdAt-index";
-    sortKey = "createdAt";
-    const result = await index.search(req.query.search);
-    res.json(result);
+    // const result = await index.search(req.query.search);
+    let params = {
+      TableName: tableName
+    };
+    const result = await dynamo.scan(params).promise();
+    let array = [];
+    result.Items.map(function(v) {
+      array.push({
+        objectID: v.userId + "_" + v.snipId,
+        ...v
+      });
+    });
+    await index.saveObjects(array).then(({ objectIDs }) => {
+      console.log(objectIDs);
+    });
+    res.json(array);
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }
@@ -108,6 +120,7 @@ router.get("/:userId/:snipId", async function(req, res, next) {
     };
     res.json(result);
     incrementViewCounts(userId, snipId);
+    updateViewedAt(userId, snipId);
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }
@@ -137,6 +150,12 @@ router.post("/add", async function(req, res, next) {
     };
     await dynamo.put(params).promise();
     incrementSnipCounts(req.body.userId);
+    index.saveObjects([
+      {
+        objectID: req.body.userId + "_" + snipId,
+        ...params.Item
+      }
+    ]);
     res.json({
       result: "ok"
     });
@@ -170,6 +189,14 @@ router.post("/update", async function(req, res, next) {
       UpdateExpression: "SET #s = :s ,#ca = :ca"
     };
     const result = await dynamo.update(updateParams).promise();
+    console.log(updateParams.ExpressionAttributeValues[":s"]);
+    index.partialUpdateObject({
+      objectID: req.body.userId + "_" + req.body.snipId,
+      snipData: {
+        ...updateParams.ExpressionAttributeValues[":s"]
+      },
+      ...updateParams.ExpressionAttributeValues[":ca"]
+    });
     res.json(result);
   } catch (err) {
     next(utils.createErrorObj(500, err));
@@ -187,6 +214,7 @@ router.delete("/destroy", async function(req, res, next) {
       }
     };
     const result = await dynamo.delete(deleteParams).promise();
+    index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
     res.json(result);
   } catch (err) {
     next(utils.createErrorObj(500, err));
@@ -205,7 +233,8 @@ router.post("/pin", async function(req, res, next) {
         snipUserId: req.body.snipUserId,
         createdAt: req.body.createdAt,
         pinCreatedAt: Number(utils.getTimestamp()),
-        userImgUrl: req.body.userImgUrl
+        userImgUrl: req.body.userImgUrl,
+        pinFlg: 1
       }
     };
     await dynamo.put(putParams).promise();
@@ -348,6 +377,31 @@ async function incrementSnipCounts(userId) {
           "#p": "post"
         },
         UpdateExpression: "SET #s = #s + :s, #p = :p"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+async function updateViewedAt(userId, snipId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: tableName,
+        Key: {
+          userId: userId,
+          snipId: snipId
+        },
+        ExpressionAttributeValues: {
+          ":v": utils.getTimestamp()
+        },
+        ExpressionAttributeNames: {
+          "#v": "viewedAt"
+        },
+        UpdateExpression: "SET #v = :v"
       };
       await dynamo.update(params).promise();
       res("");

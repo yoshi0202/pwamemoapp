@@ -1,5 +1,5 @@
 <template>
-  <v-content>
+  <v-content class="grey lighten-3">
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
@@ -50,7 +50,7 @@
                   <img
                     @click="toUserPage"
                     :src="userData.imgUrl"
-                    alt="avator"
+                    alt="avatar"
                     style="cursor: pointer;"
                   />
                 </v-list-item-avatar>
@@ -63,7 +63,7 @@
                       <v-container
                         text-left
                         font-weight-thin
-                      >{{ changeUnixTimeToDate(snipData.createdAt) }}</v-container>
+                      >{{changeUnixTime(snipData.createdAt, 'getFullTimestamp')}}</v-container>
                     </v-flex>
                   </v-layout>
                 </v-list-item-content>
@@ -228,7 +228,7 @@ export default {
             snipUserId: this.snipData.userId,
             snipData: this.snipData.snipData,
             createdAt: this.snipData.createdAt,
-            userImgUrl: this.userData
+            userImgUrl: this.userData.imgUrl
           });
           this.pin = {
             isPin: true,

@@ -1,6 +1,6 @@
 <template>
   <span :class="margin">
-    <v-btn to="/" text small color="purple lighten-2" class="text-center pa-0">
+    <v-btn to="/" text small color="white" class="text-center pa-0">
       <div class="d-flex align-center title pa-0">Snippy</div>
     </v-btn>
     <v-menu offset-y v-if="!$store.getters.getIsMobile">
