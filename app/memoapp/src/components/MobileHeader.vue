@@ -29,7 +29,7 @@
           </span>
         </v-container>
       </v-layout>
-      <template v-slot:extension>
+      <template v-slot:extension v-if="$route.name !== 'addSnippets'">
         <v-container pa-0 ma-0>
           <Search />
         </v-container>
@@ -69,6 +69,6 @@ export default {
 
 <style>
 .v-toolbar__extension {
-  background-color: #757575 !important;
+  background-color: #e0e0e0 !important;
 }
 </style>

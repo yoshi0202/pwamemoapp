@@ -1,6 +1,8 @@
 <template>
   <span>
     <v-autocomplete
+      :light="$store.getters.getIsMobile"
+      :dark="!$store.getters.getIsMobile"
       v-model="model"
       :items="items"
       :search-input.sync="search"

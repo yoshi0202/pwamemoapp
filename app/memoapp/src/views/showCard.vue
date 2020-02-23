@@ -85,10 +85,8 @@
                 <span class="px-3">
                   <div class="twitter">
                     <a
-                      href="//twitter.com/share"
-                      data-text="コードスニペット共有サイト[Snippy]"
-                      :data-url="$router.currentRoute.path"
-                      data-lang="ja"
+                      target="_blank"
+                      :href="'https://twitter.com/share?url=https://snippy.site' + $router.currentRoute.path + '&text=%0a[' + snipData.snipData.title + ']%0aコードスニペット共有サイト[Snippy]%20%23Snippy%0a'"
                     >
                       <v-icon large color="blue">mdi-twitter</v-icon>
                     </a>

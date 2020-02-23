@@ -42,7 +42,7 @@
               </v-container>
               <v-container py-0 :class="$store.getters.getIsMobile ? 'px-2' : ''">
                 <v-container py-0 px-0>
-                  <v-tabs grow height="30" color="blue-grey darken-3">
+                  <v-tabs grow height="30" color="#C7B967">
                     <v-tab class="caption blue-grey--text text--darken-3">
                       <v-icon small class="mr-1">mdi-code-tags</v-icon>投稿順
                     </v-tab>

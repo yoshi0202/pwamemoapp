@@ -2,7 +2,7 @@
   <v-footer absolute color="grey lighten-2 blue-grey--text text--darken-3">
     <v-container py-3 justify-start caption font-weight-bold :class="verticalPx">
       <span class="px-5">
-        <a href="/privacyPolicy" class="purple--text text--lighten-2">プライバシーポリシー</a>
+        <a href="/policy" class="purple--text text--lighten-2">プライバシーポリシー</a>
       </span>
     </v-container>
     <v-container py-3 justify-start caption font-weight-bold :class="verticalPx">
