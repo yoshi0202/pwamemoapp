@@ -255,4 +255,8 @@ pre,
   width: 100% !important;
   height: 100% !important;
 }
+.v-application code {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
 </style>

@@ -74,9 +74,7 @@
               {{ data.viewCounts }}
             </span>
             <v-spacer></v-spacer>
-            <v-btn small outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3"
-              >Show</v-btn
-            >
+            <v-btn outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3">Show</v-btn>
           </v-layout>
         </v-container>
       </div>
