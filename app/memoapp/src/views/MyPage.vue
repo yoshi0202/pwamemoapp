@@ -1,9 +1,11 @@
 <template>
-  <v-content>
-    <v-container fill-height>
+  <v-content class="grey lighten-3">
+    <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
+      <Loading />
+    </v-container>
+    <v-container v-else fill-height>
       <v-layout class="justify-center" wrap>
         <v-flex xs12 sm12 md12 lg10 xl8>
-          <Loading />
           <v-card outlined tile height="100%">
             <v-list-item style="background-color:#000000;" dark>
               <v-card-title class="py-3">
@@ -17,27 +19,34 @@
                   <v-container style="max-width:100%">
                     <v-img
                       :src="userData.userData.imgUrl"
-                      alt="avator"
+                      alt="avatar"
                       aspect-ratio="1"
                       class="grey lighten-2"
                       max-height="100%"
-                    >
-                    </v-img>
+                    ></v-img>
                   </v-container>
                   <v-container headline text-left px-10 fluid>
                     {{ userData.userData.displayName }}
-                    <v-container fluid body-1 ma-0 pa-0 font-weight-light>@{{ userData.userData.userId }}</v-container>
+                    <v-container
+                      fluid
+                      body-1
+                      ma-0
+                      pa-0
+                      font-weight-light
+                    >@{{ userData.userData.userId }}</v-container>
                     <UserPageIcons :userData="userData" />
                     <v-divider></v-divider>
-                    <v-container subtitle-1 fluid px-0 style="word-break:break-all">{{
+                    <v-container subtitle-1 fluid px-0 style="word-break:break-all">
+                      {{
                       userData.userData.description
-                    }}</v-container>
+                      }}
+                    </v-container>
                     <v-divider></v-divider>
                   </v-container>
                 </v-flex>
                 <v-flex xs12 sm12 md8 lg7 xl8>
                   <v-container pa-0>
-                    <v-card tile color="black">
+                    <v-card tile elevation="0" color="black">
                       <v-card-title class="text-center justify-center">
                         <h3 class="headline white--text">UserSnippets</h3>
                       </v-card-title>
@@ -49,7 +58,13 @@
                       <v-tabs-items v-model="tab">
                         <v-tab-item v-for="(key, i) in userData.snippets" :key="i">
                           <v-divider></v-divider>
-                          <v-card flat v-for="snippets in key" :key="snippets.snipId">
+                          <v-card
+                            tile
+                            outlined
+                            elevation="0"
+                            v-for="snippets in key"
+                            :key="snippets.snipId"
+                          >
                             <v-list two-line subheader>
                               <v-list-item
                                 @click="
@@ -64,16 +79,17 @@
 
                                 <v-list-item-content>
                                   <v-list-item-title>{{ snippets.snipData.title }}</v-list-item-title>
-                                  <v-list-item-subtitle>{{
-                                    changeUnixTimeToDate(snippets.createdAt)
-                                  }}</v-list-item-subtitle>
+                                  <v-list-item-subtitle
+                                    v-text="changeUnixTime(snippets.createdAt, 'getFullTimestamp')"
+                                  ></v-list-item-subtitle>
                                 </v-list-item-content>
 
                                 <v-list-item-action>
                                   <v-btn icon>
-                                    <v-icon @click="toSnip(snippets.userId, snippets.snipId)" color="grey lighten-1"
-                                      >mdi-chevron-double-right</v-icon
-                                    >
+                                    <v-icon
+                                      @click="toSnip(snippets.userId, snippets.snipId)"
+                                      color="grey lighten-1"
+                                    >mdi-chevron-double-right</v-icon>
                                   </v-btn>
                                 </v-list-item-action>
                               </v-list-item>
@@ -112,7 +128,7 @@ export default {
   data: function() {
     return {
       tab: null,
-      items: ["MySnippets", "Favorites"],
+      items: ["MySnippets", "Pin"],
       userData: {
         userData: ""
       },
@@ -149,11 +165,4 @@ export default {
 </script>
 
 <style scoped>
-/* Helper classes */
-.basil {
-  background-color: #147f9b !important;
-}
-.basil--text {
-  color: white !important;
-}
 </style>

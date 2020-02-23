@@ -14,28 +14,50 @@
           align-center
           justify-space-between
         >
-          <v-icon>mdi-view-list</v-icon>
-          <span>カテゴリ</span>
+          <v-icon>mdi-eye</v-icon>
+          <span>最近閲覧されたスニペット</span>
           <span></span>
         </v-container>
       </v-card>
-      <v-card tile elevation="0" color="white">
-        <v-list outlined dense class="py-0">
-          <v-list-item-group color="purple" v-model="select">
-            <template v-for="(m, i) in menu">
-              <v-list-item :key="m" @click="changeCategory(m, i)">
+      <v-card outlined tile elevation="0" class="border-none" color="white">
+        <v-list dense color="transparent" class="py-0">
+          <v-list-item-group color="blue-grey darken-4" v-model="select">
+            <template v-for="(m,i) in menu">
+              <v-list-item
+                :key="m.snipData.title"
+                @click="$router.push('/' + m.userId + '/snip/' + m.snipId)"
+              >
                 <template v-slot:default>
                   <v-list-item-avatar tile size="20px">
-                    <img :src="'img/' + m + '.svg'" />
+                    <img :src="'img/' + m.snipData.tags[0] + '.svg'" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title
-                      v-text="m"
+                      v-text="m.snipData.title"
                       class="text-left font-weight-bold caption blue-grey--text text--darken-3"
                     ></v-list-item-title>
                   </v-list-item-content>
                   <v-list-item-action>
-                    <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>
+                    <v-container pa-0 text-center blue-grey--text text--darken-3>
+                      <v-container
+                        pa-0
+                        text-center
+                        blue-grey--text
+                        text--darken-3
+                        caption
+                        font-weight-bold
+                        v-text="changeUnixTime(m.viewedAt, 'getDate')"
+                      ></v-container>
+                      <v-container
+                        pa-0
+                        text-center
+                        blue-grey--text
+                        text--darken-3
+                        caption
+                        font-weight-bold
+                        v-text="changeUnixTime(m.viewedAt, 'getTime')"
+                      ></v-container>
+                    </v-container>
                   </v-list-item-action>
                 </template>
               </v-list-item>
@@ -51,9 +73,10 @@
 
 <script>
 import axios from "axios";
+import Mixin from "../mixin/mixin";
 
 export default {
-  Name: "CategoryMenu",
+  Name: "CurrentSnippets",
   watch: {},
   data: function() {
     return {
@@ -63,9 +86,9 @@ export default {
   },
   created: async function() {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
-    const categoryUrl = apiUrl + "category/categories";
-    const getCategories = await axios.get(categoryUrl);
-    getCategories.data.Items.map(v => this.menu.push(v.category));
+    const currentryViewed = apiUrl + "ranking/currentryViewed";
+    const getCurrentry = await axios.get(currentryViewed);
+    this.menu = getCurrentry.data.Items;
   },
   component: {},
   methods: {
@@ -76,6 +99,10 @@ export default {
         this.$emit("clickMenu", language);
       }
     }
-  }
+  },
+  mixins: [Mixin]
 };
 </script>
+
+<style>
+</style>

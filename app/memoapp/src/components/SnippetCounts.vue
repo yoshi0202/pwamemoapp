@@ -14,28 +14,31 @@
           align-center
           justify-space-between
         >
-          <v-icon>mdi-view-list</v-icon>
-          <span>カテゴリ</span>
+          <v-icon>mdi-pencil</v-icon>
+          <span>投稿数ランキング</span>
           <span></span>
         </v-container>
       </v-card>
-      <v-card tile elevation="0" color="white">
-        <v-list outlined dense class="py-0">
-          <v-list-item-group color="purple" v-model="select">
-            <template v-for="(m, i) in menu">
-              <v-list-item :key="m" @click="changeCategory(m, i)">
+      <v-card outlined tile elevation="0" color="white">
+        <v-list dense color="transparent" class="py-0">
+          <v-list-item-group v-model="select">
+            <template v-for="(m,i) in menu">
+              <v-list-item :key="m.displayName" @click="$router.push('/user/'+ m.userId)">
                 <template v-slot:default>
-                  <v-list-item-avatar tile size="20px">
-                    <img :src="'img/' + m + '.svg'" />
+                  <v-list-item-avatar size="40px">
+                    <img :src="m.imgUrl" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title
-                      v-text="m"
-                      class="text-left font-weight-bold caption blue-grey--text text--darken-3"
+                      v-text="m.displayName"
+                      class="text-left font-weight-bold subtitle-1 blue-grey--text text--darken-3"
                     ></v-list-item-title>
                   </v-list-item-content>
                   <v-list-item-action>
-                    <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>
+                    <v-container pa-0 text-center blue-grey--text text--darken-3>
+                      <v-container pa-0 font-weight-bold v-text="m.snipCounts"></v-container>
+                      <v-container pa-0 caption>Snippets</v-container>
+                    </v-container>
                   </v-list-item-action>
                 </template>
               </v-list-item>
@@ -53,7 +56,7 @@
 import axios from "axios";
 
 export default {
-  Name: "CategoryMenu",
+  Name: "SnippetCounts",
   watch: {},
   data: function() {
     return {
@@ -63,9 +66,10 @@ export default {
   },
   created: async function() {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
-    const categoryUrl = apiUrl + "category/categories";
-    const getCategories = await axios.get(categoryUrl);
-    getCategories.data.Items.map(v => this.menu.push(v.category));
+    const snipCounts = apiUrl + "ranking/snipCounts";
+    const getSnipCounts = await axios.get(snipCounts);
+    // getSnipCounts.data.Items.map(v => this.menu.push(v.displayName));
+    this.menu = getSnipCounts.data.Items;
   },
   component: {},
   methods: {
@@ -79,3 +83,6 @@ export default {
   }
 };
 </script>
+
+<style>
+</style>

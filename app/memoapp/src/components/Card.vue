@@ -1,6 +1,8 @@
 <template>
   <v-card
-    class="mx-auto snippy-card card-outter border-bottom-none"
+    class="ma-0 snippy-card card-outter"
+    outlined
+    tile
     elevation="0"
     :ripple="false"
     :retain-focus-on-click="retain"
@@ -9,18 +11,36 @@
     active-class
     @click="changeMenuIconStatus"
   >
+    <v-snackbar v-model="snackbar" top outlined timeout="2000" color="purple lighten-2">
+      スニペットをコピーしました。
+      <v-btn color="white" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <v-list-item>
       <v-list-item-avatar size="40" color="grey" class="mr-0">
-        <img :src="userData[data.userId].imgUrl" alt="avator" />
+        <img :src="userData[data.userId].imgUrl" alt="avatar" />
       </v-list-item-avatar>
-      <v-card-title class="subtitle-1 py-0 font-weight-bold">
+      <v-card-title
+        class="blue-grey--text text--darken-3 subtitle-1 py-0 font-weight-bold d-flex justify-space-between"
+      >
         <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
       </v-card-title>
+      <v-spacer></v-spacer>
+      <v-list-item-icon v-if="show" class="mr-2" @click.stop="snippetCopy(data.snipData.snippets)">
+        <v-hover v-slot:default="{ hover }">
+          <v-card :elevation="hover ? 5 : 0" tile color="transparent">
+            <v-icon color="purple lighten-2">mdi-checkbox-multiple-blank-outline</v-icon>
+          </v-card>
+        </v-hover>
+      </v-list-item-icon>
     </v-list-item>
-    <v-container py-0 text-right> </v-container>
+    <v-container py-0 text-right></v-container>
     <v-card-actions class="card-actions px-3" style="width:100%">
       <v-layout align-center>
-        <span class="body-2 font-weight-thin">{{ changeUnixTimeToDate(data.createdAt) }}</span>
+        <span class="body-2 font-weight-thin blue-grey--text text--darken-3">{{
+          changeUnixTime(data.createdAt, "getFullTimestamp")
+        }}</span>
         <v-spacer></v-spacer>
         <v-btn body-2 small text color="purple lighten-2" class="pa-0" @click.stop="moveUserPage(data.userId)"
           >@{{ userData[data.userId].displayName }}</v-btn
@@ -36,7 +56,7 @@
           v-if="data.snipData.snippets"
           class="text--primary py-1 text-left overflow-y-auto"
           style="max-height:200px; cursor:text"
-          @click.stop=""
+          @click.stop="snippetCopy(data.snipData.snippets)"
         >
           <pre
             v-highlightjs="data.snipData.snippets"
@@ -45,16 +65,18 @@
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
-            <span class="body-2">
-              <v-icon small color="black">mdi-pin</v-icon>
+            <span class="body-2 blue-grey--text text--darken-3">
+              <v-icon small>mdi-pin</v-icon>
               {{ data.pinCounts }}
             </span>
-            <span class="body-2 ml-10">
-              <v-icon small color="black">mdi-eye</v-icon>
+            <span class="body-2 ml-10 blue-grey--text text--darken-3">
+              <v-icon small>mdi-eye</v-icon>
               {{ data.viewCounts }}
             </span>
             <v-spacer></v-spacer>
-            <v-btn outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3 ">詳細</v-btn>
+            <v-btn small outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3"
+              >Show</v-btn
+            >
           </v-layout>
         </v-container>
       </div>
@@ -75,7 +97,8 @@ export default {
     pinColor: "grey",
     retain: false,
     show: false,
-    menuIcon: "mdi-menu-down"
+    menuIcon: "mdi-menu-down",
+    snackbar: false
   }),
   props: {
     data: Object,
@@ -97,6 +120,16 @@ export default {
     },
     moveUserPage: function(id) {
       this.$router.push("/user/" + id);
+    },
+    snippetCopy: function(v) {
+      navigator.clipboard.writeText(v);
+      this.snackbar = true;
+      // .then(() => {
+      //   alert("テキストコピー完了");
+      // })
+      // .catch(e => {
+      //   alert(e);
+      // });
     }
   },
   components: {
@@ -122,8 +155,8 @@ export default {
   position: absolute;
   bottom: 30px;
 }
-.border-bottom-none {
-  /* border: 0 !important; */
+.snippy-card {
+  border-bottom: 0 !important;
 }
 .v-btn {
   text-transform: none !important;

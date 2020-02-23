@@ -107,6 +107,7 @@ router.post("/signUp", async function(req, res, next) {
         qiita: "",
         twitter: "",
         url: "",
+        activate: 0,
         imgUrl: "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
       }
     };
@@ -217,7 +218,7 @@ router.get("/twitter", passport.authenticate("twitter", { scope: ["email"] }));
 router.get(
   "/twitter/callback",
   passport.authenticate("twitter", {
-    session: false,
+    session: true,
     failureRedirect: frontBaseUrl + "/login"
   }),
   function(req, res) {
@@ -245,7 +246,7 @@ router.get("/github", passport.authenticate("github", { scope: ["email", "profil
 router.get(
   "/github/callback",
   passport.authenticate("github", {
-    session: false,
+    session: true,
     failureRedirect: frontBaseUrl + "/login"
   }),
   function(req, res) {
@@ -389,6 +390,7 @@ function oauthUserCreate(user, img, provider) {
         qiita: "",
         twitter: "",
         url: "",
+        activate: 1,
         imgUrl: img ? img : "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/default.png"
       }
     };

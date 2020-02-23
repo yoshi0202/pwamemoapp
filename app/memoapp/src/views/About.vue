@@ -24,7 +24,13 @@
               Snippyはプログラマの「あの時どう書いたっけ？」「こんな時どう書くんだっけ？」を解決することができます。
               よく使うスニペットを残すことで、過去のプロジェクトのコードを引っ張り出す、都度ナレッジ共有サイトを探す手間を削減します。
             </p>
-            <v-img src="/img/about_img1.svg" class="white" max-height="300" aspect-ratio="1" contain> </v-img>
+            <v-img
+              src="/img/about_img1.svg"
+              class="white"
+              max-height="300"
+              aspect-ratio="1"
+              contain
+            ></v-img>
           </v-container>
         </v-flex>
         <v-flex xs12 sm12 md12 lg4 xl4>
@@ -34,7 +40,13 @@
               Snippyは、多様なプログラマの多様な言語のスニペットが閲覧できるプラットフォームです。
               他のスニペットを参考にして、更に効率的、簡潔な書き方を取り入れましょう。
             </p>
-            <v-img src="/img/about_img2.svg" class="white" max-height="300" aspect-ratio="1" contain> </v-img>
+            <v-img
+              src="/img/about_img2.svg"
+              class="white"
+              max-height="300"
+              aspect-ratio="1"
+              contain
+            ></v-img>
           </v-container>
         </v-flex>
         <v-flex xs12 sm12 md12 lg4 xl4>
@@ -44,7 +56,13 @@
               メモのようにスニペットを残すことができます。上手な説明、面白いことを書く必要はありません。
               チラシの裏のように、机の上の付箋のように、乱雑なメモを手軽に残しましょう。
             </p>
-            <v-img src="/img/about_img3.svg" class="white" max-height="300" aspect-ratio="1" contain> </v-img>
+            <v-img
+              src="/img/about_img3.svg"
+              class="white"
+              max-height="300"
+              aspect-ratio="1"
+              contain
+            ></v-img>
           </v-container>
         </v-flex>
       </v-layout>
@@ -66,7 +84,7 @@
         </v-flex>
         <v-flex xs4 sm4 md1 lg1 xl1 v-for="l in languages" :key="l">
           <v-container py-5 text-center>
-            <v-img :src="'/img/' + l + '.svg'" max-height="60" aspect-ratio="1" contain> </v-img>
+            <v-img :src="'/img/' + l + '.svg'" max-height="60" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
       </v-layout>
@@ -88,22 +106,22 @@
         </v-flex>
         <v-flex xs3 sm3 md3 lg3 xl3>
           <v-container py-5 text-center>
-            <v-img src="/img/google.svg" max-height="60" aspect-ratio="1" contain> </v-img>
+            <v-img src="/img/google.svg" max-height="60" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
         <v-flex xs3 sm3 md3 lg3 xl3>
           <v-container py-5 text-center>
-            <v-img src="/img/github.svg" max-height="60" aspect-ratio="1" contain> </v-img>
+            <v-img src="/img/github.svg" max-height="60" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
         <v-flex xs3 sm3 md3 lg3 xl3>
           <v-container py-5 text-center>
-            <v-img src="/img/twitter.svg" height="60" aspect-ratio="1" contain> </v-img>
+            <v-img src="/img/twitter.svg" height="60" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
         <v-flex xs3 sm3 md3 lg3 xl3>
           <v-container py-5 text-center style="background-color:#55C500">
-            <v-img src="/img/qiita.png" max-height="60" aspect-ratio="1" contain> </v-img>
+            <v-img src="/img/qiita.png" max-height="60" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
       </v-layout>

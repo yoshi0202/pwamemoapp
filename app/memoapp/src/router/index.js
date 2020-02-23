@@ -8,11 +8,38 @@ import SignUp from "../views/SignUp.vue";
 import MyPage from "../views/MyPage.vue";
 import EditMyPage from "../views/EditMyPage.vue";
 import About from "../views/About.vue";
+import PrivacyPolicy from "../views/PrivacyPolicy.vue";
+import Terms from "../views/Terms.vue";
+import Info from "../views/Info.vue";
 import Store from "@/store/index.js";
 import Axios from "axios";
 Vue.use(VueRouter);
 
 const routes = [
+  {
+    path: "/info",
+    name: "info",
+    component: Info,
+    meta: {
+      isPublic: true
+    }
+  },
+  {
+    path: "/terms",
+    name: "terms",
+    component: Terms,
+    meta: {
+      isPublic: true
+    }
+  },
+  {
+    path: "/policy",
+    name: "privacyPolicy",
+    component: PrivacyPolicy,
+    meta: {
+      isPublic: true
+    }
+  },
   {
     path: "/about",
     name: "about",
