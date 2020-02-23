@@ -11,6 +11,12 @@
     active-class
     @click="changeMenuIconStatus"
   >
+    <v-snackbar v-model="snackbar" top outlined timeout="2000" color="purple lighten-2">
+      スニペットをコピーしました。
+      <v-btn color="white" text @click="snackbar = false">
+        Close
+      </v-btn>
+    </v-snackbar>
     <v-list-item>
       <v-list-item-avatar size="40" color="grey" class="mr-0">
         <img :src="userData[data.userId].imgUrl" alt="avatar" />
@@ -20,6 +26,14 @@
       >
         <v-clamp autoresize :max-lines="2">{{ data.snipData.title }}</v-clamp>
       </v-card-title>
+      <v-spacer></v-spacer>
+      <v-list-item-icon v-if="show" class="mr-2" @click.stop="snippetCopy(data.snipData.snippets)">
+        <v-hover v-slot:default="{ hover }">
+          <v-card :elevation="hover ? 5 : 0" tile color="transparent">
+            <v-icon color="purple lighten-2">mdi-checkbox-multiple-blank-outline</v-icon>
+          </v-card>
+        </v-hover>
+      </v-list-item-icon>
     </v-list-item>
     <v-container py-0 text-right></v-container>
     <v-card-actions class="card-actions px-3" style="width:100%">
@@ -44,9 +58,6 @@
           style="max-height:200px; cursor:text"
           @click.stop="snippetCopy(data.snipData.snippets)"
         >
-          <v-container pb-3 pt-0 px-5 text-right>
-            <v-icon>mdi-checkbox-multiple-blank-outline</v-icon>
-          </v-container>
           <pre
             v-highlightjs="data.snipData.snippets"
             style="height:100%"
@@ -86,7 +97,8 @@ export default {
     pinColor: "grey",
     retain: false,
     show: false,
-    menuIcon: "mdi-menu-down"
+    menuIcon: "mdi-menu-down",
+    snackbar: false
   }),
   props: {
     data: Object,
@@ -111,6 +123,7 @@ export default {
     },
     snippetCopy: function(v) {
       navigator.clipboard.writeText(v);
+      this.snackbar = true;
       // .then(() => {
       //   alert("テキストコピー完了");
       // })
