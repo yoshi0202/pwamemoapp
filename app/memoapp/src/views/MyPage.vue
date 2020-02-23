@@ -46,7 +46,7 @@
                 </v-flex>
                 <v-flex xs12 sm12 md8 lg7 xl8>
                   <v-container pa-0>
-                    <v-card tile color="black">
+                    <v-card tile elevation="0" color="black">
                       <v-card-title class="text-center justify-center">
                         <h3 class="headline white--text">UserSnippets</h3>
                       </v-card-title>
@@ -58,7 +58,13 @@
                       <v-tabs-items v-model="tab">
                         <v-tab-item v-for="(key, i) in userData.snippets" :key="i">
                           <v-divider></v-divider>
-                          <v-card flat v-for="snippets in key" :key="snippets.snipId">
+                          <v-card
+                            tile
+                            outlined
+                            elevation="0"
+                            v-for="snippets in key"
+                            :key="snippets.snipId"
+                          >
                             <v-list two-line subheader>
                               <v-list-item
                                 @click="

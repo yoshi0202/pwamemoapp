@@ -27,6 +27,7 @@
               item-color="purple"
               :rules="[rules.required]"
               return-object
+              @input="inputCategory"
             >
               <template v-slot:selection="data">
                 <v-chip
@@ -52,7 +53,7 @@
                   wrap="soft"
                   v-model="snipData.snippets"
                   :rows="$store.getters.getIsMobile ? 5 : 15"
-                  label="スニペットを入力(5行以内だと表示の時に省略されません)"
+                  label="スニペットを入力"
                   dense
                   outlined
                   hide-details
@@ -65,7 +66,7 @@
             <v-flex v-if="!$store.getters.getIsMobile" xs12 sm12 md6 lg6>
               <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="297px">
                 <div class="fill-height overflow-y-auto">
-                  <pre v-highlightjs="snipData.snippets" style="height:100%"><code class="html" style="background-color:#272822;width:100%; height:100%"></code></pre>
+                  <pre v-highlightjs="snipData.snippets" style="height:100%"><code :class="previewClass" style="background-color:#272822;width:100%; height:100%"></code></pre>
                 </div>
               </v-card>
             </v-flex>
@@ -136,11 +137,13 @@ export default {
         snippets: ""
       },
       parseContents: "",
+      previewClass: "default",
       mobileFlg: !this.$store.getters.getIsMobile,
       userId: this.$route.params.userId,
       snipId: this.$route.params.snipId,
       editMode: false,
       categories: [],
+      highlight: {},
       rules: {
         required: v => !!v || "必須項目",
         regex: v =>
@@ -172,7 +175,10 @@ export default {
     try {
       const categoryUrl = apiUrl + "category/categories";
       const getCategories = await axios.get(categoryUrl);
-      getCategories.data.Items.map(v => this.categories.push(v.category));
+      getCategories.data.Items.map(v => {
+        this.categories.push(v.category);
+        this.highlight[v.category] = v.highlight;
+      });
       if (this.userId && this.snipId) {
         this.editMode = true;
         if (this.userId !== this.$store.getters.getUserId) {
@@ -191,6 +197,9 @@ export default {
     }
   },
   methods: {
+    inputCategory: function(e) {
+      this.previewClass = this.highlight[e];
+    },
     update: async function() {
       try {
         const url = apiUrl + "snip/update";
@@ -223,7 +232,7 @@ export default {
         this.$store.dispatch("incrementsSnipCounts");
         this.$router.push("/");
       } catch (err) {
-        // alert(JSON.stringify(err));
+        alert(JSON.stringify(err));
       }
     }
   }

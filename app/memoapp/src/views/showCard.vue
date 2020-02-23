@@ -47,35 +47,23 @@
               </v-list-item>
               <v-list-item>
                 <v-list-item-avatar size="50" color="grey">
-                  <img
-                    @click="toUserPage"
-                    :src="userData.imgUrl"
-                    alt="avatar"
-                    style="cursor: pointer;"
-                  />
+                  <img @click="toUserPage" :src="userData.imgUrl" alt="avatar" style="cursor: pointer;" />
                 </v-list-item-avatar>
                 <v-list-item-content class="fluid">
                   <v-layout wrap>
                     <v-flex mb12 xs12>
-                      <v-container py-0 text-left font-weight-bold title>@{{userData.displayName}}</v-container>
+                      <v-container py-0 text-left font-weight-bold title>@{{ userData.displayName }}</v-container>
                     </v-flex>
                     <v-flex mb12 xs12 class="text-left">
-                      <v-container
-                        text-left
-                        font-weight-thin
-                      >{{changeUnixTime(snipData.createdAt, 'getFullTimestamp')}}</v-container>
+                      <v-container text-left font-weight-thin>{{
+                        changeUnixTime(snipData.createdAt, "getFullTimestamp")
+                      }}</v-container>
                     </v-flex>
                   </v-layout>
                 </v-list-item-content>
               </v-list-item>
               <v-container px-5 d-flex justify-start align-center>
-                <v-chip
-                  small
-                  v-for="tag in snipData.snipData.tags"
-                  :key="tag"
-                  class="mx-1 black--text"
-                  color="grey"
-                >
+                <v-chip small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text" color="grey">
                   <v-avatar left>
                     <img :src="'/img/' + tag + '.svg'" />
                   </v-avatar>
@@ -86,7 +74,13 @@
                   <div class="twitter">
                     <a
                       target="_blank"
-                      :href="'https://twitter.com/share?url=https://snippy.site' + $router.currentRoute.path + '&text=%0a[' + snipData.snipData.title + ']%0aコードスニペット共有サイト[Snippy]%20%23Snippy%0a'"
+                      :href="
+                        'https://twitter.com/share?url=https://snippy.site' +
+                          $router.currentRoute.path +
+                          '&text=%0a[' +
+                          snipData.snipData.title +
+                          ']%0aコードスニペット共有サイト[Snippy]%20%23Snippy%0a'
+                      "
                     >
                       <v-icon large color="blue">mdi-twitter</v-icon>
                     </a>
@@ -95,16 +89,15 @@
               </v-container>
               <v-container text-left pb-0 v-if="snipData.snipData.snippets">
                 <v-container py-0>
-                  <pre v-highlightjs="snipData.snipData.snippets" style="height:100%"><code class="javascript tile" style="background-color:#272822;width:100%; height:100%"></code></pre>
+                  <pre
+                    v-highlightjs="snipData.snipData.snippets"
+                    style="height:100%"
+                  ><code class="java tile"></code></pre>
                 </v-container>
               </v-container>
               <v-container>
                 <v-divider></v-divider>
-                <v-container
-                  class="markdown-body"
-                  v-html="parseMd(snipData.snipData.contents)"
-                  text-left
-                ></v-container>
+                <v-container class="markdown-body" v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
               </v-container>
             </v-card>
           </v-container>
@@ -126,11 +119,18 @@ import axios from "axios";
 import marked from "marked";
 import Mixin from "../mixin/mixin";
 import Loading from "@/components/Loading";
+import hljs from "highlight.js";
 
 export default {
   name: "ShowCard",
   created: async function() {
     try {
+      marked.setOptions({
+        langPrefix: "",
+        highlight: function(code, lang) {
+          return hljs.highlightAuto(code, [lang]).value;
+        }
+      });
       const userId = this.$route.params.userId;
       const snipId = this.$route.params.snipId;
       const apiUrl = this.$store.getters.getApiUrl + "api/";
@@ -246,4 +246,13 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+code,
+pre,
+.markdown-body .highlight pre,
+.markdown-body pre {
+  background-color: #272822 !important;
+  width: 100% !important;
+  height: 100% !important;
+}
+</style>

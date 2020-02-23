@@ -24,18 +24,13 @@
     <v-container py-0 text-right></v-container>
     <v-card-actions class="card-actions px-3" style="width:100%">
       <v-layout align-center>
-        <span
-          class="body-2 font-weight-thin blue-grey--text text--darken-3"
-        >{{ changeUnixTime(data.createdAt, "getFullTimestamp") }}</span>
+        <span class="body-2 font-weight-thin blue-grey--text text--darken-3">{{
+          changeUnixTime(data.createdAt, "getFullTimestamp")
+        }}</span>
         <v-spacer></v-spacer>
-        <v-btn
-          body-2
-          small
-          text
-          color="purple lighten-2"
-          class="pa-0"
-          @click.stop="moveUserPage(data.userId)"
-        >@{{ userData[data.userId].displayName }}</v-btn>
+        <v-btn body-2 small text color="purple lighten-2" class="pa-0" @click.stop="moveUserPage(data.userId)"
+          >@{{ userData[data.userId].displayName }}</v-btn
+        >
         <v-btn icon class="pa-0">
           <v-icon size="23" color="grey">{{ menuIcon }}</v-icon>
         </v-btn>
@@ -52,7 +47,10 @@
           <v-container pb-3 pt-0 px-5 text-right>
             <v-icon>mdi-checkbox-multiple-blank-outline</v-icon>
           </v-container>
-          <pre v-highlightjs="data.snipData.snippets" style="height:100%"><code class="javascript" style="background-color:#272822;width:100%; height:100%"></code></pre>
+          <pre
+            v-highlightjs="data.snipData.snippets"
+            style="height:100%"
+          ><code class="javascript" style="background-color:#272822;width:100%; height:100%"></code></pre>
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
@@ -65,13 +63,9 @@
               {{ data.viewCounts }}
             </span>
             <v-spacer></v-spacer>
-            <v-btn
-              small
-              outlined
-              @click.stop="cardClick"
-              color="purple lighten-2"
-              class="font-weight-bold mx-3"
-            >Show</v-btn>
+            <v-btn small outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3"
+              >Show</v-btn
+            >
           </v-layout>
         </v-container>
       </div>
