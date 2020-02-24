@@ -124,12 +124,14 @@ export default {
   created: async function() {
     try {
       this.loading = "#C7B967";
+      this.$store.dispatch("initializeErrorMsg");
+      this.$store.dispatch("changeLoading", true);
       const category = this.$route.query.category ? this.$route.query.category : "";
       const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
       this.loading = null;
-      this.$store.dispatch("initializeErrorMsg");
+      this.$store.dispatch("changeLoading", false);
     } catch (err) {
       this.$store.dispatch("updateErorrMsg");
     }
