@@ -139,7 +139,8 @@
       </v-layout>
     </v-container>
     <v-overlay opacity="0.9" :value="overlay">
-      <v-container>このスニペットを削除しますか？</v-container>
+      <v-container text-center>このスニペットを削除しますか？</v-container>
+      <v-container text-center>スニペットを削除すると元に戻せません。</v-container>
       <v-container text-center>
         <v-btn class="mr-5" outlined color="red" @click="deleteSnip">削除</v-btn>
         <v-btn color="grey" @click="overlay = false">キャンセル</v-btn>
@@ -183,7 +184,6 @@ export default {
         userId: userId,
         snipId: snipId
       };
-      console.log(this.snipData);
       if (this.$store.getters.getLoginStatus) {
         const pinResult = await axios.get(
           apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId

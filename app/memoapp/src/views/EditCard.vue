@@ -66,19 +66,15 @@
             <v-flex v-if="!$store.getters.getIsMobile" xs12 sm12 md6 lg6>
               <v-card tile outlined elevation="0" class="mx-1 mt-1 mb-0 pa-0" height="297px">
                 <div class="fill-height overflow-y-auto">
-                  <pre v-highlightjs="snipData.snippets" style="height:100%"><code :class="previewClass" style="background-color:#272822;width:100%; height:100%"></code></pre>
+                  <pre
+                    v-highlightjs="snipData.snippets"
+                    style="height:100%"
+                  ><code :class="previewClass" style="background-color:#272822;width:100%; height:100%"></code></pre>
                 </div>
               </v-card>
             </v-flex>
           </v-layout>
-          <v-card
-            tile
-            outlined
-            elevation="0"
-            :class="wrapperClass"
-            max-width="100%"
-            :color="validColor"
-          >
+          <v-card tile outlined elevation="0" :class="wrapperClass" max-width="100%" :color="validColor">
             <mavon-editor
               language="ja"
               code_style="monokai-sublime"
@@ -98,23 +94,40 @@
     <v-footer fixed class="font-weight-medium" color="black">
       <v-card width="100%" tile elevation="0" color="transparent" class="text-right">
         <v-btn
-          :disabled="!valid || !snipData.snipContents || !snipData.snipTags || !snipData.snippets.replace(/\s+/g, '') || !snipData.snipTitle.replace(/\s+/g, '')"
+          :disabled="
+            !valid ||
+              !snipData.snipContents ||
+              !snipData.snipTags ||
+              !snipData.snippets.replace(/\s+/g, '') ||
+              !snipData.snipTitle.replace(/\s+/g, '')
+          "
           dark
           v-if="editMode"
           color="purple lighten-2"
           @click="update"
           class="font-weight-bold"
-        >スニペットを更新</v-btn>
+          >スニペットを更新</v-btn
+        >
         <v-btn
-          :disabled="!valid || !snipData.snipContents || !snipData.snipTags || !snipData.snippets.replace(/\s+/g, '') || !snipData.snipTitle.replace(/\s+/g, '')"
+          :disabled="
+            !valid ||
+              !snipData.snipContents ||
+              !snipData.snipTags ||
+              !snipData.snippets.replace(/\s+/g, '') ||
+              !snipData.snipTitle.replace(/\s+/g, '')
+          "
           v-else
           dark
           class="font-weight-bold"
           color="purple lighten-2"
           @click="add"
-        >スニペットを追加</v-btn>
+          >スニペットを追加</v-btn
+        >
       </v-card>
     </v-footer>
+    <v-overlay :value="overlay">
+      <v-progress-circular color="#C7B967" indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-content>
 </template>
 
@@ -128,6 +141,7 @@ export default {
   watch: {},
   data: function() {
     return {
+      overlay: false,
       valid: true,
       validColor: null,
       snipData: {
@@ -202,6 +216,7 @@ export default {
     },
     update: async function() {
       try {
+        this.overlay = true;
         const url = apiUrl + "snip/update";
         await axios.post(url, {
           userId: this.userId,
@@ -211,13 +226,16 @@ export default {
           snipContents: this.snipData.snipContents,
           snippets: this.snipData.snippets
         });
+        this.overlay = false;
         this.$router.push("/");
       } catch (err) {
+        this.overlay = false;
         alert(JSON.stringify(err));
       }
     },
     add: async function() {
       try {
+        this.overlay = true;
         const url = apiUrl + "snip/add";
         const userInfo = this.$store.getters.getLogin;
         await axios.post(url, {
@@ -230,8 +248,10 @@ export default {
           userId: userInfo.userId
         });
         this.$store.dispatch("incrementsSnipCounts");
+        this.overlay = false;
         this.$router.push("/");
       } catch (err) {
+        this.overlay = false;
         alert(JSON.stringify(err));
       }
     }

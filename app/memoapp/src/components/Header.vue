@@ -5,7 +5,10 @@
         <TopButton />
         <Search />
         <v-spacer></v-spacer>
-        <span v-if="$store.getters.getLoginStatus">
+        <span v-if="$store.getters.getErrorMsg">
+          <v-icon large color="white" @click="$router.go({ path: '/', force: true })">mdi-refresh</v-icon>
+        </span>
+        <span v-else-if="$store.getters.getLoginStatus">
           <v-menu left offset-x>
             <template v-slot:activator="{ on }">
               <v-avatar v-on="on" color="grey lighten-2">

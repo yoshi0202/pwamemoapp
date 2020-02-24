@@ -96,13 +96,14 @@
                       </form>
                       <v-container>
                         <v-btn
-                          :disabled="!valid"
+                          :disabled="!valid || !userData.userData.displayName.replace(/\s+/g, '')"
                           large
                           @click="updateUser"
                           class="font-weight-bold"
                           color="purple lighten-2 white--text"
                           style="bottom:20px; right:20px; position:absolute"
-                        >プロフィールを更新する</v-btn>
+                          >プロフィールを更新する</v-btn
+                        >
                       </v-container>
                     </v-flex>
                   </v-layout>
@@ -113,6 +114,9 @@
         </v-flex>
       </v-layout>
     </v-container>
+    <v-overlay :value="overlay">
+      <v-progress-circular color="#C7B967" indeterminate size="64"></v-progress-circular>
+    </v-overlay>
   </v-content>
 </template>
 
@@ -136,6 +140,7 @@ export default {
   },
   data: function() {
     return {
+      overlay: false,
       valid: true,
       userData: {
         userData: ""
@@ -165,6 +170,7 @@ export default {
     },
     updateUser: async function() {
       try {
+        this.overlay = true;
         const userId = this.$route.params.userId;
         const apiUrl = this.$store.getters.getApiUrl + "api/";
         await axios.post(apiUrl + "user/" + userId + "/profile/update", {
@@ -175,8 +181,10 @@ export default {
           github: this.userData.userData.github,
           qiita: this.userData.userData.qiita
         });
+        this.overlay = false;
         this.$router.push("/user/" + userId);
       } catch (err) {
+        this.overlay = false;
         alert(JSON.stringify(err));
       }
     }
