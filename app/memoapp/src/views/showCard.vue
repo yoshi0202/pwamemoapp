@@ -157,8 +157,16 @@ import hljs from "highlight.js";
 
 export default {
   name: "ShowCard",
+  watch: {
+    $route(next, current) {
+      if (next.path !== current.path) {
+        this.$router.go({ path: next.path, force: true });
+      }
+    }
+  },
   created: async function() {
     try {
+      this.$store.dispatch("changeLoading", true);
       marked.setOptions({
         langPrefix: "",
         highlight: function(code, lang) {

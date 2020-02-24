@@ -11,7 +11,7 @@
     active-class
     @click="changeMenuIconStatus"
   >
-    <v-snackbar v-model="snackbar" top outlined timeout="2000" color="purple lighten-2">
+    <v-snackbar v-model="snackbar" top outlined :timeout="2000" color="purple lighten-2">
       スニペットをコピーしました。
       <v-btn color="white" text @click="snackbar = false">
         Close

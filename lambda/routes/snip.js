@@ -10,54 +10,18 @@ const utils = require("../utils/utils");
 const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
 const index = client.initIndex("snippets");
 
-router.get("/algolia", async function(req, res, next) {
-  try {
-    // const result = await index.search(req.query.search);
-    let params = {
-      TableName: tableName
-    };
-    const result = await dynamo.scan(params).promise();
-    let array = [];
-    result.Items.map(function(v) {
-      array.push({
-        objectID: v.userId + "_" + v.snipId,
-        ...v
-      });
-    });
-    await index.saveObjects(array).then(({ objectIDs }) => {
-      console.log(objectIDs);
-    });
-    res.json(array);
-  } catch (err) {
-    next(utils.createErrorObj(500, err));
-  }
-});
-
 // all snip get
 router.get("/", async function(req, res, next) {
   try {
-    let indexName = "";
-    let sortKey = "";
-    switch (req.query.sort) {
-      case "New Snippets":
-        indexName = "snipType-createdAt-index";
-        sortKey = "createdAt";
-        break;
-
-      case "Most Viewd":
-        indexName = "snipType-viewCounts-index";
-        sortKey = "viewCounts";
-        break;
-
-      case "Most Pin Counts":
-        indexName = "snipType-pinCounts-index";
-        sortKey = "pinCounts";
-        break;
-
-      default:
-        // query param error
-        throw new Error("SortKey Parameter Error");
-        break;
+    let indexName = "snipType-createdAt-index";
+    let sortKey = "createdAt";
+    if (Number(req.query.sort) === 1) {
+      indexName = "snipType-pinCounts-index";
+      sortKey = "pinCounts";
+    }
+    if (Number(req.query.sort) === 2) {
+      indexName = "snipType-viewCounts-index";
+      sortKey = "viewCounts";
     }
     let params = {
       TableName: tableName,

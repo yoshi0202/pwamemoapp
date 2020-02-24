@@ -1,6 +1,6 @@
 <template>
   <v-card outlined tile color="transparent">
-    <v-container text-center ma-0 :class="$store.getters.getIsMobile ? 'px-1' : 'pa-0'">
+    <v-container text-center ma-0 :class="$store.getters.getIsMobile ? 'px-1' : 'px-0'">
       <v-card tile elevation="0" class="menu-card mb-1">
         <v-container
           py-2
@@ -19,6 +19,7 @@
           <span></span>
         </v-container>
       </v-card>
+      <v-card v-if="loading" class="pb-1 px-0" tile elevation="0" :loading="loading"></v-card>
       <v-card outlined tile elevation="0" class="border-none" color="white">
         <v-list dense color="transparent" class="py-0">
           <v-list-item-group color="blue-grey darken-4" v-model="select">
@@ -77,14 +78,17 @@ export default {
   data: function() {
     return {
       menu: [],
-      select: null
+      select: null,
+      loading: null
     };
   },
   created: async function() {
+    this.loading = "purple";
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const currentryViewed = apiUrl + "ranking/currentryViewed";
     const getCurrentry = await axios.get(currentryViewed);
     this.menu = getCurrentry.data.Items;
+    this.loading = null;
   },
   component: {},
   methods: {

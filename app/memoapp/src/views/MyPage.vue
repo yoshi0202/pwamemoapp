@@ -27,19 +27,11 @@
                   </v-container>
                   <v-container headline text-left px-10 fluid>
                     {{ userData.userData.displayName }}
-                    <v-container
-                      fluid
-                      body-1
-                      ma-0
-                      pa-0
-                      font-weight-light
-                    >@{{ userData.userData.userId }}</v-container>
+                    <v-container fluid body-1 ma-0 pa-0 font-weight-light>@{{ userData.userData.userId }}</v-container>
                     <UserPageIcons :userData="userData" />
                     <v-divider></v-divider>
                     <v-container subtitle-1 fluid px-0 style="word-break:break-all">
-                      {{
-                      userData.userData.description
-                      }}
+                      {{ userData.userData.description }}
                     </v-container>
                     <v-divider></v-divider>
                   </v-container>
@@ -58,13 +50,7 @@
                       <v-tabs-items v-model="tab">
                         <v-tab-item v-for="(key, i) in userData.snippets" :key="i">
                           <v-divider></v-divider>
-                          <v-card
-                            tile
-                            outlined
-                            elevation="0"
-                            v-for="snippets in key"
-                            :key="snippets.snipId"
-                          >
+                          <v-card tile outlined elevation="0" v-for="snippets in key" :key="snippets.snipId">
                             <v-list two-line subheader>
                               <v-list-item
                                 @click="
@@ -86,10 +72,9 @@
 
                                 <v-list-item-action>
                                   <v-btn icon>
-                                    <v-icon
-                                      @click="toSnip(snippets.userId, snippets.snipId)"
-                                      color="grey lighten-1"
-                                    >mdi-chevron-double-right</v-icon>
+                                    <v-icon @click="toSnip(snippets.userId, snippets.snipId)" color="grey lighten-1"
+                                      >mdi-chevron-double-right</v-icon
+                                    >
                                   </v-btn>
                                 </v-list-item-action>
                               </v-list-item>
@@ -118,6 +103,13 @@ import Mixin from "../mixin/mixin";
 
 export default {
   name: "MyPage",
+  watch: {
+    $route(next, current) {
+      if (next.path !== current.path) {
+        this.$router.go({ path: next.path, force: true });
+      }
+    }
+  },
   created: async function() {
     const userId = this.$route.params.userId;
     const apiUrl = this.$store.getters.getApiUrl + "api/";
@@ -164,5 +156,4 @@ export default {
 };
 </script>
 
-<style scoped>
-</style>
+<style scoped></style>

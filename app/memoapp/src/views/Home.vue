@@ -11,7 +11,7 @@
             <v-col v-if="!$store.getters.getIsMobile" md="2" lg="2" xl="2">
               <v-container px-0 py-12 my-12 style="position:sticky; top:0px;">
                 <v-container px-0 py-2>
-                  <CategoryMenu @clickMenu="clickMenu" />
+                  <CategoryMenu />
                 </v-container>
               </v-container>
             </v-col>
@@ -42,7 +42,8 @@
               </v-container>
               <v-container py-0 :class="$store.getters.getIsMobile ? 'px-2' : ''">
                 <v-container py-0 px-0>
-                  <v-tabs grow height="30" color="#C7B967">
+                  <v-card class="pb-1 px-0" :loading="loading" tile elevation="0"></v-card>
+                  <v-tabs grow height="30" color="#C7B967" v-model="sortKey">
                     <v-tab class="caption blue-grey--text text--darken-3">
                       <v-icon small class="mr-1">mdi-code-tags</v-icon>投稿順
                     </v-tab>
@@ -110,30 +111,37 @@ export default {
   },
   props: {},
   watch: {
-    async $route(to) {
+    // async $route(to) {
+    $route() {
       try {
-        this.$store.dispatch("changeLoading", false);
-        const sortKey = to.query.sort ? to.query.sort : "New Snippets";
-        const category = to.query.category ? to.query.category : "";
-        const result = await axios.get(apiUrl + "snip?sort=" + sortKey + "&category=" + category);
-        this.snipData = result.data.Items;
-        this.userData = result.data.userData;
-        this.$store.dispatch("changeLoading", false);
+        this.loading = "purple";
+        let self = this;
+        setTimeout(async () => {
+          const category = self.$route.query.category || "";
+          const result = await axios.get(apiUrl + "snip?sort=" + self.sortKey + "&category=" + category);
+          self.snipData = result.data.Items;
+          self.userData = result.data.userData;
+          self.loading = null;
+        }, 1000);
       } catch (error) {
+        this.loading = null;
         this.$store.dispatch("changeLoading", false);
-        this.$store.dispatch("updateErorrMsg");
       }
     },
-    async sortKey(v) {
+    sortKey() {
       try {
-        this.$store.dispatch("changeLoading", true);
-        const result = await axios.get(apiUrl + "snip?sort=" + v);
-        this.snipData = result.data.Items;
-        this.userData = result.data.userData;
-        this.$store.dispatch("changeLoading", false);
+        this.loading = "purple";
+        let self = this;
+        setTimeout(async () => {
+          const category = self.$route.query.category || "";
+          const result = await axios.get(apiUrl + "snip?sort=" + self.sortKey + "&category=" + category);
+          self.snipData = result.data.Items;
+          self.userData = result.data.userData;
+          self.loading = null;
+        }, 500);
       } catch (err) {
+        this.loading = null;
         this.$store.dispatch("changeLoading", false);
-        this.$store.dispatch("updateErorrMsg");
       }
     }
   },
@@ -146,30 +154,17 @@ export default {
       this.$store.dispatch("changeLoading", false);
       this.$store.dispatch("initializeErrorMsg");
     } catch (err) {
-      console.log(err);
+      this.loading = null;
       this.$store.dispatch("updateErorrMsg");
     }
   },
   data: () => ({
-    // loading: true,
+    loading: null,
     snipData: [],
     userData: {},
-    sortKey: "New Snippets"
-    // selectedMenu: null
+    sortKey: 0
   }),
-  methods: {
-    clickMenu: async function(l) {
-      try {
-        this.$store.dispatch("changeLoading", true);
-        const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + l);
-        this.snipData = result.data.Items;
-        this.userData = result.data.userData;
-        this.$store.dispatch("changeLoading", false);
-      } catch (err) {
-        this.$store.dispatch("changeLoading", false);
-      }
-    }
-  }
+  methods: {}
 };
 </script>
 
