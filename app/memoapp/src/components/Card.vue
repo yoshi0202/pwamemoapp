@@ -122,12 +122,6 @@ export default {
     snippetCopy: function(v) {
       navigator.clipboard.writeText(v);
       this.snackbar = true;
-      // .then(() => {
-      //   alert("テキストコピー完了");
-      // })
-      // .catch(e => {
-      //   alert(e);
-      // });
     }
   },
   components: {

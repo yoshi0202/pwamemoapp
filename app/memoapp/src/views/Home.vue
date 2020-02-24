@@ -111,11 +111,13 @@ export default {
   props: {},
   watch: {
     $route() {
+      this.loading = "#C7B967";
       setTimeout(() => {
         this.changeSnippets();
       }, 500);
     },
     sortKey() {
+      this.loading = "#C7B967";
       setTimeout(() => {
         this.changeSnippets();
       }, 500);
@@ -145,7 +147,6 @@ export default {
   methods: {
     changeSnippets: async function() {
       try {
-        this.loading = "#C7B967";
         const category = this.$route.query.category || "";
         const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
         this.snipData = result.data.Items;
