@@ -42,7 +42,7 @@
               </v-container>
               <v-container py-0 :class="$store.getters.getIsMobile ? 'px-2' : ''">
                 <v-container py-0 px-0>
-                  <v-card class="pb-1 px-0" :loading="loading" tile elevation="0"></v-card>
+                  <v-card class="loading px-0" :loading="loading" tile elevation="0"></v-card>
                   <v-tabs grow height="30" color="#C7B967" v-model="sortKey">
                     <v-tab class="caption blue-grey--text text--darken-3">
                       <v-icon small class="mr-1">mdi-code-tags</v-icon>投稿順
@@ -67,7 +67,6 @@
                 <v-divider></v-divider>
               </v-container>
             </v-col>
-            <!-- <v-col v-if="!$store.getters.getIsMobile" md="3" lg="3" xl="3"> -->
             <v-col md="3" lg="3" xl="3">
               <v-container px-0>
                 <SnippetCounts />
@@ -113,36 +112,10 @@ export default {
   watch: {
     // async $route(to) {
     $route() {
-      try {
-        this.loading = "purple";
-        let self = this;
-        setTimeout(async () => {
-          const category = self.$route.query.category || "";
-          const result = await axios.get(apiUrl + "snip?sort=" + self.sortKey + "&category=" + category);
-          self.snipData = result.data.Items;
-          self.userData = result.data.userData;
-          self.loading = null;
-        }, 1000);
-      } catch (error) {
-        this.loading = null;
-        this.$store.dispatch("changeLoading", false);
-      }
+      this.changeSnippets();
     },
     sortKey() {
-      try {
-        this.loading = "purple";
-        let self = this;
-        setTimeout(async () => {
-          const category = self.$route.query.category || "";
-          const result = await axios.get(apiUrl + "snip?sort=" + self.sortKey + "&category=" + category);
-          self.snipData = result.data.Items;
-          self.userData = result.data.userData;
-          self.loading = null;
-        }, 500);
-      } catch (err) {
-        this.loading = null;
-        this.$store.dispatch("changeLoading", false);
-      }
+      this.changeSnippets();
     }
   },
   created: async function() {
@@ -164,7 +137,24 @@ export default {
     userData: {},
     sortKey: 0
   }),
-  methods: {}
+  methods: {
+    changeSnippets: async function() {
+      try {
+        this.loading = "#C7B967";
+        let self = this;
+        setTimeout(async () => {
+          const category = self.$route.query.category || "";
+          const result = await axios.get(apiUrl + "snip?sort=" + self.sortKey + "&category=" + category);
+          self.snipData = result.data.Items;
+          self.userData = result.data.userData;
+          self.loading = null;
+        }, 500);
+      } catch (err) {
+        this.loading = null;
+        this.$store.dispatch("changeLoading", false);
+      }
+    }
+  }
 };
 </script>
 
@@ -183,5 +173,8 @@ export default {
 <style>
 .menu-card {
   border-left: solid 3px #c7b967 !important;
+}
+.loading {
+  padding-bottom: 2px !important;
 }
 </style>

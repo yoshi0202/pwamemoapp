@@ -19,7 +19,7 @@
           <span></span>
         </v-container>
       </v-card>
-      <v-card v-if="loading" class="pb-1 px-0" tile elevation="0" :loading="loading"></v-card>
+      <v-card v-if="loading" class="loading px-0" tile elevation="0" :loading="loading"></v-card>
       <v-card outlined tile elevation="0" color="white">
         <v-list dense color="transparent" class="py-0">
           <v-list-item-group v-model="select">
@@ -66,7 +66,7 @@ export default {
     };
   },
   created: async function() {
-    this.loading = "purple";
+    this.loading = "#C7B967";
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const snipCounts = apiUrl + "ranking/snipCounts";
     const getSnipCounts = await axios.get(snipCounts);
