@@ -1,11 +1,11 @@
 <template>
   <span :class="margin">
-    <v-btn to="/" text small color="white" class="text-center pa-0">
-      <div class="d-flex align-center title pa-0">Snippy</div>
+    <v-btn to="/" text small color="purple lighten-2" class="text-center pa-0">
+      <div class="d-flex align-center title pa-0 title-logo">Snippy</div>
     </v-btn>
     <v-menu offset-y v-if="!$store.getters.getIsMobile">
       <template v-slot:activator="{ on }">
-        <v-btn small dark icon v-on="on">
+        <v-btn large dark icon v-on="on">
           <v-icon color="#C7B967">mdi-menu-down</v-icon>
         </v-btn>
       </template>
@@ -35,4 +35,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style scoped>
+.v-btn:before,
+.v-btn--active::before {
+  background-color: "transparent" !important;
+  opacity: 0 !important;
+}
+</style>
