@@ -5,7 +5,7 @@
     </v-container>
     <v-container v-else fill-height>
       <v-layout class="justify-center" wrap>
-        <v-flex xs12 sm12 md12 lg10 xl8 text-center>
+        <v-flex xs12 sm12 md12 lg10 xl7 text-center>
           <v-container pa-0>
             <v-card tile elevation="0" class="mb-1">
               <v-container

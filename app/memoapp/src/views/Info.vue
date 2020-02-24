@@ -6,8 +6,8 @@
           <v-row justify="center" no-gutters>
             <v-col xs="12" sm="12" md="8" lg="8" xl="8">
               <v-container pa-0>
-                <v-card tile elevation="0" outlined>
-                  <v-card tile elevation="0" outlined v-if="!$store.getters.getIsMobile">
+                <v-card tile elevation="0">
+                  <v-card tile elevation="0">
                     <v-container
                       py-2
                       transparent
@@ -27,14 +27,14 @@
                   </v-card>
                 </v-card>
                 <v-container pt-5 text-left px-0 blue-grey--text text--darken-3>
-                  <v-card tile outlined elevation="0">
+                  <v-card tile elevation="0">
                     <v-container>当サービスは個人により開発、運用が行われています。</v-container>
                     <v-container>
-                      <span>作ったひと：Yoshiki Kobayashi(yoshi.)</span>
-                      <span>
+                      <span>作ったひと：Yoshiki Kobayashi</span>
+                      <p>
                         <a href="https://twitter.com/codeplumdev">Twitter</a>/
                         <a href="https://qiita.com/yoshiplum">Qiita</a>
-                      </span>
+                      </p>
                     </v-container>
                     <v-container>お問い合わせは下記メールアドレス、もしくはTwitterよりご連絡ください。</v-container>
                     <v-container>(_at_を＠に変更して送信ください。)</v-container>
@@ -59,5 +59,4 @@ export default {
 };
 </script>
 
-<style scope>
-</style>
+<style scope></style>

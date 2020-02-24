@@ -5,10 +5,10 @@
         <v-list-item-content>
           <v-layout>
             <v-list-item-title>
-              <v-avatar v-if="$store.getters.getLoginStatus">
+              <v-avatar v-if="$store.getters.getLoginStatus" color="grey lighten-2">
                 <img :src="$store.getters.getImgUrl" alt="avatar" style="cursor:pointer" />
               </v-avatar>
-              <span class="caption">
+              <span class="blue-grey--text text--darken-3 font-weight-bold">
                 <span class="ma-5">{{ $store.getters.getDisplayName }}</span>
               </span>
             </v-list-item-title>

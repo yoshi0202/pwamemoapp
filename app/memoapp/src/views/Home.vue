@@ -66,7 +66,8 @@
                 <v-divider></v-divider>
               </v-container>
             </v-col>
-            <v-col v-if="!$store.getters.getIsMobile" md="3" lg="3" xl="3">
+            <!-- <v-col v-if="!$store.getters.getIsMobile" md="3" lg="3" xl="3"> -->
+            <v-col md="3" lg="3" xl="3">
               <v-container px-0>
                 <SnippetCounts />
               </v-container>

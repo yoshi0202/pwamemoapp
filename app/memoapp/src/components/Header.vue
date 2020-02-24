@@ -8,7 +8,7 @@
         <span v-if="$store.getters.getLoginStatus">
           <v-menu left offset-x>
             <template v-slot:activator="{ on }">
-              <v-avatar v-on="on">
+              <v-avatar v-on="on" color="grey lighten-2">
                 <img :src="$store.getters.getImgUrl" alt="avatar" style="cursor:pointer" />
               </v-avatar>
             </template>

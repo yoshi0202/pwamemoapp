@@ -1,7 +1,7 @@
 <template>
   <v-card outlined tile color="transparent">
-    <v-container text-center px-0 ma-0>
-      <v-card tile elevation="0" class="menu-card mb-1" v-if="!$store.getters.getIsMobile">
+    <v-container text-center ma-0 :class="$store.getters.getIsMobile ? 'px-1' : 'pa-0'">
+      <v-card tile elevation="0" class="menu-card mb-1">
         <v-container
           py-2
           transparent
@@ -22,8 +22,8 @@
       <v-card outlined tile elevation="0" color="white">
         <v-list dense color="transparent" class="py-0">
           <v-list-item-group v-model="select">
-            <template v-for="(m,i) in menu">
-              <v-list-item :key="m.displayName" @click="$router.push('/user/'+ m.userId)">
+            <template v-for="(m, i) in menu">
+              <v-list-item :key="m.displayName" @click="$router.push('/user/' + m.userId)">
                 <template v-slot:default>
                   <v-list-item-avatar size="40px">
                     <img :src="m.imgUrl" />
@@ -50,7 +50,6 @@
     </v-container>
   </v-card>
 </template>
-
 
 <script>
 import axios from "axios";
@@ -84,5 +83,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>
