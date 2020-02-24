@@ -1,6 +1,6 @@
 <template>
   <v-container pa-0 ma-0 fluid class="grey lighten-3">
-    <v-content>
+    <v-content class="grey lighten-4">
       <v-img src="/img/top.svg" class="grey lighten-3" max-height="500" aspect-ratio="1" contain>
         <template v-slot:default>
           <v-row class="fill-height" align="center">
@@ -24,13 +24,7 @@
               Snippyはプログラマの「あの時どう書いたっけ？」「こんな時どう書くんだっけ？」を解決することができます。
               よく使うスニペットを残すことで、過去のプロジェクトのコードを引っ張り出す、都度ナレッジ共有サイトを探す手間を削減します。
             </p>
-            <v-img
-              src="/img/about_img1.svg"
-              class="white"
-              max-height="300"
-              aspect-ratio="1"
-              contain
-            ></v-img>
+            <v-img src="/img/about_img1.svg" class="white" max-height="300" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
         <v-flex xs12 sm12 md12 lg4 xl4>
@@ -40,13 +34,7 @@
               Snippyは、多様なプログラマの多様な言語のスニペットが閲覧できるプラットフォームです。
               他のスニペットを参考にして、更に効率的、簡潔な書き方を取り入れましょう。
             </p>
-            <v-img
-              src="/img/about_img2.svg"
-              class="white"
-              max-height="300"
-              aspect-ratio="1"
-              contain
-            ></v-img>
+            <v-img src="/img/about_img2.svg" class="white" max-height="300" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
         <v-flex xs12 sm12 md12 lg4 xl4>
@@ -56,13 +44,7 @@
               メモのようにスニペットを残すことができます。上手な説明、面白いことを書く必要はありません。
               チラシの裏のように、机の上の付箋のように、乱雑なメモを手軽に残しましょう。
             </p>
-            <v-img
-              src="/img/about_img3.svg"
-              class="white"
-              max-height="300"
-              aspect-ratio="1"
-              contain
-            ></v-img>
+            <v-img src="/img/about_img3.svg" class="white" max-height="300" aspect-ratio="1" contain></v-img>
           </v-container>
         </v-flex>
       </v-layout>

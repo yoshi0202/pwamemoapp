@@ -7,97 +7,131 @@
       <v-layout class="justify-center" wrap>
         <v-flex xs12 sm12 md12 lg10 xl8 text-center>
           <v-container pa-0>
-            <v-card tile outlined height="100%">
-              <v-list-item style="background-color:#000000;" dark>
-                <v-card-title class="py-3 ma-0 px-0" style="width:100%">
-                  <v-container pa-0 ma-0 d-flex justify-space-between font-weight-bold headline>
-                    {{ snipData.snipData.title }}
-                    <v-spacer></v-spacer>
-                    <v-btn small dark icon @click="clickSnipPin">
-                      <v-icon :color="pin.pinColor" class>{{ pin.pinIcon }}</v-icon>
-                    </v-btn>
-                    <v-menu offset-y v-if="ownSnip">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small dark icon v-on="on">
-                          <v-icon color="#C7B967" class="ml-3">mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list dense>
-                        <v-list-item
-                          @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
-                          style="cursor:pointer"
-                        >
-                          <v-list-item-title>
-                            <span class="caption">
-                              <v-icon medium>mdi-playlist-edit</v-icon>
-                              <span class="ml-3">編集</span>
-                            </span>
-                          </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item style="cursor:pointer" @click="overlay = !overlay">
-                          <span class="caption">
-                            <v-icon medium color="red">mdi-trash-can-outline</v-icon>
-                            <span class="ml-3 red--text">削除</span>
-                          </span>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </v-container>
-                </v-card-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-avatar size="50" color="grey">
+            <v-card tile elevation="0" class="mb-1">
+              <v-container
+                py-0
+                transparent
+                display-1
+                font-weight-bold
+                text-left
+                blue-grey--text
+                text--darken-3
+                d-flex
+                align-start
+                justify-start
+              >
+                <v-list-item-avatar size="60" color="grey">
                   <img @click="toUserPage" :src="userData.imgUrl" alt="avatar" style="cursor: pointer;" />
                 </v-list-item-avatar>
-                <v-list-item-content class="fluid">
-                  <v-layout wrap>
-                    <v-flex mb12 xs12>
-                      <v-container py-0 text-left font-weight-bold title>@{{ userData.displayName }}</v-container>
-                    </v-flex>
-                    <v-flex mb12 xs12 class="text-left">
-                      <v-container text-left font-weight-thin>{{
-                        changeUnixTime(snipData.createdAt, "getFullTimestamp")
-                      }}</v-container>
-                    </v-flex>
-                  </v-layout>
-                </v-list-item-content>
-              </v-list-item>
-              <v-container px-5 d-flex justify-start align-center>
-                <v-chip small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text" color="grey">
-                  <v-avatar left>
-                    <img :src="'/img/' + tag + '.svg'" />
-                  </v-avatar>
-                  {{ tag }}
-                </v-chip>
+
                 <v-spacer></v-spacer>
-                <span class="px-3">
-                  <div class="twitter">
-                    <a
-                      target="_blank"
-                      :href="
-                        'https://twitter.com/share?url=https://snippy.site' +
-                          $router.currentRoute.path +
-                          '&text=%0a[' +
-                          snipData.snipData.title +
-                          ']%0aコードスニペット共有サイト[Snippy]%20%23Snippy%0a'
-                      "
+                <v-btn class="pt-3" large dark icon @click="clickSnipPin">
+                  <v-icon :color="pin.pinColor" class>{{ pin.pinIcon }}</v-icon>
+                </v-btn>
+                <v-menu offset-y v-if="ownSnip">
+                  <template v-slot:activator="{ on }">
+                    <v-btn class="pt-3" large dark icon v-on="on">
+                      <v-icon color="#C7B967" class="ml-3">mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list dense>
+                    <v-list-item
+                      @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
+                      style="cursor:pointer"
                     >
-                      <v-icon large color="blue">mdi-twitter</v-icon>
-                    </a>
-                  </div>
-                </span>
+                      <v-list-item-title>
+                        <span class="caption">
+                          <v-icon medium>mdi-playlist-edit</v-icon>
+                          <span class="ml-3">編集</span>
+                        </span>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item style="cursor:pointer" @click="overlay = !overlay">
+                      <span class="caption">
+                        <v-icon medium color="red">mdi-trash-can-outline</v-icon>
+                        <span class="ml-3 red--text">削除</span>
+                      </span>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </v-container>
-              <v-container text-left pb-0 v-if="snipData.snipData.snippets">
-                <v-container py-0>
-                  <pre
-                    v-highlightjs="snipData.snipData.snippets"
-                    style="height:100%"
-                  ><code class="java tile"></code></pre>
+              <v-container px-2 pb-0 transparent display-1 font-weight-bold text-left blue-grey--text text--darken-3>
+                <span v-text="snipData.snipData.title"></span>
+              </v-container>
+              <v-container pa-0 text-right>
+                <v-chip
+                  dark
+                  color="blue"
+                  class="ma-2"
+                  label
+                  target="_blank"
+                  :href="
+                    'https://twitter.com/share?url=https://snippy.site' +
+                      $router.currentRoute.path +
+                      '&text=%0a[' +
+                      snipData.snipData.title +
+                      ']%0aコードスニペット共有サイト%20Snippy%20%20%23Snippy%0a'
+                  "
+                >
+                  <v-icon left>mdi-twitter</v-icon>Tweets</v-chip
+                >
+              </v-container>
+              <v-divider></v-divider>
+              <v-container
+                transparent
+                subtitle-1
+                font-weight-bold
+                blue-grey--text
+                text--darken-3
+                d-flex
+                align-end
+                justify-start
+                py-0
+              >
+                <v-list-item-action>
+                  <v-container pa-0 text-left font-weight-light
+                    >Write by : <span class="font-weight-bold">@{{ userData.displayName }}</span></v-container
+                  >
+                  <v-container pa-0 text-left font-weight-light
+                    >Updated :
+                    <span class="font-weight-bold">
+                      {{ changeUnixTime(snipData.createdAt, "getFullTimestamp") }}
+                    </span></v-container
+                  >
+                  <v-container pa-0 text-left font-weight-light d-flex align-center
+                    >Category : <span class="font-weight-bold"> </span
+                    ><img
+                      class="ml-3"
+                      :src="'/img/' + snipData.snipData.tags + '.svg'"
+                      alt="category"
+                      width="20px"
+                      height="auto"
+                  /></v-container>
+                </v-list-item-action>
+                <v-spacer></v-spacer>
+              </v-container>
+            </v-card>
+            <v-card tile elevation="0" height="100%">
+              <v-container text-left transparent blue-grey--text text--darken-3 px-0>
+                <v-container font-weight-bold title>スニペット</v-container>
+                <v-container text-left pa-0 v-if="snipData.snipData.snippets">
+                  <v-container py-0>
+                    <pre
+                      v-highlightjs="snipData.snipData.snippets"
+                      style="height:100%"
+                    ><code class="java tile"></code></pre>
+                  </v-container>
                 </v-container>
-              </v-container>
-              <v-container>
-                <v-divider></v-divider>
-                <v-container class="markdown-body" v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
+                <v-container font-weight-bold title pb-0>説明</v-container>
+                <v-container pt-0>
+                  <v-divider></v-divider>
+                </v-container>
+                <v-container
+                  py-0
+                  class="markdown-body"
+                  v-html="parseMd(snipData.snipData.contents)"
+                  text-left
+                ></v-container>
               </v-container>
             </v-card>
           </v-container>
@@ -141,6 +175,7 @@ export default {
         userId: userId,
         snipId: snipId
       };
+      console.log(this.snipData);
       if (this.$store.getters.getLoginStatus) {
         const pinResult = await axios.get(
           apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
@@ -258,5 +293,11 @@ pre,
 .v-application code {
   box-shadow: none !important;
   -webkit-box-shadow: none !important;
+}
+
+@media (max-width: 900px) {
+  .v-application .display-1 {
+    font-size: 25px !important;
+  }
 }
 </style>
