@@ -1,5 +1,6 @@
 <template>
   <v-content class="grey lighten-3">
+    <ErrorSnackbar v-if="$store.getters.getErrorMsg" />
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
@@ -99,6 +100,7 @@
 import axios from "axios";
 import Loading from "@/components/Loading";
 import UserPageIcons from "@/components/UserPageIcons";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import Mixin from "../mixin/mixin";
 
 export default {
@@ -111,11 +113,18 @@ export default {
     }
   },
   created: async function() {
-    const userId = this.$route.params.userId;
-    const apiUrl = this.$store.getters.getApiUrl + "api/";
-    const result = await axios.get(apiUrl + "user/" + userId);
-    this.userData = result.data;
-    this.$store.dispatch("changeLoading", false);
+    try {
+      this.$store.dispatch("initializeErrorMsg");
+      this.$store.dispatch("changeLoading", true);
+      const userId = this.$route.params.userId;
+      const apiUrl = this.$store.getters.getApiUrl + "api/";
+      const result = await axios.get(apiUrl + "user/" + userId);
+      this.userData = result.data;
+      this.$store.dispatch("changeLoading", false);
+    } catch (err) {
+      this.$store.dispatch("changeLoading", false);
+      this.$store.dispatch("updateErorrMsg");
+    }
   },
   data: function() {
     return {
@@ -131,29 +140,13 @@ export default {
   methods: {
     toSnip: function(userId, snippetsId) {
       this.$router.push("/" + userId + "/snip/" + snippetsId);
-    },
-    changeUserImg: async function(e) {
-      const apiUrl = this.$store.getters.getApiUrl + "api/";
-      e.preventDefault();
-      let formData = new FormData();
-      formData.append("avatar", e.target.files[0]);
-      let config = {
-        headers: {
-          "content-type": "multipart/form-data"
-        }
-      };
-      await axios.post(apiUrl + "user/" + this.$route.params.userId + "/changeImg", formData, config);
-    },
-    imgClick: function() {
-      this.$refs.fileUploads.click();
     }
   },
   components: {
     Loading,
-    UserPageIcons
+    UserPageIcons,
+    ErrorSnackbar
   },
   mixins: [Mixin]
 };
 </script>
-
-<style scoped></style>

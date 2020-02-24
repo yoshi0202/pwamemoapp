@@ -77,7 +77,6 @@ router.get("/:userId/:snipId", async function(req, res, next) {
       KeyConditionExpression: "#u = :u"
     };
     const user = await dynamo.query(userParams).promise();
-    console.log(user);
     result.userData = {
       imgUrl: user.Items[0].imgUrl,
       displayName: user.Items[0].displayName
@@ -131,7 +130,7 @@ router.post("/add", async function(req, res, next) {
 // snip update
 router.post("/update", async function(req, res, next) {
   try {
-    var updateParams = {
+    let updateParams = {
       TableName: tableName,
       Key: {
         userId: req.body.userId,
@@ -153,7 +152,6 @@ router.post("/update", async function(req, res, next) {
       UpdateExpression: "SET #s = :s ,#ca = :ca"
     };
     const result = await dynamo.update(updateParams).promise();
-    console.log(updateParams.ExpressionAttributeValues[":s"]);
     index.partialUpdateObject({
       objectID: req.body.userId + "_" + req.body.snipId,
       snipData: {

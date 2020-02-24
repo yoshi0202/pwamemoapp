@@ -1,5 +1,6 @@
 <template>
   <v-content class="grey lighten-3">
+    <ErrorSnackbar v-if="$store.getters.getErrorMsg" />
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
@@ -96,6 +97,7 @@
                       </form>
                       <v-container>
                         <v-btn
+                          v-if="userData.userData.displayName"
                           :disabled="!valid || !userData.userData.displayName.replace(/\s+/g, '')"
                           large
                           @click="updateUser"
@@ -124,19 +126,27 @@
 import axios from "axios";
 import Store from "@/store/index.js";
 import Loading from "@/components/Loading";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "EditMyPage",
   created: async function() {
-    const userId = this.$route.params.userId;
-    if (userId !== this.$store.getters.getUserId) {
-      this.$router.push("/");
-      return;
+    try {
+      const userId = this.$route.params.userId;
+      if (userId !== this.$store.getters.getUserId) {
+        this.$router.push("/");
+        return;
+      }
+      this.$store.dispatch("initializeErrorMsg");
+      this.$store.dispatch("changeLoading", true);
+      const result = await axios.get(apiUrl + "user/" + userId);
+      this.userData = result.data;
+      this.$store.dispatch("changeLoading", false);
+    } catch (err) {
+      this.$store.dispatch("updateErorrMsg");
+      this.$store.dispatch("changeLoading", false);
     }
-    const result = await axios.get(apiUrl + "user/" + userId);
-    this.userData = result.data;
-    this.$store.dispatch("changeLoading", false);
   },
   data: function() {
     return {
@@ -185,12 +195,13 @@ export default {
         this.$router.push("/user/" + userId);
       } catch (err) {
         this.overlay = false;
-        alert(JSON.stringify(err));
+        this.$store.dispatch("updateErorrMsg");
       }
     }
   },
   components: {
-    Loading
+    Loading,
+    ErrorSnackbar
   }
 };
 </script>

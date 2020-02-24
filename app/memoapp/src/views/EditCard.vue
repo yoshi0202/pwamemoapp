@@ -1,5 +1,6 @@
 <template>
   <v-content>
+    <ErrorSnackbar v-if="$store.getters.getErrorMsg" />
     <v-form v-model="valid">
       <v-container fluid pa-0 ma-0 fill-height>
         <v-card outlined tile elevation="0" class="pa-0" height="100%" width="100%">
@@ -132,13 +133,16 @@
 </template>
 
 <script>
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import axios from "axios";
 import Store from "@/store/index.js";
 const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "editCard",
-  watch: {},
+  components: {
+    ErrorSnackbar
+  },
   data: function() {
     return {
       overlay: false,
@@ -187,27 +191,26 @@ export default {
   },
   created: async function() {
     try {
+      if (this.userId && this.userId !== this.$store.getters.getUserId) {
+        this.$router.push("/");
+        return;
+      }
       const categoryUrl = apiUrl + "category/categories";
       const getCategories = await axios.get(categoryUrl);
       getCategories.data.Items.map(v => {
         this.categories.push(v.category);
         this.highlight[v.category] = v.highlight;
       });
-      if (this.userId && this.snipId) {
-        this.editMode = true;
-        if (this.userId !== this.$store.getters.getUserId) {
-          this.$router.push("/");
-          return;
-        }
-        const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
-        const getResult = await axios.get(url);
-        this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
-        this.snipData.snipTags = getResult.data.Items[0].snipData.tags[0];
-        this.snipData.snipContents = getResult.data.Items[0].snipData.contents;
-        this.snipData.snippets = getResult.data.Items[0].snipData.snippets;
-      }
+      if (!this.userId || !this.snipId) return;
+      this.editMode = true;
+      const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
+      const getResult = await axios.get(url);
+      this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
+      this.snipData.snipTags = getResult.data.Items[0].snipData.tags[0];
+      this.snipData.snipContents = getResult.data.Items[0].snipData.contents;
+      this.snipData.snippets = getResult.data.Items[0].snipData.snippets;
     } catch (err) {
-      alert(JSON.stringify(err));
+      this.$store.dispatch("updateErorrMsg");
     }
   },
   methods: {
@@ -230,7 +233,7 @@ export default {
         this.$router.push("/");
       } catch (err) {
         this.overlay = false;
-        alert(JSON.stringify(err));
+        this.$store.dispatch("updateErorrMsg");
       }
     },
     add: async function() {
@@ -247,12 +250,11 @@ export default {
           snippets: this.snipData.snippets,
           userId: userInfo.userId
         });
-        this.$store.dispatch("incrementsSnipCounts");
         this.overlay = false;
         this.$router.push("/");
       } catch (err) {
         this.overlay = false;
-        alert(JSON.stringify(err));
+        this.$store.dispatch("updateErorrMsg");
       }
     }
   }

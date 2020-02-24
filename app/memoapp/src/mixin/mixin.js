@@ -34,6 +34,7 @@ class ChangeUnixTime {
 export default {
   methods: {
     changeUnixTime: function(unixtime, format) {
+      if (!unixtime || !format) return;
       let date = new ChangeUnixTime(unixtime);
       return date[format]();
     }

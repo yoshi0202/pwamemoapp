@@ -1,5 +1,6 @@
 <template>
   <v-content class="grey lighten-3">
+    <ErrorSnackbar v-if="$store.getters.getErrorMsg" />
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
@@ -89,24 +90,26 @@
                 py-0
               >
                 <v-list-item-action>
-                  <v-container pa-0 text-left font-weight-light
-                    >Write by : <span class="font-weight-bold">@{{ userData.displayName }}</span></v-container
+                  <v-container pa-0 text-left
+                    >Write by: <span class="font-weight-regular">@{{ userData.displayName }}</span></v-container
                   >
-                  <v-container pa-0 text-left font-weight-light
-                    >Updated :
-                    <span class="font-weight-bold">
+                  <v-container pa-0 text-left
+                    >Updated:
+                    <span class="font-weight-regular">
                       {{ changeUnixTime(snipData.createdAt, "getFullTimestamp") }}
-                    </span></v-container
-                  >
-                  <v-container pa-0 text-left font-weight-light d-flex align-center
-                    >Category : <span class="font-weight-bold"> </span
-                    ><img
-                      class="ml-3"
+                    </span>
+                  </v-container>
+                  <v-container pa-0 text-left d-flex align-center
+                    >Category:
+                    <img
+                      class="mx-3"
                       :src="'/img/' + snipData.snipData.tags + '.svg'"
                       alt="category"
                       width="20px"
                       height="auto"
-                  /></v-container>
+                    />
+                    <span class="font-weight-regular"> {{ snipData.snipData.tags }}</span>
+                  </v-container>
                 </v-list-item-action>
                 <v-spacer></v-spacer>
               </v-container>
@@ -154,7 +157,11 @@ import axios from "axios";
 import marked from "marked";
 import Mixin from "../mixin/mixin";
 import Loading from "@/components/Loading";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import hljs from "highlight.js";
+import Store from "@/store/index.js";
+
+const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "ShowCard",
@@ -167,16 +174,10 @@ export default {
   },
   created: async function() {
     try {
+      this.$store.dispatch("initializeErrorMsg");
       this.$store.dispatch("changeLoading", true);
-      marked.setOptions({
-        langPrefix: "",
-        highlight: function(code, lang) {
-          return hljs.highlightAuto(code, [lang]).value;
-        }
-      });
       const userId = this.$route.params.userId;
       const snipId = this.$route.params.snipId;
-      const apiUrl = this.$store.getters.getApiUrl + "api/";
       const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
       this.snipData = result.data.Items[0];
       this.userData = result.data.userData;
@@ -184,20 +185,20 @@ export default {
         userId: userId,
         snipId: snipId
       };
-      if (this.$store.getters.getLoginStatus) {
-        const pinResult = await axios.get(
-          apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
-        );
-        if (pinResult.data.Item)
-          this.pin = {
-            isPin: true,
-            pinIcon: "mdi-pin",
-            pinColor: "#C7B967"
-          };
-      }
       this.$store.dispatch("changeLoading", false);
+      if (!this.$store.getters.getLoginStatus) return;
+      const pinResult = await axios.get(
+        apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
+      );
+      if (!pinResult.data.Item) return;
+      this.pin = {
+        isPin: true,
+        pinIcon: "mdi-pin",
+        pinColor: "#C7B967"
+      };
     } catch (error) {
       this.$store.dispatch("changeLoading", false);
+      this.$store.dispatch("updateErorrMsg");
     }
   },
   data: function() {
@@ -221,13 +222,18 @@ export default {
   },
   methods: {
     parseMd: function(text) {
+      marked.setOptions({
+        langPrefix: "",
+        highlight: function(code, lang) {
+          return hljs.highlightAuto(code, [lang]).value;
+        }
+      });
       return marked(text, {
         breaks: true
       });
     },
     deleteSnip: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         await axios.delete(apiUrl + "snip/destroy", {
           data: {
             userId: this.editParams.userId,
@@ -235,8 +241,10 @@ export default {
           }
         });
         this.$router.push("/");
+        this.$store.dispatch("initializeErrorMsg");
       } catch (err) {
-        alert(JSON.stringify(err));
+        this.$store.dispatch("updateErorrMsg");
+        this.overlay = false;
       }
     },
     toUserPage: function() {
@@ -248,7 +256,6 @@ export default {
           this.$router.push("/login");
           return;
         }
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         if (this.pin.isPin) {
           await axios.delete(apiUrl + "snip/pin", {
             data: {
@@ -277,13 +284,15 @@ export default {
             pinColor: "#C7B967"
           };
         }
+        this.$store.dispatch("initializeErrorMsg");
       } catch (err) {
-        alert(JSON.stringify(err));
+        this.$store.dispatch("updateErorrMsg");
       }
     }
   },
   components: {
-    Loading
+    Loading,
+    ErrorSnackbar
   },
   mixins: [Mixin]
 };

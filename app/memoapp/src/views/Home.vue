@@ -1,6 +1,6 @@
 <template>
   <v-content class="grey lighten-3">
-    <v-container v-if="$store.getters.getErrorMsg" text-center>{{ $store.getters.getErrorMsg }}</v-container>
+    <ErrorSnackbar v-if="$store.getters.getErrorMsg" />
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
@@ -86,10 +86,10 @@
 </template>
 
 <script>
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import Card from "@/components/Card";
 import CategoryMenu from "@/components/CategoryMenu";
 import Loading from "@/components/Loading";
-// import Search from "@/components/Search";
 import SnippetCounts from "@/components/SnippetCounts";
 import CurrentSnippets from "@/components/CurrentSnippets";
 import CurrentPins from "@/components/CurrentPins";
@@ -100,22 +100,25 @@ const apiUrl = Store.getters.getApiUrl + "api/";
 export default {
   name: "home",
   components: {
+    ErrorSnackbar,
     Card,
     CategoryMenu,
     Loading,
-    // Search,
     SnippetCounts,
     CurrentSnippets,
     CurrentPins
   },
   props: {},
   watch: {
-    // async $route(to) {
     $route() {
-      this.changeSnippets();
+      setTimeout(() => {
+        this.changeSnippets();
+      }, 500);
     },
     sortKey() {
-      this.changeSnippets();
+      setTimeout(() => {
+        this.changeSnippets();
+      }, 500);
     }
   },
   created: async function() {
@@ -125,11 +128,9 @@ export default {
       const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
-      this.$store.dispatch("changeLoading", false);
+      this.loading = null;
       this.$store.dispatch("initializeErrorMsg");
-      this.loading = null;
     } catch (err) {
-      this.loading = null;
       this.$store.dispatch("updateErorrMsg");
     }
   },
@@ -143,17 +144,13 @@ export default {
     changeSnippets: async function() {
       try {
         this.loading = "#C7B967";
-        let self = this;
-        setTimeout(async () => {
-          const category = self.$route.query.category || "";
-          const result = await axios.get(apiUrl + "snip?sort=" + self.sortKey + "&category=" + category);
-          self.snipData = result.data.Items;
-          self.userData = result.data.userData;
-          self.loading = null;
-        }, 500);
-      } catch (err) {
+        const category = this.$route.query.category || "";
+        const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
+        this.snipData = result.data.Items;
+        this.userData = result.data.userData;
         this.loading = null;
-        this.$store.dispatch("changeLoading", false);
+      } catch (err) {
+        this.$store.dispatch("updateErorrMsg");
       }
     }
   }

@@ -1,6 +1,6 @@
 <template>
   <v-card outlined tile color="transparent">
-    <v-container text-center ma-0 :class="$store.getters.getIsMobile ? 'px-1' : 'px-0'">
+    <v-container text-center ma-0 :class="$store.getters.getIsMobile ? 'px-2' : 'px-0'">
       <v-card tile elevation="0" class="menu-card mb-1">
         <v-container
           py-2
