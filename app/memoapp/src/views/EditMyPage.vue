@@ -6,104 +6,116 @@
     </v-container>
     <v-container v-else fill-height>
       <v-layout class="justify-center" wrap>
-        <v-flex xs12 sm12 md12 lg10 xl8>
-          <v-card outlined tile height="100%">
-            <v-list-item style="background-color:#000000;" dark>
-              <v-card-title class="py-3">
-                <h1 class="font-weight-bold display-1 white--text">Edit Profile</h1>
-              </v-card-title>
-            </v-list-item>
+        <v-flex xs12 sm12 md12 lg8 xl6>
+          <v-card tile elevation="0" class="menu-card">
+            <v-container
+              font-weight-bold
+              d-flex
+              justify-space-between
+              align-center
+              blue-grey--text
+              text--darken-3
+              title
+            >
+              <v-icon large>mdi-tune</v-icon>
+              <span>設定</span>
+              <span></span>
+            </v-container>
+          </v-card>
+          <v-divider></v-divider>
+          <v-card tile elevation="0">
             <v-container pa-5>
               <v-container pa-0>
                 <v-form v-model="valid">
                   <v-layout wrap>
                     <v-flex xs12 sm12 md12 lg5 xl4>
-                      <v-container fluid text-center>
-                        <v-img
-                          :lazy-src="userData.userData.imgUrl"
-                          alt="avatar"
-                          aspect-ratio="1"
-                          class="grey lighten-2"
-                          style="cursor: pointer;"
-                          max-width="300"
-                          max-height="300"
-                          @click="imgClick"
-                        >
-                          <template v-slot:placeholder>
-                            <v-row class="fill-height ma-0" align="center" justify="center">
-                              <span class="display-1" style="color:#C7B967">Edit</span>
-                              <v-icon size="100" color="#C7B967">mdi-image-edit-outline</v-icon>
-                            </v-row>
-                          </template>
-                        </v-img>
-                        <input
-                          type="file"
-                          style="display:none"
-                          ref="fileUploads"
-                          name="avatar"
-                          @change="changeUserImg"
-                        />
+                      <v-container pa-2 text-center>
+                        <v-card outlined tile elevation="0">
+                          <v-img
+                            :lazy-src="userData.userData.imgUrl"
+                            alt="avatar"
+                            aspect-ratio="1"
+                            class="grey lighten-2"
+                            style="cursor: pointer;"
+                            max-width="300"
+                            max-height="300"
+                            @click="imgClick"
+                          >
+                            <template v-slot:placeholder>
+                              <v-row class="fill-height ma-0" align="center" justify="center">
+                                <span class="display-1" style="color:#C7B967">Edit</span>
+                                <v-icon size="100" color="#C7B967">mdi-image-edit-outline</v-icon>
+                              </v-row>
+                            </template>
+                          </v-img>
+                          <input
+                            type="file"
+                            style="display:none"
+                            ref="fileUploads"
+                            name="avatar"
+                            @change="changeUserImg"
+                          />
+                        </v-card>
                       </v-container>
                     </v-flex>
                     <v-flex xs12 sm12 md12 lg7 xl8>
-                      <form>
-                        <v-text-field
-                          color="purple lighten-2"
-                          v-model="userData.userData.displayName"
-                          outlined
-                          label="表示名"
-                          dense
-                          :rules="[rules.required]"
-                        ></v-text-field>
-                        <v-textarea
-                          color="purple lighten-2"
-                          v-model="userData.userData.description"
-                          outlined
-                          label="説明"
-                          dense
-                        ></v-textarea>
-                        <v-text-field
-                          color="purple lighten-2"
-                          v-model="userData.userData.url"
-                          outlined
-                          label="URL"
-                          placeholder="https://*******/"
-                          dense
-                        ></v-text-field>
-                        <v-text-field
-                          color="purple lighten-2"
-                          outlined
-                          label="Twitter"
-                          dense
-                          placeholder="https://twitter.com/********"
-                          v-model="userData.userData.twitter"
-                        ></v-text-field>
-                        <v-text-field
-                          color="purple lighten-2"
-                          outlined
-                          label="GitHub"
-                          dense
-                          placeholder="https://github.com/********"
-                          v-model="userData.userData.github"
-                        ></v-text-field>
-                        <v-text-field
-                          color="purple lighten-2"
-                          outlined
-                          label="Qiita"
-                          dense
-                          placeholder="https://qiita.com/********"
-                          v-model="userData.userData.qiita"
-                        ></v-text-field>
-                      </form>
                       <v-container>
+                        <form>
+                          <v-text-field
+                            color="purple lighten-2"
+                            v-model="userData.userData.displayName"
+                            outlined
+                            label="表示名"
+                            dense
+                            :rules="[rules.required]"
+                          ></v-text-field>
+                          <v-textarea
+                            color="purple lighten-2"
+                            v-model="userData.userData.description"
+                            outlined
+                            label="説明"
+                            dense
+                          ></v-textarea>
+                          <v-text-field
+                            color="purple lighten-2"
+                            v-model="userData.userData.url"
+                            outlined
+                            label="URL"
+                            placeholder="https://*******/"
+                            dense
+                          ></v-text-field>
+                          <v-text-field
+                            color="purple lighten-2"
+                            outlined
+                            label="Twitter"
+                            dense
+                            placeholder="https://twitter.com/********"
+                            v-model="userData.userData.twitter"
+                          ></v-text-field>
+                          <v-text-field
+                            color="purple lighten-2"
+                            outlined
+                            label="GitHub"
+                            dense
+                            placeholder="https://github.com/********"
+                            v-model="userData.userData.github"
+                          ></v-text-field>
+                          <v-text-field
+                            color="purple lighten-2"
+                            outlined
+                            label="Qiita"
+                            dense
+                            placeholder="https://qiita.com/********"
+                            v-model="userData.userData.qiita"
+                          ></v-text-field>
+                        </form>
                         <v-btn
                           v-if="userData.userData.displayName"
                           :disabled="!valid || !userData.userData.displayName.replace(/\s+/g, '')"
-                          large
                           @click="updateUser"
                           class="font-weight-bold"
                           color="purple lighten-2 white--text"
-                          style="bottom:20px; right:20px; position:absolute"
+                          style="bottom:10px; right:30px; position:absolute"
                           >プロフィールを更新する</v-btn
                         >
                       </v-container>

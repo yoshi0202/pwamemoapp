@@ -176,6 +176,7 @@ router.delete("/destroy", async function(req, res, next) {
       }
     };
     const result = await dynamo.delete(deleteParams).promise();
+    decrementSnipCounts(req.body.userId);
     index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
     res.json(result);
   } catch (err) {
@@ -339,6 +340,32 @@ async function incrementSnipCounts(userId) {
           "#p": "post"
         },
         UpdateExpression: "SET #s = #s + :s, #p = :p"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+async function decrementSnipCounts(userId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: userTableName,
+        Key: {
+          userId: userId
+        },
+        ExpressionAttributeValues: {
+          ":s": 1,
+          ":p": 1
+        },
+        ExpressionAttributeNames: {
+          "#s": "snipCounts",
+          "#p": "post"
+        },
+        UpdateExpression: "SET #s = #s - :s, #p = :p"
       };
       await dynamo.update(params).promise();
       res("");

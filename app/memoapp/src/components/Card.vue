@@ -40,11 +40,11 @@
         <img :src="'/img/' + t + '.svg'" alt="tags" width="auto" height="20px" />
       </span>
       <v-spacer></v-spacer>
-      <span class="px-2 body-2 font-weight-thin blue-grey--text text--darken-3">
+      <span class="px-4 body-2 font-weight-thin blue-grey--text text--darken-3">
         <v-icon small>mdi-pin</v-icon>
         {{ data.pinCounts }}
       </span>
-      <span class="body-2 font-weight-thin blue-grey--text text--darken-3">
+      <span class="px-2 body-2 font-weight-thin blue-grey--text text--darken-3">
         <v-icon small>mdi-eye</v-icon>
         {{ data.viewCounts }}
       </span>
@@ -56,7 +56,9 @@
         }}</span>
         <v-spacer></v-spacer>
         <v-btn body-2 small text color="purple lighten-2" class="pa-0" @click.stop="moveUserPage(data.userId)"
-          >@{{ userData[data.userId].displayName }}</v-btn
+          ><span class="d-inline-block text-truncate" style="max-width:100px;"
+            >@{{ userData[data.userId].displayName }}</span
+          ></v-btn
         >
         <v-btn icon class="pa-0">
           <v-icon size="23" color="grey">{{ menuIcon }}</v-icon>
