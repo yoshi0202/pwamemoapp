@@ -1,13 +1,16 @@
 <template>
-  <v-container pa-0 text-center>
-    <v-list-item v-for="li in logoutItems" :key="li">
-      <v-list-item-icon>
+  <v-container pa-0>
+    <v-list-item v-for="li in logoutItems" :key="li.title">
+      <v-list-item-avatar size="20px">
         <v-icon class="px-2">{{ li.icon }}</v-icon>
-      </v-list-item-icon>
+      </v-list-item-avatar>
 
       <v-list-item-content>
-        <v-list-item-title @click="execAction(li.action)">{{ li.title }}</v-list-item-title>
+        <v-list-item-title @click="execAction(li.action)" class="font-weight-bold">{{ li.title }}</v-list-item-title>
       </v-list-item-content>
+      <v-list-item-action>
+        <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>
+      </v-list-item-action>
     </v-list-item>
   </v-container>
 </template>

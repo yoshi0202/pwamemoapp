@@ -11,7 +11,7 @@
     active-class
     @click="changeMenuIconStatus"
   >
-    <v-snackbar v-model="snackbar" top outlined timeout="2000" color="purple lighten-2">
+    <v-snackbar v-model="snackbar" top outlined :timeout="2000" color="purple lighten-2">
       スニペットをコピーしました。
       <v-btn color="white" text @click="snackbar = false">
         Close
@@ -35,15 +35,30 @@
         </v-hover>
       </v-list-item-icon>
     </v-list-item>
-    <v-container py-0 text-right></v-container>
-    <v-card-actions class="card-actions px-3" style="width:100%">
+    <v-container py-1 d-flex justify-start align-center font-weight-thin body-2 blue-grey--text text--darken-3>
+      <span v-for="t in data.snipData.tags" :key="t" class="mx-1">
+        <img :src="'/img/' + t + '.svg'" alt="tags" width="auto" height="20px" />
+      </span>
+      <v-spacer></v-spacer>
+      <span class="px-4 body-2 font-weight-thin blue-grey--text text--darken-3">
+        <v-icon small>mdi-pin</v-icon>
+        {{ data.pinCounts }}
+      </span>
+      <span class="px-2 body-2 font-weight-thin blue-grey--text text--darken-3">
+        <v-icon small>mdi-eye</v-icon>
+        {{ data.viewCounts }}
+      </span>
+    </v-container>
+    <v-card-actions class="card-actions px-3 pt-0" style="width:100%">
       <v-layout align-center>
         <span class="body-2 font-weight-thin blue-grey--text text--darken-3">{{
           changeUnixTime(data.createdAt, "getFullTimestamp")
         }}</span>
         <v-spacer></v-spacer>
         <v-btn body-2 small text color="purple lighten-2" class="pa-0" @click.stop="moveUserPage(data.userId)"
-          >@{{ userData[data.userId].displayName }}</v-btn
+          ><span class="d-inline-block text-truncate" style="max-width:100px;"
+            >@{{ userData[data.userId].displayName }}</span
+          ></v-btn
         >
         <v-btn icon class="pa-0">
           <v-icon size="23" color="grey">{{ menuIcon }}</v-icon>
@@ -65,18 +80,8 @@
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
-            <span class="body-2 blue-grey--text text--darken-3">
-              <v-icon small>mdi-pin</v-icon>
-              {{ data.pinCounts }}
-            </span>
-            <span class="body-2 ml-10 blue-grey--text text--darken-3">
-              <v-icon small>mdi-eye</v-icon>
-              {{ data.viewCounts }}
-            </span>
             <v-spacer></v-spacer>
-            <v-btn small outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3"
-              >Show</v-btn
-            >
+            <v-btn outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3">Show</v-btn>
           </v-layout>
         </v-container>
       </div>
@@ -124,12 +129,6 @@ export default {
     snippetCopy: function(v) {
       navigator.clipboard.writeText(v);
       this.snackbar = true;
-      // .then(() => {
-      //   alert("テキストコピー完了");
-      // })
-      // .catch(e => {
-      //   alert(e);
-      // });
     }
   },
   components: {
@@ -145,7 +144,7 @@ export default {
 }
 .card-outter {
   position: relative;
-  padding-bottom: 50px;
+  padding-bottom: 40px;
 }
 .card-actions {
   position: absolute;

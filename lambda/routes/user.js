@@ -28,19 +28,18 @@ const upload = multer({
 
 router.get("/:userId", async function(req, res, next) {
   try {
+    let promiseArray = [];
     const userId = req.params.userId;
     let params = {
       TableName: tableName,
-      ExpressionAttributeNames: {
-        "#u": "userId"
-      },
-      ExpressionAttributeValues: {
-        ":u": userId
-      },
-      FilterExpression: "#u = :u"
+      IndexName: "userId-createdAt-index",
+      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt" },
+      ExpressionAttributeValues: { ":u": userId, ":c": 0 },
+      KeyConditionExpression: "#u = :u AND #c >= :c",
+      ScanIndexForward: false
     };
-    const snippets = await dynamo.scan(params).promise();
-    params = {
+    promiseArray.push(dynamo.query(params).promise());
+    let userParams = {
       TableName: userTableName,
       ExpressionAttributeNames: {
         "#u": "userId"
@@ -50,8 +49,8 @@ router.get("/:userId", async function(req, res, next) {
       },
       FilterExpression: "#u = :u"
     };
-    const userData = await dynamo.scan(params).promise();
-    params = {
+    promiseArray.push(dynamo.scan(userParams).promise());
+    let pinParams = {
       TableName: pinTableName,
       ExpressionAttributeNames: {
         "#u": "userId"
@@ -61,13 +60,14 @@ router.get("/:userId", async function(req, res, next) {
       },
       FilterExpression: "#u = :u"
     };
-    const pinData = await dynamo.scan(params).promise();
+    promiseArray.push(dynamo.scan(pinParams).promise());
+    const promiseAll = await Promise.all(promiseArray);
     const result = {
       snippets: {
-        userSnippets: snippets.Items,
-        pins: pinData.Items
+        userSnippets: promiseAll[0].Items,
+        pins: promiseAll[2].Items
       },
-      userData: userData.Items[0]
+      userData: promiseAll[1].Items[0]
     };
     delete result.userData.password;
     res.json(result);

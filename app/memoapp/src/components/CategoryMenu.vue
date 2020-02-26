@@ -21,7 +21,7 @@
       </v-card>
       <v-card tile elevation="0" color="white">
         <v-list outlined dense class="py-0">
-          <v-list-item-group color="purple" v-model="select">
+          <v-list-item-group v-model="select">
             <template v-for="(m, i) in menu">
               <v-list-item :key="m" @click="changeCategory(m, i)">
                 <template v-slot:default>
@@ -48,7 +48,6 @@
   </v-card>
 </template>
 
-
 <script>
 import axios from "axios";
 
@@ -70,11 +69,7 @@ export default {
   component: {},
   methods: {
     changeCategory: async function(language) {
-      if (this.$store.getters.getIsMobile) {
-        this.$router.push("/?sort=New Snippets&category=" + language);
-      } else {
-        this.$emit("clickMenu", language);
-      }
+      this.$router.push("/?category=" + language);
     }
   }
 };

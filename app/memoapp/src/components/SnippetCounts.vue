@@ -1,7 +1,7 @@
 <template>
   <v-card outlined tile color="transparent">
-    <v-container text-center px-0 ma-0>
-      <v-card tile elevation="0" class="menu-card mb-1" v-if="!$store.getters.getIsMobile">
+    <v-container text-center ma-0 :class="$store.getters.getIsMobile ? 'px-2' : 'px-0'">
+      <v-card tile elevation="0" class="menu-card mb-1">
         <v-container
           py-2
           transparent
@@ -19,11 +19,12 @@
           <span></span>
         </v-container>
       </v-card>
+      <v-card v-if="loading" class="loading px-0" tile elevation="0" :loading="loading"></v-card>
       <v-card outlined tile elevation="0" color="white">
         <v-list dense color="transparent" class="py-0">
           <v-list-item-group v-model="select">
-            <template v-for="(m,i) in menu">
-              <v-list-item :key="m.displayName" @click="$router.push('/user/'+ m.userId)">
+            <template v-for="(m, i) in menu">
+              <v-list-item :key="m.displayName" @click="$router.push('/user/' + m.userId)">
                 <template v-slot:default>
                   <v-list-item-avatar size="40px">
                     <img :src="m.imgUrl" />
@@ -51,7 +52,6 @@
   </v-card>
 </template>
 
-
 <script>
 import axios from "axios";
 
@@ -61,15 +61,17 @@ export default {
   data: function() {
     return {
       menu: [],
-      select: null
+      select: null,
+      loading: null
     };
   },
   created: async function() {
+    this.loading = "#C7B967";
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const snipCounts = apiUrl + "ranking/snipCounts";
     const getSnipCounts = await axios.get(snipCounts);
-    // getSnipCounts.data.Items.map(v => this.menu.push(v.displayName));
     this.menu = getSnipCounts.data.Items;
+    this.loading = null;
   },
   component: {},
   methods: {
@@ -84,5 +86,4 @@ export default {
 };
 </script>
 
-<style>
-</style>
+<style></style>

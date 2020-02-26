@@ -1,6 +1,6 @@
 <template>
   <v-content class="grey lighten-3">
-    <v-container v-if="$store.getters.getErrorMsg" text-center>{{ $store.getters.getErrorMsg }}</v-container>
+    <ErrorSnackbar v-if="$store.getters.getErrorMsg" />
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
@@ -11,7 +11,7 @@
             <v-col v-if="!$store.getters.getIsMobile" md="2" lg="2" xl="2">
               <v-container px-0 py-12 my-12 style="position:sticky; top:0px;">
                 <v-container px-0 py-2>
-                  <CategoryMenu @clickMenu="clickMenu" />
+                  <CategoryMenu />
                 </v-container>
               </v-container>
             </v-col>
@@ -42,7 +42,8 @@
               </v-container>
               <v-container py-0 :class="$store.getters.getIsMobile ? 'px-2' : ''">
                 <v-container py-0 px-0>
-                  <v-tabs grow height="30" color="#C7B967">
+                  <v-card class="loading px-0" :loading="loading" tile elevation="0"></v-card>
+                  <v-tabs grow height="30" color="#C7B967" v-model="sortKey">
                     <v-tab class="caption blue-grey--text text--darken-3">
                       <v-icon small class="mr-1">mdi-code-tags</v-icon>投稿順
                     </v-tab>
@@ -66,7 +67,7 @@
                 <v-divider></v-divider>
               </v-container>
             </v-col>
-            <v-col v-if="!$store.getters.getIsMobile" md="3" lg="3" xl="3">
+            <v-col md="3" lg="3" xl="3">
               <v-container px-0>
                 <SnippetCounts />
               </v-container>
@@ -85,10 +86,10 @@
 </template>
 
 <script>
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import Card from "@/components/Card";
 import CategoryMenu from "@/components/CategoryMenu";
 import Loading from "@/components/Loading";
-// import Search from "@/components/Search";
 import SnippetCounts from "@/components/SnippetCounts";
 import CurrentSnippets from "@/components/CurrentSnippets";
 import CurrentPins from "@/components/CurrentPins";
@@ -99,73 +100,60 @@ const apiUrl = Store.getters.getApiUrl + "api/";
 export default {
   name: "home",
   components: {
+    ErrorSnackbar,
     Card,
     CategoryMenu,
     Loading,
-    // Search,
     SnippetCounts,
     CurrentSnippets,
     CurrentPins
   },
   props: {},
   watch: {
-    async $route(to) {
-      try {
-        this.$store.dispatch("changeLoading", false);
-        const sortKey = to.query.sort ? to.query.sort : "New Snippets";
-        const category = to.query.category ? to.query.category : "";
-        const result = await axios.get(apiUrl + "snip?sort=" + sortKey + "&category=" + category);
-        this.snipData = result.data.Items;
-        this.userData = result.data.userData;
-        this.$store.dispatch("changeLoading", false);
-      } catch (error) {
-        this.$store.dispatch("changeLoading", false);
-        this.$store.dispatch("updateErorrMsg");
-      }
+    $route() {
+      this.loading = "#C7B967";
+      setTimeout(() => {
+        this.changeSnippets();
+      }, 500);
     },
-    async sortKey(v) {
-      try {
-        this.$store.dispatch("changeLoading", true);
-        const result = await axios.get(apiUrl + "snip?sort=" + v);
-        this.snipData = result.data.Items;
-        this.userData = result.data.userData;
-        this.$store.dispatch("changeLoading", false);
-      } catch (err) {
-        this.$store.dispatch("changeLoading", false);
-        this.$store.dispatch("updateErorrMsg");
-      }
+    sortKey() {
+      this.loading = "#C7B967";
+      setTimeout(() => {
+        this.changeSnippets();
+      }, 500);
     }
   },
   created: async function() {
     try {
+      this.loading = "#C7B967";
+      this.$store.dispatch("initializeErrorMsg");
+      this.$store.dispatch("changeLoading", true);
       const category = this.$route.query.category ? this.$route.query.category : "";
-      const result = await axios.get(apiUrl + "snip?sort=New Snippets&category=" + category);
+      const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
       this.snipData = result.data.Items;
       this.userData = result.data.userData;
+      this.loading = null;
       this.$store.dispatch("changeLoading", false);
-      this.$store.dispatch("initializeErrorMsg");
     } catch (err) {
-      console.log(err);
       this.$store.dispatch("updateErorrMsg");
     }
   },
   data: () => ({
-    // loading: true,
+    loading: null,
     snipData: [],
     userData: {},
-    sortKey: "New Snippets"
-    // selectedMenu: null
+    sortKey: 0
   }),
   methods: {
-    clickMenu: async function(l) {
+    changeSnippets: async function() {
       try {
-        this.$store.dispatch("changeLoading", true);
-        const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + l);
+        const category = this.$route.query.category || "";
+        const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
         this.snipData = result.data.Items;
         this.userData = result.data.userData;
-        this.$store.dispatch("changeLoading", false);
+        this.loading = null;
       } catch (err) {
-        this.$store.dispatch("changeLoading", false);
+        this.$store.dispatch("updateErorrMsg");
       }
     }
   }
@@ -187,5 +175,8 @@ export default {
 <style>
 .menu-card {
   border-left: solid 3px #c7b967 !important;
+}
+.loading {
+  padding-bottom: 2px !important;
 }
 </style>

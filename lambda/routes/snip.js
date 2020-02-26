@@ -10,54 +10,18 @@ const utils = require("../utils/utils");
 const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
 const index = client.initIndex("snippets");
 
-router.get("/algolia", async function(req, res, next) {
-  try {
-    // const result = await index.search(req.query.search);
-    let params = {
-      TableName: tableName
-    };
-    const result = await dynamo.scan(params).promise();
-    let array = [];
-    result.Items.map(function(v) {
-      array.push({
-        objectID: v.userId + "_" + v.snipId,
-        ...v
-      });
-    });
-    await index.saveObjects(array).then(({ objectIDs }) => {
-      console.log(objectIDs);
-    });
-    res.json(array);
-  } catch (err) {
-    next(utils.createErrorObj(500, err));
-  }
-});
-
 // all snip get
 router.get("/", async function(req, res, next) {
   try {
-    let indexName = "";
-    let sortKey = "";
-    switch (req.query.sort) {
-      case "New Snippets":
-        indexName = "snipType-createdAt-index";
-        sortKey = "createdAt";
-        break;
-
-      case "Most Viewd":
-        indexName = "snipType-viewCounts-index";
-        sortKey = "viewCounts";
-        break;
-
-      case "Most Pin Counts":
-        indexName = "snipType-pinCounts-index";
-        sortKey = "pinCounts";
-        break;
-
-      default:
-        // query param error
-        throw new Error("SortKey Parameter Error");
-        break;
+    let indexName = "snipType-createdAt-index";
+    let sortKey = "createdAt";
+    if (Number(req.query.sort) === 1) {
+      indexName = "snipType-pinCounts-index";
+      sortKey = "pinCounts";
+    }
+    if (Number(req.query.sort) === 2) {
+      indexName = "snipType-viewCounts-index";
+      sortKey = "viewCounts";
     }
     let params = {
       TableName: tableName,
@@ -113,7 +77,6 @@ router.get("/:userId/:snipId", async function(req, res, next) {
       KeyConditionExpression: "#u = :u"
     };
     const user = await dynamo.query(userParams).promise();
-    console.log(user);
     result.userData = {
       imgUrl: user.Items[0].imgUrl,
       displayName: user.Items[0].displayName
@@ -167,7 +130,7 @@ router.post("/add", async function(req, res, next) {
 // snip update
 router.post("/update", async function(req, res, next) {
   try {
-    var updateParams = {
+    let updateParams = {
       TableName: tableName,
       Key: {
         userId: req.body.userId,
@@ -189,7 +152,6 @@ router.post("/update", async function(req, res, next) {
       UpdateExpression: "SET #s = :s ,#ca = :ca"
     };
     const result = await dynamo.update(updateParams).promise();
-    console.log(updateParams.ExpressionAttributeValues[":s"]);
     index.partialUpdateObject({
       objectID: req.body.userId + "_" + req.body.snipId,
       snipData: {
@@ -214,6 +176,7 @@ router.delete("/destroy", async function(req, res, next) {
       }
     };
     const result = await dynamo.delete(deleteParams).promise();
+    decrementSnipCounts(req.body.userId);
     index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
     res.json(result);
   } catch (err) {
@@ -377,6 +340,32 @@ async function incrementSnipCounts(userId) {
           "#p": "post"
         },
         UpdateExpression: "SET #s = #s + :s, #p = :p"
+      };
+      await dynamo.update(params).promise();
+      res("");
+    } catch (err) {
+      rej(err);
+    }
+  });
+}
+
+async function decrementSnipCounts(userId) {
+  return new Promise(async function(res, rej) {
+    try {
+      const params = {
+        TableName: userTableName,
+        Key: {
+          userId: userId
+        },
+        ExpressionAttributeValues: {
+          ":s": 1,
+          ":p": 1
+        },
+        ExpressionAttributeNames: {
+          "#s": "snipCounts",
+          "#p": "post"
+        },
+        UpdateExpression: "SET #s = #s - :s, #p = :p"
       };
       await dynamo.update(params).promise();
       res("");

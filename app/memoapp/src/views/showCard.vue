@@ -1,103 +1,135 @@
 <template>
   <v-content class="grey lighten-3">
+    <ErrorSnackbar v-if="$store.getters.getErrorMsg" />
     <v-container v-if="$store.getters.getLoadingStatus" fill-height fluid>
       <Loading />
     </v-container>
     <v-container v-else fill-height>
       <v-layout class="justify-center" wrap>
-        <v-flex xs12 sm12 md12 lg10 xl8 text-center>
+        <v-flex xs12 sm12 md12 lg10 xl7 text-center>
           <v-container pa-0>
-            <v-card tile outlined height="100%">
-              <v-list-item style="background-color:#000000;" dark>
-                <v-card-title class="py-3 ma-0 px-0" style="width:100%">
-                  <v-container pa-0 ma-0 d-flex justify-space-between font-weight-bold headline>
-                    {{ snipData.snipData.title }}
-                    <v-spacer></v-spacer>
-                    <v-btn small dark icon @click="clickSnipPin">
-                      <v-icon :color="pin.pinColor" class>{{ pin.pinIcon }}</v-icon>
-                    </v-btn>
-                    <v-menu offset-y v-if="ownSnip">
-                      <template v-slot:activator="{ on }">
-                        <v-btn small dark icon v-on="on">
-                          <v-icon color="#C7B967" class="ml-3">mdi-dots-vertical</v-icon>
-                        </v-btn>
-                      </template>
-                      <v-list dense>
-                        <v-list-item
-                          @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
-                          style="cursor:pointer"
-                        >
-                          <v-list-item-title>
-                            <span class="caption">
-                              <v-icon medium>mdi-playlist-edit</v-icon>
-                              <span class="ml-3">編集</span>
-                            </span>
-                          </v-list-item-title>
-                        </v-list-item>
-                        <v-list-item style="cursor:pointer" @click="overlay = !overlay">
-                          <span class="caption">
-                            <v-icon medium color="red">mdi-trash-can-outline</v-icon>
-                            <span class="ml-3 red--text">削除</span>
-                          </span>
-                        </v-list-item>
-                      </v-list>
-                    </v-menu>
-                  </v-container>
-                </v-card-title>
-              </v-list-item>
-              <v-list-item>
-                <v-list-item-avatar size="50" color="grey">
+            <v-card tile elevation="0" class="mb-1">
+              <v-container
+                py-0
+                transparent
+                display-1
+                font-weight-bold
+                text-left
+                blue-grey--text
+                text--darken-3
+                d-flex
+                align-start
+                justify-start
+              >
+                <v-list-item-avatar size="60" color="grey">
                   <img @click="toUserPage" :src="userData.imgUrl" alt="avatar" style="cursor: pointer;" />
                 </v-list-item-avatar>
-                <v-list-item-content class="fluid">
-                  <v-layout wrap>
-                    <v-flex mb12 xs12>
-                      <v-container py-0 text-left font-weight-bold title>@{{ userData.displayName }}</v-container>
-                    </v-flex>
-                    <v-flex mb12 xs12 class="text-left">
-                      <v-container text-left font-weight-thin>{{
-                        changeUnixTime(snipData.createdAt, "getFullTimestamp")
-                      }}</v-container>
-                    </v-flex>
-                  </v-layout>
-                </v-list-item-content>
-              </v-list-item>
-              <v-container px-5 d-flex justify-start align-center>
-                <v-chip small v-for="tag in snipData.snipData.tags" :key="tag" class="mx-1 black--text" color="grey">
-                  <v-avatar left>
-                    <img :src="'/img/' + tag + '.svg'" />
-                  </v-avatar>
-                  {{ tag }}
-                </v-chip>
+
                 <v-spacer></v-spacer>
-                <span class="px-3">
-                  <div class="twitter">
-                    <a
-                      target="_blank"
-                      :href="
-                        'https://twitter.com/share?url=https://snippy.site' +
-                          $router.currentRoute.path +
-                          '&text=%0a[' +
-                          snipData.snipData.title +
-                          ']%0aコードスニペット共有サイト[Snippy]%20%23Snippy%0a'
-                      "
+                <v-btn class="pt-3" large dark icon @click="clickSnipPin">
+                  <v-icon :color="pin.pinColor" class>{{ pin.pinIcon }}</v-icon>
+                </v-btn>
+                <v-menu offset-y v-if="ownSnip">
+                  <template v-slot:activator="{ on }">
+                    <v-btn class="pt-3" large dark icon v-on="on">
+                      <v-icon color="#C7B967" class="ml-3">mdi-dots-vertical</v-icon>
+                    </v-btn>
+                  </template>
+                  <v-list dense>
+                    <v-list-item
+                      @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
+                      style="cursor:pointer"
                     >
-                      <v-icon large color="blue">mdi-twitter</v-icon>
-                    </a>
-                  </div>
-                </span>
+                      <v-list-item-title>
+                        <span class="caption">
+                          <v-icon medium>mdi-playlist-edit</v-icon>
+                          <span class="ml-3">編集</span>
+                        </span>
+                      </v-list-item-title>
+                    </v-list-item>
+                    <v-list-item style="cursor:pointer" @click="overlay = !overlay">
+                      <span class="caption">
+                        <v-icon medium color="red">mdi-trash-can-outline</v-icon>
+                        <span class="ml-3 red--text">削除</span>
+                      </span>
+                    </v-list-item>
+                  </v-list>
+                </v-menu>
               </v-container>
-              <v-container text-left pb-0 v-if="snipData.snipData.snippets">
-                <v-container py-0>
-                  <pre
-                    v-highlightjs="snipData.snipData.snippets"
-                    style="height:100%"
-                  ><code class="java tile"></code></pre>
+              <v-container px-2 pb-0 transparent display-1 font-weight-bold text-left blue-grey--text text--darken-3>
+                <span v-text="snipData.snipData.title"></span>
+              </v-container>
+              <v-container pa-0 text-right>
+                <v-chip
+                  dark
+                  color="blue"
+                  class="ma-2"
+                  label
+                  target="_blank"
+                  :href="
+                    'https://twitter.com/share?url=https://snippy.site' +
+                      $router.currentRoute.path +
+                      '&text=%0a[' +
+                      snipData.snipData.title +
+                      ']%0aコードスニペット共有サイト%20Snippy%20%20%23Snippy%0a'
+                  "
+                >
+                  <v-icon left>mdi-twitter</v-icon>Tweets</v-chip
+                >
+              </v-container>
+              <v-divider></v-divider>
+              <v-container
+                transparent
+                subtitle-1
+                font-weight-bold
+                blue-grey--text
+                text--darken-3
+                d-flex
+                align-end
+                justify-start
+                py-0
+              >
+                <v-list-item-action>
+                  <v-container pa-0 text-left
+                    >Write by: <span class="font-weight-regular">@{{ userData.displayName }}</span></v-container
+                  >
+                  <v-container pa-0 text-left
+                    >Updated:
+                    <span class="font-weight-regular">
+                      {{ changeUnixTime(snipData.createdAt, "getFullTimestamp") }}
+                    </span>
+                  </v-container>
+                  <v-container pa-0 text-left d-flex align-center
+                    >Category:
+                    <span v-for="t in snipData.snipData.tags" :key="t" class="d-flex align-center">
+                      <img class="mx-2" :src="'/img/' + t + '.svg'" alt="category" width="20px" height="auto" />
+                    </span>
+                  </v-container>
+                </v-list-item-action>
+                <v-spacer></v-spacer>
+              </v-container>
+            </v-card>
+            <v-card tile elevation="0" height="100%">
+              <v-container text-left transparent blue-grey--text text--darken-3 px-0>
+                <v-container font-weight-bold title>スニペット</v-container>
+                <v-container text-left pa-0 v-if="snipData.snipData.snippets">
+                  <v-container py-0>
+                    <pre
+                      v-highlightjs="snipData.snipData.snippets"
+                      style="height:100%"
+                    ><code class="java tile"></code></pre>
+                  </v-container>
                 </v-container>
-              </v-container>
-              <v-container>
-                <v-divider></v-divider>
-                <v-container class="markdown-body" v-html="parseMd(snipData.snipData.contents)" text-left></v-container>
+                <v-container font-weight-bold title pb-0>説明</v-container>
+                <v-container pt-0>
+                  <v-divider></v-divider>
+                </v-container>
+                <v-container
+                  py-0
+                  class="markdown-body"
+                  v-html="parseMd(snipData.snipData.contents)"
+                  text-left
+                ></v-container>
               </v-container>
             </v-card>
           </v-container>
@@ -105,7 +137,8 @@
       </v-layout>
     </v-container>
     <v-overlay opacity="0.9" :value="overlay">
-      <v-container>このスニペットを削除しますか？</v-container>
+      <v-container text-center>このスニペットを削除しますか？</v-container>
+      <v-container text-center>スニペットを削除すると元に戻せません。</v-container>
       <v-container text-center>
         <v-btn class="mr-5" outlined color="red" @click="deleteSnip">削除</v-btn>
         <v-btn color="grey" @click="overlay = false">キャンセル</v-btn>
@@ -119,21 +152,27 @@ import axios from "axios";
 import marked from "marked";
 import Mixin from "../mixin/mixin";
 import Loading from "@/components/Loading";
+import ErrorSnackbar from "@/components/ErrorSnackbar";
 import hljs from "highlight.js";
+import Store from "@/store/index.js";
+
+const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   name: "ShowCard",
+  watch: {
+    $route(next, current) {
+      if (next.path !== current.path) {
+        this.$router.go({ path: next.path, force: true });
+      }
+    }
+  },
   created: async function() {
     try {
-      marked.setOptions({
-        langPrefix: "",
-        highlight: function(code, lang) {
-          return hljs.highlightAuto(code, [lang]).value;
-        }
-      });
+      this.$store.dispatch("initializeErrorMsg");
+      this.$store.dispatch("changeLoading", true);
       const userId = this.$route.params.userId;
       const snipId = this.$route.params.snipId;
-      const apiUrl = this.$store.getters.getApiUrl + "api/";
       const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
       this.snipData = result.data.Items[0];
       this.userData = result.data.userData;
@@ -141,20 +180,20 @@ export default {
         userId: userId,
         snipId: snipId
       };
-      if (this.$store.getters.getLoginStatus) {
-        const pinResult = await axios.get(
-          apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
-        );
-        if (pinResult.data.Item)
-          this.pin = {
-            isPin: true,
-            pinIcon: "mdi-pin",
-            pinColor: "#C7B967"
-          };
-      }
       this.$store.dispatch("changeLoading", false);
+      if (!this.$store.getters.getLoginStatus) return;
+      const pinResult = await axios.get(
+        apiUrl + "snip/pin?userId=" + this.$store.getters.getUserId + "&snipId=" + snipId
+      );
+      if (!pinResult.data.Item) return;
+      this.pin = {
+        isPin: true,
+        pinIcon: "mdi-pin",
+        pinColor: "#C7B967"
+      };
     } catch (error) {
       this.$store.dispatch("changeLoading", false);
+      this.$store.dispatch("updateErorrMsg");
     }
   },
   data: function() {
@@ -178,13 +217,18 @@ export default {
   },
   methods: {
     parseMd: function(text) {
+      marked.setOptions({
+        langPrefix: "",
+        highlight: function(code, lang) {
+          return hljs.highlightAuto(code, [lang]).value;
+        }
+      });
       return marked(text, {
         breaks: true
       });
     },
     deleteSnip: async function() {
       try {
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         await axios.delete(apiUrl + "snip/destroy", {
           data: {
             userId: this.editParams.userId,
@@ -192,8 +236,10 @@ export default {
           }
         });
         this.$router.push("/");
+        this.$store.dispatch("initializeErrorMsg");
       } catch (err) {
-        alert(JSON.stringify(err));
+        this.$store.dispatch("updateErorrMsg");
+        this.overlay = false;
       }
     },
     toUserPage: function() {
@@ -205,7 +251,6 @@ export default {
           this.$router.push("/login");
           return;
         }
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         if (this.pin.isPin) {
           await axios.delete(apiUrl + "snip/pin", {
             data: {
@@ -234,13 +279,15 @@ export default {
             pinColor: "#C7B967"
           };
         }
+        this.$store.dispatch("initializeErrorMsg");
       } catch (err) {
-        alert(JSON.stringify(err));
+        this.$store.dispatch("updateErorrMsg");
       }
     }
   },
   components: {
-    Loading
+    Loading,
+    ErrorSnackbar
   },
   mixins: [Mixin]
 };
@@ -254,5 +301,15 @@ pre,
   background-color: #272822 !important;
   width: 100% !important;
   height: 100% !important;
+}
+.v-application code {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+
+@media (max-width: 900px) {
+  .v-application .display-1 {
+    font-size: 25px !important;
+  }
 }
 </style>

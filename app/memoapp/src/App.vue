@@ -2,23 +2,11 @@
   <v-app>
     <Header @logout="logout" v-if="!$store.getters.getIsMobile" />
     <MobileHeader v-else @logout="logout" />
-    <!-- <v-content class="grey lighten-3 pa-0 ma-0"> -->
     <router-view />
-    <!-- </v-content> -->
     <NavigationDrawer @logout="logout" v-if="$store.getters.getIsMobile" />
-    <v-btn
-      v-if="$route.name === 'home'"
-      color="purple lighten-2"
-      right
-      bottom
-      fixed
-      fab
-      dark
-      to="/addSnippets"
-    >
+    <v-btn v-if="$route.name === 'home'" color="purple lighten-2" right bottom fixed fab dark to="/addSnippets">
       <v-icon dark>mdi-code-tags</v-icon>
     </v-btn>
-    <!-- <v-container style="padding-top:150px" v-if="$route.name === 'home'"> -->
     <v-container
       style="padding-top:200px"
       grey
@@ -28,7 +16,6 @@
     >
       <Footer />
     </v-container>
-    <!-- </v-container> -->
   </v-app>
 </template>
 
@@ -71,3 +58,9 @@ export default {
   }
 };
 </script>
+<style>
+.v-application code {
+  box-shadow: none !important;
+  -webkit-box-shadow: none !important;
+}
+</style>

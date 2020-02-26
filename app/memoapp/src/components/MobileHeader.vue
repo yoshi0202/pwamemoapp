@@ -3,19 +3,19 @@
     <v-app-bar app dark flat color="black" class="snippy-header">
       <v-layout justify="space-between">
         <v-container pa-0 class="d-flex align-center">
-          <v-icon
-            v-if="$route.name !== 'home'"
-            color="#C7B967"
-            large
-            @click="$router.push('/')"
-          >mdi-chevron-left</v-icon>
+          <v-icon v-if="$route.name !== 'home'" color="#C7B967" large @click="$router.push('/')"
+            >mdi-chevron-left</v-icon
+          >
         </v-container>
         <v-container pa-0 text-center class="d-flex align-center">
           <TopButton />
         </v-container>
         <v-container pa-0 class="d-flex align-center justify-end">
-          <span v-if="$store.getters.getLoginStatus">
-            <v-avatar>
+          <span v-if="$store.getters.getErrorMsg">
+            <v-icon large color="red" @click="$router.go({ path: '/', force: true })">mdi-refresh</v-icon>
+          </span>
+          <span v-else-if="$store.getters.getLoginStatus">
+            <v-avatar color="grey lighten-2">
               <img
                 :src="$store.getters.getImgUrl"
                 alt="avatar"
@@ -25,7 +25,7 @@
             </v-avatar>
           </span>
           <span v-else>
-            <v-icon color="#C7B967" @click="$store.dispatch('toggleDrawer')">mdi-dots-vertical</v-icon>
+            <v-icon color="white" @click="$store.dispatch('toggleDrawer')">mdi-dots-vertical</v-icon>
           </span>
         </v-container>
       </v-layout>

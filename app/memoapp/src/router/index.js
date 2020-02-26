@@ -113,7 +113,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
   Store.dispatch("closeDrawer");
-  Store.dispatch("changeLoading", true);
   if (to.matched.some(page => page.meta.isPublic) || Store.getters.getLoginStatus) {
     next();
   } else {
