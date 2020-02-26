@@ -101,14 +101,9 @@
                   </v-container>
                   <v-container pa-0 text-left d-flex align-center
                     >Category:
-                    <img
-                      class="mx-3"
-                      :src="'/img/' + snipData.snipData.tags + '.svg'"
-                      alt="category"
-                      width="20px"
-                      height="auto"
-                    />
-                    <span class="font-weight-regular"> {{ snipData.snipData.tags }}</span>
+                    <span v-for="t in snipData.snipData.tags" :key="t" class="d-flex align-center">
+                      <img class="mx-2" :src="'/img/' + t + '.svg'" alt="category" width="20px" height="auto" />
+                    </span>
                   </v-container>
                 </v-list-item-action>
                 <v-spacer></v-spacer>

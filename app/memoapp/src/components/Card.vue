@@ -35,8 +35,21 @@
         </v-hover>
       </v-list-item-icon>
     </v-list-item>
-    <v-container py-0 text-right></v-container>
-    <v-card-actions class="card-actions px-3" style="width:100%">
+    <v-container py-1 d-flex justify-start align-center font-weight-thin body-2 blue-grey--text text--darken-3>
+      <span v-for="t in data.snipData.tags" :key="t" class="mx-1">
+        <img :src="'/img/' + t + '.svg'" alt="tags" width="auto" height="20px" />
+      </span>
+      <v-spacer></v-spacer>
+      <span class="px-2 body-2 font-weight-thin blue-grey--text text--darken-3">
+        <v-icon small>mdi-pin</v-icon>
+        {{ data.pinCounts }}
+      </span>
+      <span class="body-2 font-weight-thin blue-grey--text text--darken-3">
+        <v-icon small>mdi-eye</v-icon>
+        {{ data.viewCounts }}
+      </span>
+    </v-container>
+    <v-card-actions class="card-actions px-3 pt-0" style="width:100%">
       <v-layout align-center>
         <span class="body-2 font-weight-thin blue-grey--text text--darken-3">{{
           changeUnixTime(data.createdAt, "getFullTimestamp")
@@ -65,14 +78,6 @@
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
-            <span class="body-2 blue-grey--text text--darken-3">
-              <v-icon small>mdi-pin</v-icon>
-              {{ data.pinCounts }}
-            </span>
-            <span class="body-2 ml-10 blue-grey--text text--darken-3">
-              <v-icon small>mdi-eye</v-icon>
-              {{ data.viewCounts }}
-            </span>
             <v-spacer></v-spacer>
             <v-btn outlined @click.stop="cardClick" color="purple lighten-2" class="font-weight-bold mx-3">Show</v-btn>
           </v-layout>
@@ -137,7 +142,7 @@ export default {
 }
 .card-outter {
   position: relative;
-  padding-bottom: 50px;
+  padding-bottom: 40px;
 }
 .card-actions {
   position: absolute;

@@ -19,14 +19,15 @@
               :items="categories"
               hide-details
               outlined
+              multiple
               dense
               small-chips
-              label="カテゴリ"
+              label="カテゴリ(3つまで選択可能)"
               auto-select-first
               class="my-2"
               color="purple lighten-2"
               item-color="purple"
-              :rules="[rules.required]"
+              :rules="[rules.required, rules.min]"
               return-object
               @input="inputCategory"
             >
@@ -98,7 +99,8 @@
           :disabled="
             !valid ||
               !snipData.snipContents ||
-              !snipData.snipTags ||
+              !(snipData.snipTags.length !== 0) ||
+              !(snipData.snipTags.length < 4) ||
               !snipData.snippets.replace(/\s+/g, '') ||
               !snipData.snipTitle.replace(/\s+/g, '')
           "
@@ -113,7 +115,8 @@
           :disabled="
             !valid ||
               !snipData.snipContents ||
-              !snipData.snipTags ||
+              !(snipData.snipTags.length !== 0) ||
+              !(snipData.snipTags.length < 4) ||
               !snipData.snippets.replace(/\s+/g, '') ||
               !snipData.snipTitle.replace(/\s+/g, '')
           "
@@ -168,7 +171,7 @@ export default {
           /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/.test(
             v
           ) || "E-mail must be valid",
-        min: v => (v && v.length <= 5) || "カテゴリは5個以内で選択してください。"
+        min: v => (v && v.length < 4) || "カテゴリは3個以内で選択してください。"
       },
       externalLink: {
         hljs_js: function() {
@@ -206,7 +209,7 @@ export default {
       const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
       const getResult = await axios.get(url);
       this.snipData.snipTitle = getResult.data.Items[0].snipData.title;
-      this.snipData.snipTags = getResult.data.Items[0].snipData.tags[0];
+      this.snipData.snipTags = getResult.data.Items[0].snipData.tags;
       this.snipData.snipContents = getResult.data.Items[0].snipData.contents;
       this.snipData.snippets = getResult.data.Items[0].snipData.snippets;
     } catch (err) {

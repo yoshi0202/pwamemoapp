@@ -36,8 +36,27 @@ router.get("/currentryViewed", async function(req, res, next) {
       Limit: 5
     };
     const result = await dynamo.query(params).promise();
-    console.log(result);
-    res.json(result);
+    let promiseArray = [];
+    let returnObj = {
+      snip: result.Items,
+      user: []
+    };
+    let userParams = {
+      TableName: userTableName,
+      ExpressionAttributeNames: { "#u": "userId" },
+      KeyConditionExpression: "#u = :u"
+    };
+    result.Items.map(ri => {
+      userParams.ExpressionAttributeValues = {
+        ":u": ri.userId
+      };
+      promiseArray.push(dynamo.query(userParams).promise());
+    });
+    const promiseAll = await Promise.all(promiseArray);
+    promiseAll.map(pa => {
+      returnObj.user.push(pa.Items[0]);
+    });
+    res.json(returnObj);
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }
@@ -54,7 +73,27 @@ router.get("/currentryPin", async function(req, res, next) {
       Limit: 5
     };
     const result = await dynamo.query(params).promise();
-    res.json(result);
+    let promiseArray = [];
+    let returnObj = {
+      snip: result.Items,
+      user: []
+    };
+    let userParams = {
+      TableName: userTableName,
+      ExpressionAttributeNames: { "#u": "userId" },
+      KeyConditionExpression: "#u = :u"
+    };
+    result.Items.map(ri => {
+      userParams.ExpressionAttributeValues = {
+        ":u": ri.userId
+      };
+      promiseArray.push(dynamo.query(userParams).promise());
+    });
+    const promiseAll = await Promise.all(promiseArray);
+    promiseAll.map(pa => {
+      returnObj.user.push(pa.Items[0]);
+    });
+    res.json(returnObj);
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }

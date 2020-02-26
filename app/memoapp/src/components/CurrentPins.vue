@@ -26,14 +26,19 @@
             <template v-for="(m, i) in menu">
               <v-list-item :key="m.snipData.title" @click="$router.push('/' + m.snipUserId + '/snip/' + m.snipId)">
                 <template v-slot:default>
-                  <v-list-item-avatar tile size="20px">
-                    <img :src="'img/' + m.snipData.tags[0] + '.svg'" />
+                  <v-list-item-avatar size="40px">
+                    <img :src="m.userImgUrl" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title
                       v-text="m.snipData.title"
                       class="text-left font-weight-bold caption blue-grey--text text--darken-3"
                     ></v-list-item-title>
+                    <v-container pa-0 text-left>
+                      <span v-for="t in m.snipData.tags" :key="t" class="mr-2">
+                        <img :src="'/img/' + t + '.svg'" alt="tags" width="15px" height="auto" />
+                      </span>
+                    </v-container>
                   </v-list-item-content>
                   <v-list-item-action>
                     <v-container pa-0 text-center blue-grey--text text--darken-3>
@@ -78,6 +83,7 @@ export default {
   data: function() {
     return {
       menu: [],
+      user: [],
       select: null,
       loading: null
     };
@@ -87,7 +93,8 @@ export default {
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const currentryPin = apiUrl + "ranking/currentryPin";
     const getCurrentry = await axios.get(currentryPin);
-    this.menu = getCurrentry.data.Items;
+    this.menu = getCurrentry.data.snip;
+    this.user = getCurrentry.data.user;
     this.loading = null;
   },
   component: {},
