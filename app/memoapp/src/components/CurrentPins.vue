@@ -24,10 +24,10 @@
         <v-list dense color="transparent" class="py-0">
           <v-list-item-group color="blue-grey darken-4" v-model="select">
             <template v-for="(m, i) in menu">
-              <v-list-item :key="m.snipData.title" @click="$router.push('/' + m.snipUserId + '/snip/' + m.snipId)">
+              <v-list-item :key="m.snipData.title" @click="$router.push('/' + m.userId + '/snip/' + m.snipId)">
                 <template v-slot:default>
                   <v-list-item-avatar size="40px">
-                    <img :src="m.userImgUrl" />
+                    <img :src="m.imgUrl" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title
@@ -83,7 +83,6 @@ export default {
   data: function() {
     return {
       menu: [],
-      user: [],
       select: null,
       loading: null
     };
@@ -94,7 +93,7 @@ export default {
     const currentryPin = apiUrl + "ranking/currentryPin";
     const getCurrentry = await axios.get(currentryPin);
     this.menu = getCurrentry.data.snip;
-    this.user = getCurrentry.data.user;
+    console.log(this.menu);
     this.loading = null;
   },
   component: {},

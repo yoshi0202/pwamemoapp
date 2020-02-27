@@ -74,24 +74,40 @@ router.get("/currentryPin", async function(req, res, next) {
     };
     const result = await dynamo.query(params).promise();
     let promiseArray = [];
+    let promiseArray2 = [];
     let returnObj = {
-      snip: result.Items,
+      snip: [],
       user: []
     };
-    let userParams = {
-      TableName: userTableName,
-      ExpressionAttributeNames: { "#u": "userId" },
-      KeyConditionExpression: "#u = :u"
-    };
     result.Items.map(ri => {
-      userParams.ExpressionAttributeValues = {
-        ":u": ri.userId
-      };
-      promiseArray.push(dynamo.query(userParams).promise());
+      promiseArray.push(
+        dynamo
+          .get({
+            TableName: tableName,
+            Key: {
+              userId: ri.snipUserId,
+              snipId: ri.snipId
+            }
+          })
+          .promise()
+      );
+      promiseArray2.push(
+        dynamo
+          .get({
+            TableName: userTableName,
+            Key: {
+              userId: ri.snipUserId
+            }
+          })
+          .promise()
+      );
     });
     const promiseAll = await Promise.all(promiseArray);
-    promiseAll.map(pa => {
-      returnObj.user.push(pa.Items[0]);
+    const promiseAll2 = await Promise.all(promiseArray2);
+    promiseAll.map((pa, i) => {
+      returnObj.snip.push(pa.Item);
+      returnObj.snip[i].imgUrl = promiseAll2[i].Item.imgUrl;
+      returnObj.snip[i].pinCreatedAt = result.Items[i].pinCreatedAt;
     });
     res.json(returnObj);
   } catch (err) {

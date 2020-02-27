@@ -62,14 +62,47 @@ router.get("/:userId", async function(req, res, next) {
     };
     promiseArray.push(dynamo.scan(pinParams).promise());
     const promiseAll = await Promise.all(promiseArray);
-    const result = {
+    let result = {
       snippets: {
         userSnippets: promiseAll[0].Items,
-        pins: promiseAll[2].Items
+        pins: []
       },
       userData: promiseAll[1].Items[0]
     };
     delete result.userData.password;
+
+    let promiseArray2 = [];
+    let promiseArray3 = [];
+    promiseAll[2].Items.map(pa => {
+      promiseArray2.push(
+        dynamo
+          .get({
+            TableName: tableName,
+            Key: {
+              userId: pa.snipUserId,
+              snipId: pa.snipId
+            }
+          })
+          .promise()
+      );
+      promiseArray3.push(
+        dynamo
+          .get({
+            TableName: userTableName,
+            Key: {
+              userId: pa.snipUserId
+            }
+          })
+          .promise()
+      );
+    });
+    const promiseAll2 = await Promise.all(promiseArray2);
+    const promiseAll3 = await Promise.all(promiseArray3);
+    promiseAll2.map((pa, i) => {
+      result.snippets.pins.push(pa.Item);
+      result.snippets.pins[i].userImgUrl = promiseAll3[i].Item.imgUrl;
+    });
+    console.log(result);
     res.json(result);
   } catch (err) {
     next(utils.createErrorObj(500, err));
@@ -90,7 +123,6 @@ router.post("/:userId/profile/update", async function(req, res, next) {
 
 router.post("/:userId/changeImg", upload.single("avatar"), async function(req, res) {
   try {
-    console.log(req.file.location);
     const updateParams = {
       TableName: userTableName,
       Key: {
@@ -104,10 +136,10 @@ router.post("/:userId/changeImg", upload.single("avatar"), async function(req, r
       },
       UpdateExpression: "SET #iu = :iu"
     };
-    console.log(updateParams);
     await dynamo.update(updateParams).promise();
     res.json({
-      result: "ok"
+      result: "ok",
+      imageUrl: req.file.location
     });
   } catch (err) {
     next(utils.createErrorObj(500, err));
