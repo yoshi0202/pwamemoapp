@@ -176,16 +176,24 @@ export default {
   },
   methods: {
     changeUserImg: async function(e) {
-      const apiUrl = this.$store.getters.getApiUrl + "api/";
-      e.preventDefault();
-      let formData = new FormData();
-      formData.append("avatar", e.target.files[0]);
-      let config = {
-        headers: {
-          "content-type": "multipart/form-data"
-        }
-      };
-      await axios.post(apiUrl + "user/" + this.$route.params.userId + "/changeImg", formData, config);
+      try {
+        this.overlay = true;
+        e.preventDefault();
+        let formData = new FormData();
+        formData.append("avatar", e.target.files[0]);
+        let config = {
+          headers: {
+            "content-type": "multipart/form-data"
+          }
+        };
+        const result = await axios.post(apiUrl + "user/" + this.$route.params.userId + "/changeImg", formData, config);
+        this.userData.userData.imgUrl = result.data.imageUrl;
+        this.$store.dispatch("updateImgUrl", result.data.imageUrl);
+        this.overlay = false;
+      } catch (err) {
+        this.overlay = false;
+        this.$store.dispatch("updateErorrMsg");
+      }
     },
     imgClick: function() {
       this.$refs.fileUploads.click();
@@ -194,7 +202,6 @@ export default {
       try {
         this.overlay = true;
         const userId = this.$route.params.userId;
-        const apiUrl = this.$store.getters.getApiUrl + "api/";
         await axios.post(apiUrl + "user/" + userId + "/profile/update", {
           displayName: this.userData.userData.displayName,
           description: this.userData.userData.description,

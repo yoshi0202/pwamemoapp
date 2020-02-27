@@ -97,9 +97,15 @@ export default new Vuex.Store({
     },
     updateErorrMsg(state, data) {
       state.errorMsg = data;
+    },
+    updateImgUrl(state, data) {
+      state.login.imgUrl = data;
     }
   },
   actions: {
+    updateImgUrl({ commit }, data) {
+      commit("updateImgUrl", data);
+    },
     updateLoginStatus({ commit }, data) {
       commit("updateStatus", data);
     },
