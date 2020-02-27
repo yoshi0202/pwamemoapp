@@ -93,6 +93,7 @@ export default {
     const currentryPin = apiUrl + "ranking/currentryPin";
     const getCurrentry = await axios.get(currentryPin);
     this.menu = getCurrentry.data.snip;
+    console.log(this.menu);
     this.loading = null;
   },
   component: {},

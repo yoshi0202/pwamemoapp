@@ -107,6 +107,7 @@ router.get("/currentryPin", async function(req, res, next) {
     promiseAll.map((pa, i) => {
       returnObj.snip.push(pa.Item);
       returnObj.snip[i].imgUrl = promiseAll2[i].Item.imgUrl;
+      returnObj.snip[i].pinCreatedAt = result.Items[i].pinCreatedAt;
     });
     res.json(returnObj);
   } catch (err) {
