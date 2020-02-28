@@ -121,30 +121,71 @@ router.post("/:userId/profile/update", async function(req, res, next) {
   }
 });
 
-router.post("/:userId/changeImg", upload.single("avatar"), async function(req, res) {
-  try {
-    const updateParams = {
-      TableName: userTableName,
-      Key: {
-        userId: req.params.userId
-      },
-      ExpressionAttributeNames: {
-        "#iu": "imgUrl"
-      },
-      ExpressionAttributeValues: {
-        ":iu": req.file.location
-      },
-      UpdateExpression: "SET #iu = :iu"
-    };
-    await dynamo.update(updateParams).promise();
-    res.json({
-      result: "ok",
-      imageUrl: req.file.location
-    });
-  } catch (err) {
-    next(utils.createErrorObj(500, err));
-  }
+router.post("/:userId/changeImg", async function(req, res) {
+  const encodedData = req.body.images;
+  const fileData = encodedData.replace(/^data:\w+\/\w+;base64,/, "");
+  const decodedFile = new Buffer.from(fileData, "base64");
+  const fileExtension = encodedData.toString().slice(encodedData.indexOf("/") + 1, encodedData.indexOf(";"));
+  const contentType = encodedData.toString().slice(encodedData.indexOf(":") + 1, encodedData.indexOf(";"));
+  const createdAt = Number(utils.getTimestamp());
+  const params = {
+    Body: decodedFile,
+    Bucket: "snippy.site",
+    Key: ["userimg/" + req.params.userId + "_" + createdAt, fileExtension].join("."),
+    ContentType: contentType
+  };
+  await s3.putObject(params).promise();
+  const imageUrl =
+    "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/" +
+    req.params.userId +
+    "_" +
+    createdAt +
+    "." +
+    fileExtension;
+  const updateParams = {
+    TableName: userTableName,
+    Key: {
+      userId: req.params.userId
+    },
+    ExpressionAttributeNames: {
+      "#iu": "imgUrl"
+    },
+    ExpressionAttributeValues: {
+      ":iu": imageUrl
+    },
+    UpdateExpression: "SET #iu = :iu"
+  };
+  await dynamo.update(updateParams).promise();
+  res.json({
+    result: "ok",
+    imageUrl: imageUrl
+  });
 });
+
+// router.post("/:userId/changeImg", upload.single("avatar"), async function(req, res) {
+//   try {
+//     const updateParams = {
+//       TableName: userTableName,
+//       Key: {
+//         userId: req.params.userId
+//       },
+//       ExpressionAttributeNames: {
+//         "#iu": "imgUrl"
+//       },
+//       ExpressionAttributeValues: {
+//         ":iu": req.file.location
+//       },
+//       UpdateExpression: "SET #iu = :iu"
+//     };
+//     await dynamo.update(updateParams).promise();
+//     res.json({
+//       result: "ok",
+//       imageUrl: req.file.location
+//     });
+//   } catch (err) {
+//     next(utils.createErrorObj(500, err));
+//   }
+// });
 // functions
 function getTimestamp() {
   return Math.floor(new Date().getTime() / 1000);

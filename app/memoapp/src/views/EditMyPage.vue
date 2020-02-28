@@ -178,15 +178,12 @@ export default {
     changeUserImg: async function(e) {
       try {
         this.overlay = true;
-        e.preventDefault();
-        let formData = new FormData();
-        formData.append("avatar", e.target.files[0]);
-        let config = {
-          headers: {
-            "content-type": "multipart/form-data"
-          }
-        };
-        const result = await axios.post(apiUrl + "user/" + this.$route.params.userId + "/changeImg", formData, config);
+        const images = e.target.files || e.dataTransfer.files;
+        const imgResult = await this.getBase64(images[0]);
+        console.log(imgResult);
+        const result = await axios.post(apiUrl + "user/" + this.$route.params.userId + "/changeImg", {
+          images: imgResult
+        });
         this.userData.userData.imgUrl = result.data.imageUrl;
         this.$store.dispatch("updateImgUrl", result.data.imageUrl);
         this.overlay = false;
@@ -194,6 +191,14 @@ export default {
         this.overlay = false;
         this.$store.dispatch("updateErorrMsg");
       }
+    },
+    getBase64: async function(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = error => reject(error);
+      });
     },
     imgClick: function() {
       this.$refs.fileUploads.click();
