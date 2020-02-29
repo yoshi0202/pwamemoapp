@@ -6,7 +6,11 @@
       </v-list-item-avatar>
 
       <v-list-item-content>
-        <v-list-item-title @click="execAction(li.action)" class="font-weight-bold">{{ li.title }}</v-list-item-title>
+        <v-list-item-title
+          @click="execAction(li.action)"
+          class="font-weight-bold caption blue-grey--text text--darken-3"
+          >{{ li.title }}</v-list-item-title
+        >
       </v-list-item-content>
       <v-list-item-action>
         <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>

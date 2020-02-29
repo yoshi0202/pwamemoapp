@@ -26,7 +26,7 @@
               <v-list-item :key="m" @click="changeCategory(m, i)">
                 <template v-slot:default>
                   <v-list-item-avatar tile size="20px">
-                    <img :src="'img/' + m + '.svg'" />
+                    <v-img :src="'img/' + m + '.svg'" contain />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title

@@ -6,7 +6,7 @@
           <v-layout>
             <v-list-item-title>
               <v-avatar v-if="$store.getters.getLoginStatus" color="grey lighten-2">
-                <img :src="$store.getters.getImgUrl" alt="avatar" style="cursor:pointer" />
+                <v-img :src="$store.getters.getImgUrl" alt="avatar" style="cursor:pointer" />
               </v-avatar>
               <span class="blue-grey--text text--darken-3 font-weight-bold">
                 <span class="ma-5">{{ $store.getters.getDisplayName }}</span>
@@ -38,7 +38,9 @@
           </v-list-item-avatar>
 
           <v-list-item-content>
-            <v-list-item-title>Snippyについて</v-list-item-title>
+            <v-list-item-title class="font-weight-bold caption blue-grey--text text--darken-3"
+              >Snippyについて</v-list-item-title
+            >
           </v-list-item-content>
           <v-list-item-action>
             <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>
