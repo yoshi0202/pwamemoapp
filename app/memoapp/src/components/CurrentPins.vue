@@ -27,7 +27,7 @@
               <v-list-item :key="m.snipData.title" @click="$router.push('/' + m.userId + '/snip/' + m.snipId)">
                 <template v-slot:default>
                   <v-list-item-avatar size="40px">
-                    <img :src="m.imgUrl" />
+                    <v-img :src="m.imgUrl" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title
@@ -93,7 +93,6 @@ export default {
     const currentryPin = apiUrl + "ranking/currentryPin";
     const getCurrentry = await axios.get(currentryPin);
     this.menu = getCurrentry.data.snip;
-    console.log(this.menu);
     this.loading = null;
   },
   component: {},

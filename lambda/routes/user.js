@@ -11,7 +11,9 @@ const userTableName = "snippy-user";
 const pinTableName = "snippy-pin";
 const storage = multer.memoryStorage();
 const s3 = new aws.S3({
-  bucket: "snippy.site"
+  bucket: "snippy.site",
+  region: "ap-northeast-1",
+  signatureVersion: "v4"
 });
 const upload = multer({
   storage: multerS3({
@@ -121,27 +123,24 @@ router.post("/:userId/profile/update", async function(req, res, next) {
   }
 });
 
+router.get("/:userId/getUploadUrl", async function(req, res, next) {
+  try {
+    const createdAt = Number(utils.getTimestamp());
+    const uploadUrl = await s3.getSignedUrl("putObject", {
+      Bucket: "snippy.site",
+      Key: "userimg/" + req.params.userId + "_" + createdAt + "." + req.query.fileExtension,
+      Expires: 60,
+      ContentType: req.query.contentType
+    });
+    res.json({
+      uploadUrl: uploadUrl
+    });
+  } catch (err) {
+    next(utils.createErrorObj(500, err));
+  }
+});
+
 router.post("/:userId/changeImg", async function(req, res) {
-  const encodedData = req.body.images;
-  const fileData = encodedData.replace(/^data:\w+\/\w+;base64,/, "");
-  const decodedFile = new Buffer.from(fileData, "base64");
-  const fileExtension = encodedData.toString().slice(encodedData.indexOf("/") + 1, encodedData.indexOf(";"));
-  const contentType = encodedData.toString().slice(encodedData.indexOf(":") + 1, encodedData.indexOf(";"));
-  const createdAt = Number(utils.getTimestamp());
-  const params = {
-    Body: decodedFile,
-    Bucket: "snippy.site",
-    Key: ["userimg/" + req.params.userId + "_" + createdAt, fileExtension].join("."),
-    ContentType: contentType
-  };
-  await s3.putObject(params).promise();
-  const imageUrl =
-    "https://s3-ap-northeast-1.amazonaws.com/snippy.site/userimg/" +
-    req.params.userId +
-    "_" +
-    createdAt +
-    "." +
-    fileExtension;
   const updateParams = {
     TableName: userTableName,
     Key: {
@@ -151,42 +150,16 @@ router.post("/:userId/changeImg", async function(req, res) {
       "#iu": "imgUrl"
     },
     ExpressionAttributeValues: {
-      ":iu": imageUrl
+      ":iu": req.body.url
     },
     UpdateExpression: "SET #iu = :iu"
   };
   await dynamo.update(updateParams).promise();
   res.json({
-    result: "ok",
-    imageUrl: imageUrl
+    result: "ok"
   });
 });
 
-// router.post("/:userId/changeImg", upload.single("avatar"), async function(req, res) {
-//   try {
-//     const updateParams = {
-//       TableName: userTableName,
-//       Key: {
-//         userId: req.params.userId
-//       },
-//       ExpressionAttributeNames: {
-//         "#iu": "imgUrl"
-//       },
-//       ExpressionAttributeValues: {
-//         ":iu": req.file.location
-//       },
-//       UpdateExpression: "SET #iu = :iu"
-//     };
-//     await dynamo.update(updateParams).promise();
-//     res.json({
-//       result: "ok",
-//       imageUrl: req.file.location
-//     });
-//   } catch (err) {
-//     next(utils.createErrorObj(500, err));
-//   }
-// });
-// functions
 function getTimestamp() {
   return Math.floor(new Date().getTime() / 1000);
 }

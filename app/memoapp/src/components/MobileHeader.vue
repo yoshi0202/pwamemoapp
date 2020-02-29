@@ -51,9 +51,7 @@ export default {
     TopButton,
     Search
   },
-  created: function() {
-    console.log(this.$route.name);
-  },
+  created: function() {},
   methods: {
     myPage: function() {
       const user = this.$store.getters.getLogin;

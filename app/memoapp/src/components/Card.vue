@@ -19,7 +19,7 @@
     </v-snackbar>
     <v-list-item>
       <v-list-item-avatar size="40" color="grey" class="mr-0">
-        <img :src="userData[data.userId].imgUrl" alt="avatar" />
+        <v-img :src="userData[data.userId].imgUrl" alt="avatar" />
       </v-list-item-avatar>
       <v-card-title
         class="blue-grey--text text--darken-3 subtitle-1 py-0 font-weight-bold d-flex justify-space-between"

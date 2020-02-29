@@ -27,7 +27,7 @@
               <v-list-item :key="m.snipData.title" @click="$router.push('/' + m.userId + '/snip/' + m.snipId)">
                 <template v-slot:default>
                   <v-list-item-avatar size="40px">
-                    <img :src="user[i].imgUrl" />
+                    <v-img :src="user[i].imgUrl" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title

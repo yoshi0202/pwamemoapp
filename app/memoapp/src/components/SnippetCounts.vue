@@ -27,7 +27,7 @@
               <v-list-item :key="m.displayName" @click="$router.push('/user/' + m.userId)">
                 <template v-slot:default>
                   <v-list-item-avatar size="40px">
-                    <img :src="m.imgUrl" />
+                    <v-img :src="m.imgUrl" />
                   </v-list-item-avatar>
                   <v-list-item-content>
                     <v-list-item-title

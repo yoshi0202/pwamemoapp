@@ -50,9 +50,7 @@ const index = client.initIndex("snippets");
 export default {
   Name: "Search",
   watch: {
-    model: function(v) {
-      console.log(v);
-    },
+    model: function(v) {},
     // attr: function(v) {
     //   console.log(v);
     // },
@@ -70,7 +68,6 @@ export default {
       let self = this;
       setTimeout(async () => {
         const { hits } = await index.search(v);
-        console.log(hits);
         for (const h of hits) {
           let obj = {
             ...h.snipData,
@@ -98,9 +95,6 @@ export default {
     clickTitle: function(user, snip) {
       this.$router.push("/" + user + "/snip/" + snip);
       // this.items = [];
-    },
-    test: function(e) {
-      console.log(e);
     },
     blankModel: function() {
       this.model = null;

@@ -22,7 +22,7 @@
                 justify-start
               >
                 <v-list-item-avatar size="60" color="grey">
-                  <img @click="toUserPage" :src="userData.imgUrl" alt="avatar" style="cursor: pointer;" />
+                  <v-img @click="toUserPage" :src="userData.imgUrl" alt="avatar" style="cursor: pointer;" />
                 </v-list-item-avatar>
 
                 <v-spacer></v-spacer>
