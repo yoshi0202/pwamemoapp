@@ -6,7 +6,7 @@
           <v-row justify="center" no-gutters>
             <v-col xs="12" sm="12" md="8" lg="8" xl="8">
               <v-container pa-0>
-                <v-card tile elavation="0" outlined>
+                <v-card tile elevation="0">
                   <v-card tile elevation="0" v-if="!$store.getters.getIsMobile">
                     <v-container
                       py-2

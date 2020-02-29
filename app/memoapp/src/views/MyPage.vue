@@ -150,7 +150,6 @@ export default {
       const apiUrl = this.$store.getters.getApiUrl + "api/";
       const result = await axios.get(apiUrl + "user/" + userId);
       this.userData = result.data;
-      console.log(this.userData);
       this.$store.dispatch("changeLoading", false);
     } catch (err) {
       this.$store.dispatch("changeLoading", false);

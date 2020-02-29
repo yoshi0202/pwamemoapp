@@ -29,13 +29,9 @@
                         color="purple lighten-2"
                         :rules="[rules.required]"
                       ></v-text-field>
-                      <v-btn
-                        dark
-                        large
-                        color="purple lighten-2"
-                        class="font-weight-bold"
-                        @click="login"
-                      >ログイン</v-btn>
+                      <v-btn dark large color="purple lighten-2" class="font-weight-bold" @click="login"
+                        >ログイン</v-btn
+                      >
                     </v-container>
                   </v-form>
                 </v-flex>
@@ -134,7 +130,6 @@ export default {
           alert(result.data.err);
           return;
         }
-        console.log(result);
         await this.$store.dispatch("updateLoginStatus", {
           userId: result.data.userId,
           email: result.data.email,

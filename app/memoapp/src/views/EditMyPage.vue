@@ -177,15 +177,33 @@ export default {
   methods: {
     changeUserImg: async function(e) {
       try {
+        e.preventDefault();
         this.overlay = true;
-        const images = e.target.files || e.dataTransfer.files;
-        const imgResult = await this.getBase64(images[0]);
-        console.log(imgResult);
-        const result = await axios.post(apiUrl + "user/" + this.$route.params.userId + "/changeImg", {
-          images: imgResult
+        const imageData = e.target.files[0];
+        const encodedData = await this.getBase64(imageData);
+        const fileExtension = encodedData.toString().slice(encodedData.indexOf("/") + 1, encodedData.indexOf(";"));
+        const contentType = encodedData.toString().slice(encodedData.indexOf(":") + 1, encodedData.indexOf(";"));
+        const getUrl = await axios.get(
+          apiUrl +
+            "user/" +
+            this.$route.params.userId +
+            "/getUploadUrl?fileExtension=" +
+            fileExtension +
+            "&contentType=" +
+            contentType
+        );
+        let config = {
+          headers: {
+            "Content-type": contentType
+          }
+        };
+        const result = await axios.put(getUrl.data.uploadUrl, imageData, config);
+        const avatarUrl = result.request.responseURL.split("?")[0];
+        await axios.post(apiUrl + "user/" + this.$route.params.userId + "/changeImg", {
+          url: avatarUrl
         });
-        this.userData.userData.imgUrl = result.data.imageUrl;
-        this.$store.dispatch("updateImgUrl", result.data.imageUrl);
+        this.userData.userData.imgUrl = avatarUrl;
+        this.$store.dispatch("updateImgUrl", avatarUrl);
         this.overlay = false;
       } catch (err) {
         this.overlay = false;
@@ -232,7 +250,6 @@ export default {
 
 <style scoped>
 .input-border {
-  /* border-radius: 0; */
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
 }
