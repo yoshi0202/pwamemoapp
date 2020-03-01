@@ -76,7 +76,7 @@
           <pre
             v-highlightjs="data.snipData.snippets"
             style="height:100%"
-          ><code class="javascript" style="background-color:#272822;width:100%; height:100%"></code></pre>
+          ><code :class="data.snipData.tags[0]" style=""></code></pre>
         </v-card-text>
         <v-container py-1>
           <v-layout class="align-center">
@@ -159,5 +159,13 @@ export default {
 }
 .v-btn {
   text-transform: none !important;
+}
+code {
+  background-color: #272822 !important;
+  width: 100% !important;
+  height: 100% !important;
+  white-space: pre !important;
+  word-wrap: normal !important;
+  overflow-wrap: normal !important;
 }
 </style>

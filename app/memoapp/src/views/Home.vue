@@ -140,7 +140,6 @@ export default {
       }
       this.snipData.push(this.currentSnip);
       this.currentSnip = [];
-      console.log(this.snipData);
       this.pageLength = this.snipData.length;
       this.userData = result.data.userData;
       this.loading = null;
