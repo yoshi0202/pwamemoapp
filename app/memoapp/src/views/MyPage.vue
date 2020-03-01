@@ -40,7 +40,7 @@
                     <v-container><v-divider></v-divider></v-container>
                     <v-container title text-left py-0 blue-grey--text text--darken-3>
                       {{ userData.userData.displayName }}
-                      <v-container fluid body-1 ma-0 pa-0 font-weight-thin>@{{ userData.userData.userId }}</v-container>
+                      <v-container fluid body-1 ma-0 pa-0 subtitle>@{{ userData.userData.userId }}</v-container>
                       <UserPageIcons :userData="userData" />
                       <v-divider></v-divider>
                       <v-container subtitle-1 fluid px-0 style="word-break:break-all">

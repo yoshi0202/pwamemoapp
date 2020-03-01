@@ -22,6 +22,22 @@
       <v-card tile elevation="0" color="white">
         <v-list outlined dense class="py-0">
           <v-list-item-group v-model="select">
+            <v-list-item @click="changeCategory('')">
+              <template v-slot:default>
+                <v-list-item-avatar tile size="20px">
+                  <v-icon>mdi-code-tags</v-icon>
+                </v-list-item-avatar>
+                <v-list-item-content>
+                  <v-list-item-title class="text-left font-weight-bold caption blue-grey--text text--darken-3"
+                    >All</v-list-item-title
+                  >
+                </v-list-item-content>
+                <v-list-item-action>
+                  <v-icon color="blue-grey darken-3">mdi-chevron-right</v-icon>
+                </v-list-item-action>
+              </template>
+            </v-list-item>
+            <v-divider></v-divider>
             <template v-for="(m, i) in menu">
               <v-list-item :key="m" @click="changeCategory(m, i)">
                 <template v-slot:default>
