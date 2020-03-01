@@ -24,7 +24,7 @@
         <v-list dense color="transparent" class="py-0">
           <v-list-item-group color="blue-grey darken-4" v-model="select">
             <template v-for="(m, i) in menu">
-              <v-list-item :key="m.snipData.title" @click="$router.push('/' + m.userId + '/snip/' + m.snipId)">
+              <v-list-item :key="m.snipData.createdAt" @click="$router.push('/' + m.userId + '/snip/' + m.snipId)">
                 <template v-slot:default>
                   <v-list-item-avatar size="40px">
                     <v-img :src="m.imgUrl" />

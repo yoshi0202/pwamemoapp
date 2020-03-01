@@ -54,7 +54,7 @@
                 <v-textarea
                   wrap="soft"
                   v-model="snipData.snippets"
-                  :rows="$store.getters.getIsMobile ? 5 : 15"
+                  :rows="$store.getters.getIsMobile ? 3 : 15"
                   label="スニペットを入力"
                   dense
                   outlined
@@ -273,11 +273,11 @@ export default {
   max-height: calc(100vh - 550px);
 }
 .markdown-edit-mobile {
-  height: calc(100vh - 360px);
+  height: calc(100vh - 330px);
   z-index: 0 !important;
 }
 .editor-wrapper-mobile {
-  max-height: calc(100vh - 360px);
+  max-height: calc(100vh - 330px);
 }
 .auto-textarea-wrapper .auto-textarea-input {
   font-family: "Roboto , sans-serif" !important;
