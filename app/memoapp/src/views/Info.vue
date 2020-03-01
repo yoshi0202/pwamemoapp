@@ -32,8 +32,9 @@
                     <v-container>
                       <span>作ったひと：Yoshiki Kobayashi</span>
                       <p>
-                        <a href="https://twitter.com/codeplumdev">Twitter</a>/
-                        <a href="https://qiita.com/yoshiplum">Qiita</a>
+                        <a href="https://twitter.com/codeplumdev" target="_blank">Twitter</a>/
+                        <a href="https://qiita.com/yoshiplum" target="_blank">Qiita</a>/
+                        <a href="https://code-plum.dev/" target="_blank">HP</a>
                       </p>
                     </v-container>
                     <v-container>お問い合わせは下記メールアドレス、もしくはTwitterよりご連絡ください。</v-container>
