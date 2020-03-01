@@ -38,6 +38,9 @@ router.get("/", async function(req, res, next) {
       params.FilterExpression = "contains (#sdt.#tag, :sdt)";
     }
     const result = await dynamo.query(params).promise();
+    result.Items.map(function(v) {
+      delete v.snipData.contents;
+    });
     const userParams = {
       TableName: userTableName
     };

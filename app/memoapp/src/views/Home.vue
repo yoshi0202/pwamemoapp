@@ -59,13 +59,14 @@
               <v-container pt-1 pb-0></v-container>
               <v-container
                 py-0
-                v-for="sd in snipData"
+                v-for="sd in snipData[page - 1]"
                 :key="sd.createdAt"
                 :class="$store.getters.getIsMobile ? 'px-2' : 'px-3'"
               >
                 <Card :data="sd" :userData="userData" />
                 <v-divider></v-divider>
               </v-container>
+              <v-pagination v-model="page" :length="pageLength" color="purple lighten-2"></v-pagination>
             </v-col>
             <v-col md="3" lg="3" xl="3">
               <v-container px-0>
@@ -130,7 +131,16 @@ export default {
       this.$store.dispatch("changeLoading", true);
       const category = this.$route.query.category ? this.$route.query.category : "";
       const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
-      this.snipData = result.data.Items;
+      for (let i = 0; i < result.data.Items.length; i++) {
+        if (i % 10 === 0 && i !== 0) {
+          this.snipData.push(this.currentSnip);
+          this.currentSnip = [];
+        }
+        this.currentSnip.push(result.data.Items[i]);
+      }
+      this.snipData.push(this.currentSnip);
+      this.currentSnip = [];
+      this.pageLength = this.snipData.length;
       this.userData = result.data.userData;
       this.loading = null;
       this.$store.dispatch("changeLoading", false);
@@ -141,15 +151,29 @@ export default {
   data: () => ({
     loading: null,
     snipData: [],
+    currentSnip: [],
     userData: {},
-    sortKey: 0
+    sortKey: 0,
+    page: 1,
+    pageLength: null
   }),
   methods: {
     changeSnippets: async function() {
       try {
         const category = this.$route.query.category || "";
         const result = await axios.get(apiUrl + "snip?sort=" + this.sortKey + "&category=" + category);
-        this.snipData = result.data.Items;
+        this.snipData = [];
+        this.page = 1;
+        for (let i = 0; i < result.data.Items.length; i++) {
+          if (i % 10 === 0 && i !== 0) {
+            this.snipData.push(this.currentSnip);
+            this.currentSnip = [];
+          }
+          this.currentSnip.push(result.data.Items[i]);
+        }
+        this.snipData.push(this.currentSnip);
+        this.currentSnip = [];
+        this.pageLength = this.snipData.length;
         this.userData = result.data.userData;
         this.loading = null;
       } catch (err) {

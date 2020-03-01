@@ -16,7 +16,7 @@
           </span>
           <span v-else-if="$store.getters.getLoginStatus">
             <v-avatar color="grey lighten-2">
-              <img
+              <v-img
                 :src="$store.getters.getImgUrl"
                 alt="avatar"
                 @click="$store.dispatch('toggleDrawer')"
