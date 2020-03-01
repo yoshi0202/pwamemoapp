@@ -72,6 +72,9 @@ router.get("/:userId", async function(req, res, next) {
       userData: promiseAll[1].Items[0]
     };
     delete result.userData.password;
+    result.snippets.userSnippets.map(function(v) {
+      delete v.snipData.contents;
+    });
 
     let promiseArray2 = [];
     let promiseArray3 = [];
@@ -104,7 +107,6 @@ router.get("/:userId", async function(req, res, next) {
       result.snippets.pins.push(pa.Item);
       result.snippets.pins[i].userImgUrl = promiseAll3[i].Item.imgUrl;
     });
-    console.log(result);
     res.json(result);
   } catch (err) {
     next(utils.createErrorObj(500, err));
