@@ -4,6 +4,7 @@ import Home from "../views/Home.vue";
 import EditCard from "../views/EditCard.vue";
 import ShowCard from "../views/ShowCard.vue";
 import Login from "../views/Login.vue";
+import Notification from "../views/Notification.vue";
 import SignUp from "../views/SignUp.vue";
 import MyPage from "../views/MyPage.vue";
 import EditMyPage from "../views/EditMyPage.vue";
@@ -60,6 +61,11 @@ const routes = [
     meta: {
       isPublic: true
     }
+  },
+  {
+    path: "/user/:userId/notification",
+    name: "userNotification",
+    component: Notification
   },
   {
     path: "/user/:userId/edit",

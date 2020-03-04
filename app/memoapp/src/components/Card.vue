@@ -126,8 +126,9 @@ export default {
     moveUserPage: function(id) {
       this.$router.push("/user/" + id);
     },
-    snippetCopy: function(v) {
-      navigator.clipboard.writeText(v);
+    // snippetCopy: function(v) {
+    snippetCopy: function() {
+      // navigator.clipboard.writeText(v);
       this.snackbar = true;
     }
   },

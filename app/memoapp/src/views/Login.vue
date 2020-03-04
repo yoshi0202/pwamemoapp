@@ -9,7 +9,7 @@
                 <v-container text-left py-0 px-4>ログイン</v-container>
               </v-card-title>
               <v-container fluid d-flex justify-center>
-                <v-flex xs12 sm12 md6>
+                <!-- <v-flex xs12 sm12 md6>
                   <v-form>
                     <v-container pt-6 px-5>
                       <v-text-field
@@ -34,7 +34,7 @@
                       >
                     </v-container>
                   </v-form>
-                </v-flex>
+                </v-flex> -->
                 <v-container px-5>
                   <v-container fluid text-center>
                     <v-btn

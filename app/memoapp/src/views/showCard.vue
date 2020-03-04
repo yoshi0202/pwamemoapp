@@ -26,7 +26,7 @@
                 </v-list-item-avatar>
 
                 <v-spacer></v-spacer>
-                <v-btn class="pt-3" large dark icon @click="clickSnipPin">
+                <v-btn v-if="snipData.snipType === 0" class="pt-3" large dark icon @click="clickSnipPin">
                   <v-icon :color="pin.pinColor" class>{{ pin.pinIcon }}</v-icon>
                 </v-btn>
                 <v-menu offset-y v-if="ownSnip">
@@ -36,10 +36,7 @@
                     </v-btn>
                   </template>
                   <v-list dense>
-                    <v-list-item
-                      @click="$router.push('/' + editParams.userId + '/snip/' + editParams.snipId + '/edit')"
-                      style="cursor:pointer"
-                    >
+                    <v-list-item @click="toEditPage" style="cursor:pointer">
                       <v-list-item-title>
                         <span class="caption">
                           <v-icon medium>mdi-playlist-edit</v-icon>
@@ -59,7 +56,7 @@
               <v-container px-2 pb-0 transparent display-1 font-weight-bold text-left blue-grey--text text--darken-3>
                 <span v-text="snipData.snipData.title"></span>
               </v-container>
-              <v-container pa-0 text-right>
+              <v-container v-if="snipData.snipType === 0" pa-0 text-right>
                 <v-chip
                   dark
                   color="blue"
@@ -114,10 +111,7 @@
                 <v-container font-weight-bold title>スニペット</v-container>
                 <v-container text-left pa-0 v-if="snipData.snipData.snippets">
                   <v-container py-0>
-                    <pre
-                      v-highlightjs="snipData.snipData.snippets"
-                      style="height:100%"
-                    ><code class="java tile"></code></pre>
+                    <pre v-highlightjs="snipData.snipData.snippets" style="height:100%"><code class="tile"></code></pre>
                   </v-container>
                 </v-container>
                 <v-container font-weight-bold title pb-0>説明</v-container>
@@ -174,6 +168,7 @@ export default {
       const userId = this.$route.params.userId;
       const snipId = this.$route.params.snipId;
       const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
+      console.log(result);
       this.snipData = result.data.Items[0];
       this.userData = result.data.userData;
       this.editParams = {
@@ -283,6 +278,13 @@ export default {
       } catch (err) {
         this.$store.dispatch("updateErorrMsg");
       }
+    },
+    toEditPage: function() {
+      let editUrl = "/" + this.editParams.userId + "/snip/" + this.editParams.snipId + "/edit";
+      if (this.snipData.snipType === 1) {
+        editUrl += "?mode=memo";
+      }
+      this.$router.push(editUrl);
     }
   },
   components: {

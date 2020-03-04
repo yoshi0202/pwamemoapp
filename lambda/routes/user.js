@@ -35,9 +35,10 @@ router.get("/:userId", async function(req, res, next) {
     let params = {
       TableName: tableName,
       IndexName: "userId-createdAt-index",
-      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt" },
-      ExpressionAttributeValues: { ":u": userId, ":c": 0 },
+      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt", "#s": "snipType" },
+      ExpressionAttributeValues: { ":u": userId, ":c": 0, ":s": 0 },
       KeyConditionExpression: "#u = :u AND #c >= :c",
+      FilterExpression: "#s = :s",
       ScanIndexForward: false
     };
     promiseArray.push(dynamo.query(params).promise());
@@ -63,11 +64,22 @@ router.get("/:userId", async function(req, res, next) {
       FilterExpression: "#u = :u"
     };
     promiseArray.push(dynamo.scan(pinParams).promise());
+    params = {
+      TableName: tableName,
+      IndexName: "userId-createdAt-index",
+      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt", "#s": "snipType" },
+      ExpressionAttributeValues: { ":u": userId, ":c": 0, ":s": 1 },
+      KeyConditionExpression: "#u = :u AND #c >= :c",
+      FilterExpression: "#s = :s",
+      ScanIndexForward: false
+    };
+    promiseArray.push(dynamo.query(params).promise());
     const promiseAll = await Promise.all(promiseArray);
     let result = {
       snippets: {
         userSnippets: promiseAll[0].Items,
-        pins: []
+        pins: [],
+        userMemo: promiseAll[3].Items
       },
       userData: promiseAll[1].Items[0]
     };

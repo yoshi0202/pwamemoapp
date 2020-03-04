@@ -26,6 +26,15 @@
                 </v-list-item-title>
               </v-list-item>
               <v-divider></v-divider>
+              <v-list-item @click="notification" style="cursor:pointer">
+                <v-list-item-title>
+                  <span class="caption">
+                    <v-icon medium>mdi-account</v-icon>
+                    <span class="ml-3">通知</span>
+                  </span>
+                </v-list-item-title>
+              </v-list-item>
+              <v-divider></v-divider>
               <v-list-item @click="editPage" style="cursor:pointer">
                 <v-list-item-title>
                   <span class="caption">
@@ -206,6 +215,10 @@ export default {
     myPage: function() {
       const user = this.$store.getters.getLogin;
       this.$router.push("/user/" + user.userId);
+    },
+    notification: function() {
+      const user = this.$store.getters.getLogin;
+      this.$router.push("/user/" + user.userId + "/notification");
     },
     editPage: function() {
       const user = this.$store.getters.getLogin;

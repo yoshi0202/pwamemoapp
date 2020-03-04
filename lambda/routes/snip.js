@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const aws = require("aws-sdk");
 const algoliasearch = require("algoliasearch");
-const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
+const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", convertEmptyValues: true });
 const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
 const pinTableName = "snippy-pin";
@@ -244,6 +244,37 @@ router.get("/pin", async function(req, res, next) {
     };
     const result = await dynamo.get(scanParams).promise();
     res.json(result);
+  } catch (err) {
+    next(utils.createErrorObj(500, err));
+  }
+});
+
+// snip create
+router.post("/addMemo", async function(req, res, next) {
+  try {
+    const createdAt = Number(utils.getTimestamp());
+    const snipId = req.body.snipId || utils.createSnipId();
+    const params = {
+      TableName: tableName,
+      Item: {
+        userId: req.body.userId,
+        snipId: snipId,
+        createdAt: createdAt,
+        snipType: Number(req.body.snipType),
+        snipData: {
+          title: req.body.snipTitle,
+          contents: req.body.snipContents,
+          tags: req.body.snipTags,
+          snippets: req.body.snippets
+        },
+        pinCounts: 0,
+        viewCounts: 0
+      }
+    };
+    await dynamo.put(params).promise();
+    res.json({
+      result: "ok"
+    });
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }

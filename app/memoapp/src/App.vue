@@ -4,9 +4,41 @@
     <MobileHeader v-else @logout="logout" />
     <router-view />
     <NavigationDrawer @logout="logout" v-if="$store.getters.getIsMobile" />
-    <v-btn v-if="$route.name === 'home'" color="purple lighten-2" right bottom fixed fab dark to="/addSnippets">
+    <!-- <v-btn v-if="$route.name === 'home'" color="purple lighten-2" right bottom fixed fab dark to="/addSnippets">
       <v-icon dark>mdi-code-tags</v-icon>
-    </v-btn>
+    </v-btn> -->
+    <v-speed-dial
+      v-if="$route.name === 'home'"
+      color="purple lighten-2"
+      right
+      bottom
+      fixed
+      fab
+      dark
+      transition="scale-transition"
+    >
+      <template v-slot:activator>
+        <v-btn color="purple lighten-2" dark fab>
+          <v-icon>mdi-code-tags</v-icon>
+        </v-btn>
+      </template>
+      <v-btn fab dark small color="green" to="/addSnippets">
+        <v-tooltip left>
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on">mdi-plus</v-icon>
+          </template>
+          <span>スニペットを追加する</span>
+        </v-tooltip>
+      </v-btn>
+      <v-btn fab dark small color="red" to="/addSnippets?mode=memo">
+        <v-tooltip left>
+          <template v-slot:activator="{ on }">
+            <v-icon v-on="on">mdi-note</v-icon>
+          </template>
+          <span>メモを追加する</span>
+        </v-tooltip>
+      </v-btn>
+    </v-speed-dial>
     <v-container
       style="padding-top:200px"
       grey

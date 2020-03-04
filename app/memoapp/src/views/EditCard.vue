@@ -94,40 +94,62 @@
       </v-container>
     </v-form>
     <v-footer fixed class="font-weight-medium" color="black">
-      <v-card width="100%" tile elevation="0" color="transparent" class="text-right">
-        <v-btn
-          :disabled="
-            !valid ||
-              !snipData.snipContents ||
-              !(snipData.snipTags.length !== 0) ||
-              !(snipData.snipTags.length < 4) ||
-              !snipData.snippets.replace(/\s+/g, '') ||
-              !snipData.snipTitle.replace(/\s+/g, '')
-          "
-          dark
-          v-if="editMode"
-          color="purple lighten-2"
-          @click="update"
-          class="font-weight-bold"
-          >スニペットを更新</v-btn
-        >
-        <v-btn
-          :disabled="
-            !valid ||
-              !snipData.snipContents ||
-              !(snipData.snipTags.length !== 0) ||
-              !(snipData.snipTags.length < 4) ||
-              !snipData.snippets.replace(/\s+/g, '') ||
-              !snipData.snipTitle.replace(/\s+/g, '')
-          "
-          v-else
-          dark
-          class="font-weight-bold"
-          color="purple lighten-2"
-          @click="add"
-          >スニペットを追加</v-btn
-        >
-      </v-card>
+      <v-container fluid text-right pa-0>
+        <v-card color="transparent">
+          <span v-if="memo" class="pa-0">
+            <v-btn @click="addMemo" dark color="purple lighten-2" class="font-weight-bold">メモを追加</v-btn>
+          </span>
+          <span v-else class="pa-0">
+            <v-btn
+              :disabled="
+                !valid ||
+                  !snipData.snipContents ||
+                  !(snipData.snipTags.length !== 0) ||
+                  !(snipData.snipTags.length < 4) ||
+                  !snipData.snippets.replace(/\s+/g, '') ||
+                  !snipData.snipTitle.replace(/\s+/g, '')
+              "
+              dark
+              v-if="editMode"
+              color="purple lighten-2"
+              @click="update"
+              class="font-weight-bold"
+              >スニペットを更新</v-btn
+            >
+            <v-btn
+              :disabled="
+                !valid ||
+                  !snipData.snipContents ||
+                  !(snipData.snipTags.length !== 0) ||
+                  !(snipData.snipTags.length < 4) ||
+                  !snipData.snippets.replace(/\s+/g, '') ||
+                  !snipData.snipTitle.replace(/\s+/g, '')
+              "
+              v-else
+              dark
+              class="font-weight-bold"
+              color="purple lighten-2"
+              @click="add"
+              >スニペットを追加</v-btn
+            >
+          </span>
+          <v-menu top offset-y>
+            <template v-slot:activator="{ on }">
+              <v-btn v-on="on" icon color="white" class="pa-0">
+                <v-icon>mdi-menu-up</v-icon>
+              </v-btn>
+            </template>
+            <v-list>
+              <v-list-item @click="memo = true">
+                <v-list-item-title>メモとして保存</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="memo = false">
+                <v-list-item-title>スニペットを投稿</v-list-item-title>
+              </v-list-item>
+            </v-list>
+          </v-menu>
+        </v-card>
+      </v-container>
     </v-footer>
     <v-overlay :value="overlay">
       <v-progress-circular color="#C7B967" indeterminate size="64"></v-progress-circular>
@@ -163,6 +185,7 @@ export default {
       userId: this.$route.params.userId,
       snipId: this.$route.params.snipId,
       editMode: false,
+      memo: this.$route.query.mode ? true : false,
       categories: [],
       highlight: {},
       rules: {
@@ -204,6 +227,7 @@ export default {
         this.categories.push(v.category);
         this.highlight[v.category] = v.highlight;
       });
+      if (this.$route.query.mode) this.mode = "memo";
       if (!this.userId || !this.snipId) return;
       this.editMode = true;
       const url = apiUrl + "snip/" + this.userId + "/" + this.snipId;
@@ -252,6 +276,27 @@ export default {
           snipCounts: userInfo.snipCounts,
           snippets: this.snipData.snippets,
           userId: userInfo.userId
+        });
+        this.overlay = false;
+        this.$router.push("/");
+      } catch (err) {
+        this.overlay = false;
+        this.$store.dispatch("updateErorrMsg");
+      }
+    },
+    addMemo: async function() {
+      try {
+        this.overlay = true;
+        const url = apiUrl + "snip/addMemo";
+        const userInfo = this.$store.getters.getLogin;
+        await axios.post(url, {
+          snipTitle: this.snipData.snipTitle,
+          snipTags: this.snipData.snipTags,
+          snipContents: this.snipData.snipContents,
+          snipType: 1,
+          snippets: this.snipData.snippets,
+          userId: userInfo.userId,
+          snipId: this.snipId || ""
         });
         this.overlay = false;
         this.$router.push("/");

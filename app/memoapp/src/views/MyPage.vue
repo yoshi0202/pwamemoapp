@@ -66,8 +66,8 @@
                         <span></span>
                       </v-container>
                       <v-container pa-0><v-divider></v-divider></v-container>
-                      <v-tabs v-model="tab" color="#C7B967" grow>
-                        <v-tab v-for="item in items" :key="item" class="subtitle-2 blue-grey--text text--darken-3">{{
+                      <v-tabs v-model="tab" color="#C7B967" show-arrows grow>
+                        <v-tab v-for="item in items" :key="item" class="caption blue-grey--text text--darken-3 pa-0">{{
                           item
                         }}</v-tab>
                       </v-tabs>
@@ -159,7 +159,7 @@ export default {
   data: function() {
     return {
       tab: null,
-      items: ["投稿", "ピン"],
+      items: ["投稿", "ピン", "メモ"],
       userData: {
         userData: ""
       },
