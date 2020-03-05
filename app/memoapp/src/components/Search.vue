@@ -74,7 +74,7 @@ export default {
         };
         this.items.push(obj);
       }
-      // this.searchLoading = true;
+      this.searchLoading = false;
     }
   }
 };
