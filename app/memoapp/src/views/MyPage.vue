@@ -67,15 +67,31 @@
                       </v-container>
                       <v-container pa-0><v-divider></v-divider></v-container>
                       <v-tabs v-model="tab" color="#C7B967" show-arrows grow>
-                        <v-tab v-for="item in items" :key="item" class="caption blue-grey--text text--darken-3 pa-0">{{
-                          item
-                        }}</v-tab>
+                        <v-tab
+                          v-for="item in items"
+                          :key="item"
+                          @click="keyword = ''"
+                          class="caption blue-grey--text text--darken-3 pa-0"
+                          >{{ item }}</v-tab
+                        >
                       </v-tabs>
+                      <v-container pa-0>
+                        <v-card outlined tile elevation="0">
+                          <v-container>
+                            <v-text-field
+                              v-model="keyword"
+                              dense
+                              hide-details
+                              prepend-icon="mdi-filter-menu-outline"
+                              color="blue-grey"
+                            ></v-text-field>
+                          </v-container>
+                        </v-card>
+                      </v-container>
 
                       <v-tabs-items v-model="tab">
-                        <v-divider></v-divider>
                         <v-tab-item v-for="(key, i) in userData.snippets" :key="i">
-                          <v-card tile outlined elevation="0" v-for="snippets in key" :key="snippets.snipId">
+                          <v-card tile outlined elevation="0" v-for="snippets in filteredUsers" :key="snippets.snipId">
                             <v-list class="pa-0">
                               <v-list-item
                                 @click="
@@ -152,7 +168,6 @@ export default {
       if (userId === this.$store.getters.getUserId) {
         this.items = ["投稿", "ピン", "メモ"];
       } else {
-        console.log("higehogej");
         this.items = ["投稿", "ピン"];
       }
       this.userData = result.data;
@@ -162,15 +177,30 @@ export default {
       this.$store.dispatch("updateErorrMsg");
     }
   },
+  computed: {
+    filteredUsers: function() {
+      let snipArray = [];
+      let array = ["userSnippets", "pin", "userMemo"];
+      let key = array[this.tab];
+      for (let i in this.userData.snippets[key]) {
+        let snip = this.userData.snippets[key][i];
+        if (snip.snipData.title.toLowerCase().indexOf(this.keyword.toLowerCase()) !== -1) {
+          snipArray.push(snip);
+        }
+      }
+      return snipArray;
+    }
+  },
   data: function() {
     return {
-      tab: null,
+      tab: 0,
       items: [],
       userData: {
         userData: ""
       },
       userId: "",
-      userImg: ""
+      userImg: "",
+      keyword: ""
     };
   },
   methods: {
