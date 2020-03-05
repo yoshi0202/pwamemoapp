@@ -43,7 +43,7 @@
                       <v-container fluid body-1 ma-0 pa-0 subtitle>@{{ userData.userData.userId }}</v-container>
                       <UserPageIcons :userData="userData" />
                       <v-divider></v-divider>
-                      <v-container subtitle-1 fluid px-0 style="word-break:break-all">
+                      <v-container subtitle-1 fluid px-0 style="white-space: pre-line;">
                         {{ userData.userData.description }}
                       </v-container>
                     </v-container>
@@ -171,6 +171,7 @@ export default {
         this.items = ["投稿", "ピン"];
       }
       this.userData = result.data;
+      console.log(this.userData.userData);
       this.$store.dispatch("changeLoading", false);
     } catch (err) {
       this.$store.dispatch("changeLoading", false);
