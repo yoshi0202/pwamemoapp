@@ -22,7 +22,7 @@
           <v-icon>mdi-code-tags</v-icon>
         </v-btn>
       </template>
-      <v-btn fab dark small color="green" to="/addSnippets">
+      <v-btn fab dark small color="#C7B967" to="/addSnippets">
         <v-tooltip left>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-plus</v-icon>
@@ -30,7 +30,7 @@
           <span>スニペットを追加する</span>
         </v-tooltip>
       </v-btn>
-      <v-btn fab dark small color="red" to="/addSnippets?mode=memo">
+      <v-btn fab dark small color="blue-grey" to="/addSnippets?mode=memo">
         <v-tooltip left>
           <template v-slot:activator="{ on }">
             <v-icon v-on="on">mdi-note</v-icon>

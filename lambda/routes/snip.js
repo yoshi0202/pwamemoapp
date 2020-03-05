@@ -84,9 +84,9 @@ router.get("/:userId/:snipId", async function(req, res, next) {
       imgUrl: user.Items[0].imgUrl,
       displayName: user.Items[0].displayName
     };
+    await incrementViewCounts(userId, snipId);
+    await updateViewedAt(userId, snipId);
     res.json(result);
-    incrementViewCounts(userId, snipId);
-    updateViewedAt(userId, snipId);
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }
@@ -179,8 +179,10 @@ router.delete("/destroy", async function(req, res, next) {
       }
     };
     const result = await dynamo.delete(deleteParams).promise();
-    decrementSnipCounts(req.body.userId);
-    index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
+    if (Number(req.body.snipType) === 0) {
+      decrementSnipCounts(req.body.userId);
+      index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
+    }
     res.json(result);
   } catch (err) {
     next(utils.createErrorObj(500, err));

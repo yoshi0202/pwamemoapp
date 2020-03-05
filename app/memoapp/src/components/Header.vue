@@ -29,7 +29,9 @@
               <v-list-item @click="notification" style="cursor:pointer">
                 <v-list-item-title>
                   <span class="caption">
-                    <v-icon medium>mdi-account</v-icon>
+                    <v-icon medium>
+                      mdi-bell-outline
+                    </v-icon>
                     <span class="ml-3">通知</span>
                   </span>
                 </v-list-item-title>

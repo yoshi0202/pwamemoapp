@@ -149,6 +149,12 @@ export default {
       const userId = this.$route.params.userId;
       const apiUrl = this.$store.getters.getApiUrl + "api/";
       const result = await axios.get(apiUrl + "user/" + userId);
+      if (userId === this.$store.getters.getUserId) {
+        this.items = ["投稿", "ピン", "メモ"];
+      } else {
+        console.log("higehogej");
+        this.items = ["投稿", "ピン"];
+      }
       this.userData = result.data;
       this.$store.dispatch("changeLoading", false);
     } catch (err) {
@@ -159,7 +165,7 @@ export default {
   data: function() {
     return {
       tab: null,
-      items: ["投稿", "ピン", "メモ"],
+      items: [],
       userData: {
         userData: ""
       },

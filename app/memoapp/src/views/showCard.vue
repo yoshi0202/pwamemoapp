@@ -168,7 +168,9 @@ export default {
       const userId = this.$route.params.userId;
       const snipId = this.$route.params.snipId;
       const result = await axios.get(apiUrl + "snip/" + userId + "/" + snipId);
-      console.log(result);
+      if (result.data.Items[0].snipType === 1 && this.$store.getters.getUserId !== result.data.Items[0].userId) {
+        this.$router.push("/");
+      }
       this.snipData = result.data.Items[0];
       this.userData = result.data.userData;
       this.editParams = {
@@ -227,7 +229,8 @@ export default {
         await axios.delete(apiUrl + "snip/destroy", {
           data: {
             userId: this.editParams.userId,
-            snipId: this.editParams.snipId
+            snipId: this.editParams.snipId,
+            snipType: this.snipData.snipType
           }
         });
         this.$router.push("/");
