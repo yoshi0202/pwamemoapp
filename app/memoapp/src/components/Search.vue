@@ -16,6 +16,7 @@
       @input="execAlgolia"
       @click:append-outer="execAlgolia"
       append-outer-icon="mdi-magnify"
+      :loading="searchLoading"
     >
       <template v-slot:item="{ item }">
         <v-list-item @click="clickTitle(item.userId, item.snipId)">
@@ -49,6 +50,7 @@ export default {
       search: null,
       solo: !this.$store.getters.getIsMobile,
       outlined: !this.$store.getters.getIsMobile,
+      searchLoading: false,
       input: null
     };
   },
@@ -62,6 +64,7 @@ export default {
     },
     execAlgolia: async function() {
       if (!this.search.replace(/\s+/g, "")) return;
+      this.searchLoading = true;
       const { hits } = await index.search(this.search);
       for (const h of hits) {
         let obj = {
@@ -71,6 +74,7 @@ export default {
         };
         this.items.push(obj);
       }
+      // this.searchLoading = true;
     }
   }
 };
