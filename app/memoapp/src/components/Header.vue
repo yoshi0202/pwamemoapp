@@ -112,7 +112,7 @@ export default {
       Pusher.logToConsole = true;
       pusher.subscribe("notiChannel" + this.$store.getters.getUserId);
       pusher.bind("pinAdd-event", () => {
-        this.notification = true;
+        this.$store.dispatch("notify", true);
       });
     }
   }

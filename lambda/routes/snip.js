@@ -256,7 +256,7 @@ router.post("/pin", async function(req, res, next) {
     await Promise.all(promiseArray);
 
     // send notification using websocket
-    await sendSocket("notiChannel" + req.body.userId, "pinAdd-event");
+    await sendSocket("notiChannel" + req.body.snipUserId, "pinAdd-event");
 
     res.json({
       result: "ok"
@@ -524,6 +524,8 @@ async function updateViewedAt(userId, snipId) {
 
 function sendSocket(channel, event) {
   return new Promise(function(rej, res) {
+    console.log(channel);
+    console.log(event);
     pusher.trigger(channel, event, {}, function(err) {
       if (err) res(err);
       else rej("");
