@@ -299,10 +299,9 @@ router.post("/google/signin", async function(req, res, next) {
 });
 
 router.get("/qiita", function(req, res, next) {
-  console.log("qiita auth");
   const scope = "read_qiita";
   const url = "https://qiita.com/api/v2/oauth/authorize";
-  const state = "aaaaaaaaaa";
+  const state = utils.getRandomToken(8);
   const urlParams = `client_id=${process.env.QIITA_OAUTH_CLIENT_ID}&scope=${scope}&state=${state}`;
   res.redirect(`${url}?${urlParams}`);
 });

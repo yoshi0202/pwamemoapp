@@ -246,6 +246,7 @@ export default {
   },
   methods: {
     parseMd: function(text) {
+      if (!text) return;
       marked.setOptions({
         langPrefix: "",
         highlight: function(code, lang) {

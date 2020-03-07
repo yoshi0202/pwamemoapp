@@ -180,6 +180,10 @@ router.post("/update", async function(req, res, next) {
 //snip delete
 router.delete("/destroy", async function(req, res, next) {
   try {
+    let delArray = [];
+    let delParams = {};
+
+    // delete snip tables
     const deleteParams = {
       TableName: tableName,
       Key: {
@@ -187,12 +191,61 @@ router.delete("/destroy", async function(req, res, next) {
         snipId: req.body.snipId
       }
     };
-    const result = await dynamo.delete(deleteParams).promise();
-    if (Number(req.body.snipType) === 0) {
+    delArray.push(dynamo.delete(deleteParams).promise());
+
+    // delete pin tables
+    let queryParams = {
+      TableName: pinTableName,
+      IndexName: "snipUserId-snipId-index",
+      ExpressionAttributeNames: { "#sui": "snipUserId", "#s": "snipId" },
+      ExpressionAttributeValues: { ":sui": req.body.userId, ":s": req.body.snipId },
+      KeyConditionExpression: "#sui = :sui AND #s = :s"
+    };
+    const pinGetResult = await dynamo.query(queryParams).promise();
+
+    pinGetResult.Items.map(function(v) {
+      delParams = {
+        TableName: pinTableName,
+        Key: {
+          userId: v.userId,
+          snipId: v.snipId
+        }
+      };
+      delArray.push(dynamo.delete(delParams).promise());
+    });
+
+    // delete notification Tables
+    let scanParams = {
+      TableName: notifyTableName,
+      ExpressionAttributeNames: { "#s": "snipId" },
+      ExpressionAttributeValues: { ":s": req.body.snipId },
+      FilterExpression: "#s = :s"
+    };
+    const notifyGetResult = await dynamo.scan(scanParams).promise();
+    console.log(notifyGetResult);
+
+    notifyGetResult.Items.map(function(v) {
+      delParams = {
+        TableName: notifyTableName,
+        Key: {
+          userId: v.userId,
+          createdAt: v.createdAt
+        }
+      };
+      delArray.push(dynamo.delete(delParams).promise());
+    });
+
+    // delete All Tables
+    await Promise.all(delArray);
+
+    // delete algolia
+    if (Number(req.body.snipType) !== 1) {
       decrementSnipCounts(req.body.userId);
       index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
     }
-    res.json(result);
+    res.json({
+      result: "ok"
+    });
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }

@@ -72,6 +72,10 @@ export default {
     };
   },
   created: async function() {
+    if (this.$route.params.userId !== this.$store.getters.getUserId) {
+      this.$router.push("/");
+      return;
+    }
     const apiUrl = this.$store.getters.getApiUrl + "api/";
     const notify = apiUrl + "user/" + this.$store.getters.getUserId + "/notification";
     const getNotification = await axios.get(notify);
