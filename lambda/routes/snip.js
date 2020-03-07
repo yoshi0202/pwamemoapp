@@ -2,13 +2,22 @@ const express = require("express");
 const router = express.Router();
 const aws = require("aws-sdk");
 const algoliasearch = require("algoliasearch");
-const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1" });
+const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", convertEmptyValues: true });
 const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
 const pinTableName = "snippy-pin";
+const notifyTableName = "snippy-notification";
 const utils = require("../utils/utils");
 const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
 const index = client.initIndex("snippets");
+let Pusher = require("pusher");
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APPID,
+  key: process.env.PUSHER_KEY,
+  secret: process.env.PUSHER_SECRET,
+  cluster: "ap3",
+  useTLS: true
+});
 
 // all snip get
 router.get("/", async function(req, res, next) {
@@ -84,9 +93,9 @@ router.get("/:userId/:snipId", async function(req, res, next) {
       imgUrl: user.Items[0].imgUrl,
       displayName: user.Items[0].displayName
     };
+    await incrementViewCounts(userId, snipId);
+    await updateViewedAt(userId, snipId);
     res.json(result);
-    incrementViewCounts(userId, snipId);
-    updateViewedAt(userId, snipId);
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }
@@ -171,6 +180,10 @@ router.post("/update", async function(req, res, next) {
 //snip delete
 router.delete("/destroy", async function(req, res, next) {
   try {
+    let delArray = [];
+    let delParams = {};
+
+    // delete snip tables
     const deleteParams = {
       TableName: tableName,
       Key: {
@@ -178,18 +191,75 @@ router.delete("/destroy", async function(req, res, next) {
         snipId: req.body.snipId
       }
     };
-    const result = await dynamo.delete(deleteParams).promise();
-    decrementSnipCounts(req.body.userId);
-    index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
-    res.json(result);
+    delArray.push(dynamo.delete(deleteParams).promise());
+
+    // delete pin tables
+    let queryParams = {
+      TableName: pinTableName,
+      IndexName: "snipUserId-snipId-index",
+      ExpressionAttributeNames: { "#sui": "snipUserId", "#s": "snipId" },
+      ExpressionAttributeValues: { ":sui": req.body.userId, ":s": req.body.snipId },
+      KeyConditionExpression: "#sui = :sui AND #s = :s"
+    };
+    const pinGetResult = await dynamo.query(queryParams).promise();
+
+    pinGetResult.Items.map(function(v) {
+      delParams = {
+        TableName: pinTableName,
+        Key: {
+          userId: v.userId,
+          snipId: v.snipId
+        }
+      };
+      delArray.push(dynamo.delete(delParams).promise());
+    });
+
+    // delete notification Tables
+    let scanParams = {
+      TableName: notifyTableName,
+      ExpressionAttributeNames: { "#s": "snipId" },
+      ExpressionAttributeValues: { ":s": req.body.snipId },
+      FilterExpression: "#s = :s"
+    };
+    const notifyGetResult = await dynamo.scan(scanParams).promise();
+    console.log(notifyGetResult);
+
+    notifyGetResult.Items.map(function(v) {
+      delParams = {
+        TableName: notifyTableName,
+        Key: {
+          userId: v.userId,
+          createdAt: v.createdAt
+        }
+      };
+      delArray.push(dynamo.delete(delParams).promise());
+    });
+
+    // delete All Tables
+    await Promise.all(delArray);
+
+    // delete algolia
+    if (Number(req.body.snipType) !== 1) {
+      decrementSnipCounts(req.body.userId);
+      index.deleteObjects([req.body.userId + "_" + req.body.snipId]);
+    }
+    res.json({
+      result: "ok"
+    });
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }
 });
 
-//snip pin
+//add snip pin
 router.post("/pin", async function(req, res, next) {
   try {
+    let promiseArray = [];
+
+    // increments pin counts
+    await incrementPinCounts(req.body.snipUserId, req.body.snipId);
+
+    // add pin
     const putParams = {
       TableName: pinTableName,
       Item: {
@@ -203,8 +273,44 @@ router.post("/pin", async function(req, res, next) {
         pinFlg: 1
       }
     };
-    await dynamo.put(putParams).promise();
-    incrementPinCounts(req.body.snipUserId, req.body.snipId);
+    promiseArray.push(dynamo.put(putParams).promise());
+
+    if (req.body.snipUserId !== req.body.userId) {
+      //update notification, not own event
+      const notiParams = {
+        TableName: notifyTableName,
+        Item: {
+          userId: req.body.snipUserId,
+          event: "pin",
+          eventUserId: req.body.userId,
+          snipId: req.body.snipId,
+          createdAt: Number(utils.getTimestamp())
+        }
+      };
+      promiseArray.push(dynamo.put(notiParams).promise());
+    }
+
+    // update user notifyFlg
+    let updateUserNotify = {
+      TableName: userTableName,
+      Key: {
+        userId: req.body.snipUserId
+      },
+      ExpressionAttributeValues: {
+        ":n": 1
+      },
+      ExpressionAttributeNames: {
+        "#n": "notifyFlg"
+      },
+      UpdateExpression: "SET #n = :n"
+    };
+    promiseArray.push(dynamo.update(updateUserNotify).promise());
+
+    await Promise.all(promiseArray);
+
+    // send notification using websocket
+    await sendSocket("notiChannel" + req.body.snipUserId, "pinAdd-event");
+
     res.json({
       result: "ok"
     });
@@ -215,6 +321,12 @@ router.post("/pin", async function(req, res, next) {
 
 router.delete("/pin", async function(req, res, next) {
   try {
+    let promiseArray = [];
+
+    // decrement pin counts
+    await decrementPinCounts(req.body.snipUserId, req.body.snipId);
+
+    // delete pin
     const deleteParams = {
       TableName: pinTableName,
       Key: {
@@ -222,8 +334,37 @@ router.delete("/pin", async function(req, res, next) {
         snipId: req.body.snipId
       }
     };
-    await dynamo.delete(deleteParams).promise();
-    await decrementPinCounts(req.body.snipUserId, req.body.snipId);
+    promiseArray.push(dynamo.delete(deleteParams).promise());
+
+    // search notification table
+    let params = {
+      TableName: notifyTableName,
+      ExpressionAttributeNames: {
+        "#e": "eventUserId",
+        "#s": "snipId"
+      },
+
+      ExpressionAttributeValues: {
+        ":e": req.body.userId,
+        ":s": req.body.snipId
+      },
+      FilterExpression: "#e = :e AND #s = :s"
+    };
+    let notify = await dynamo.scan(params).promise();
+
+    if (notify.Items.length !== 0) {
+      // delete notification
+      params = {
+        TableName: notifyTableName,
+        Key: {
+          userId: notify.Items[0].userId,
+          createdAt: notify.Items[0].createdAt
+        }
+      };
+      promiseArray.push(dynamo.delete(params).promise());
+    }
+
+    await Promise.all(promiseArray);
     res.json({
       result: "ok"
     });
@@ -244,6 +385,37 @@ router.get("/pin", async function(req, res, next) {
     };
     const result = await dynamo.get(scanParams).promise();
     res.json(result);
+  } catch (err) {
+    next(utils.createErrorObj(500, err));
+  }
+});
+
+// memo create
+router.post("/addMemo", async function(req, res, next) {
+  try {
+    const createdAt = Number(utils.getTimestamp());
+    const snipId = req.body.snipId || utils.createSnipId();
+    const params = {
+      TableName: tableName,
+      Item: {
+        userId: req.body.userId,
+        snipId: snipId,
+        createdAt: createdAt,
+        snipType: Number(req.body.snipType),
+        snipData: {
+          title: req.body.snipTitle,
+          contents: req.body.snipContents,
+          tags: req.body.snipTags,
+          snippets: req.body.snippets
+        },
+        pinCounts: 0,
+        viewCounts: 0
+      }
+    };
+    await dynamo.put(params).promise();
+    res.json({
+      result: "ok"
+    });
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }
@@ -400,5 +572,16 @@ async function updateViewedAt(userId, snipId) {
     } catch (err) {
       rej(err);
     }
+  });
+}
+
+function sendSocket(channel, event) {
+  return new Promise(function(rej, res) {
+    console.log(channel);
+    console.log(event);
+    pusher.trigger(channel, event, {}, function(err) {
+      if (err) res(err);
+      else rej("");
+    });
   });
 }

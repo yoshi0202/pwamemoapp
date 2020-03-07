@@ -10,6 +10,7 @@ import InputTag from "vue-input-tag";
 import PerfectScrollbar from "vue2-perfect-scrollbar";
 import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 import VueCarousel from "vue-carousel";
+import VueAnalytics from "vue-analytics";
 
 import VueHighlightJS from "vue-highlightjs";
 import "highlight.js/styles/monokai-sublime.css";
@@ -22,6 +23,10 @@ Vue.use(mavonEditor);
 Vue.use(PerfectScrollbar);
 Vue.use(VueCarousel);
 Vue.use(VueHighlightJS);
+Vue.use(VueAnalytics, {
+  id: "UA-159396582-1",
+  router
+});
 
 new Vue({
   router,

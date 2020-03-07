@@ -1,30 +1,25 @@
 <template>
   <span>
-    <v-autocomplete
+    <v-combobox
       :light="$store.getters.getIsMobile"
       :dark="!$store.getters.getIsMobile"
-      v-model="model"
       :items="items"
-      :search-input.sync="search"
       dense
       :solo="solo"
-      item-text="title"
-      color="purple lighten-2"
+      :color="$store.getters.getIsMobile ? 'grey darken-1' : 'white'"
       hide-details
       label="フリーワード検索"
       hide-selected
-      @click="blankModel"
+      item-text="title"
+      :search-input.sync="search"
+      v-model="input"
+      @input="execAlgolia"
+      @click:append-outer="execAlgolia"
+      append-outer-icon="mdi-magnify"
+      :loading="searchLoading"
     >
       <template v-slot:item="{ item }">
-        <!-- <v-list-item-avatar class="headline font-weight-light white--text">
-          <v-img :src="'/img/' + item.tags[0] + '.svg'" max-height="20" aspect-ratio="1" contain></v-img>
-        </v-list-item-avatar>
-        <v-list-item-content>
-          <v-list-item-title v-text="item.title"></v-list-item-title>
-        </v-list-item-content>
-        </template>-->
         <v-list-item @click="clickTitle(item.userId, item.snipId)">
-          <!-- <v-list-item> -->
           <v-list-item-avatar color="puple lighten-2" class="caption">
             <v-img :src="'/img/' + item.tags[0] + '.svg'" max-height="20" aspect-ratio="1" contain></v-img>
           </v-list-item-avatar>
@@ -33,12 +28,7 @@
           </v-list-item-content>
         </v-list-item>
       </template>
-      <!-- <template v-slot:no-data>
-        <v-list-item>
-          <v-list-item-title>結果なし</v-list-item-title>
-        </v-list-item>
-      </template>-->
-    </v-autocomplete>
+    </v-combobox>
   </span>
 </template>
 
@@ -50,54 +40,41 @@ const index = client.initIndex("snippets");
 export default {
   Name: "Search",
   watch: {
-    model: function(v) {},
-    // attr: function(v) {
-    //   console.log(v);
-    // },
-    $route: function() {
-      // console.log("change");
-      this.value = null;
-    },
-    // items: function(v) {
-    // console.log(`items:${v}`);
-    // },
-    search: async function(v) {
-      if (!v) return (this.items = []);
-      if (this.searching) return;
-      this.searching = true;
-      let self = this;
-      setTimeout(async () => {
-        const { hits } = await index.search(v);
-        for (const h of hits) {
-          let obj = {
-            ...h.snipData,
-            snipId: h.snipId,
-            userId: h.userId
-          };
-          self.items.push(obj);
-        }
-        self.searching = false;
-      }, 1000);
+    search: function() {
+      this.items = [];
     }
   },
   data: function() {
     return {
-      attr: null,
       items: [],
       search: null,
-      model: null,
       solo: !this.$store.getters.getIsMobile,
       outlined: !this.$store.getters.getIsMobile,
-      searching: false
+      searchLoading: false,
+      input: null
     };
   },
   methods: {
     clickTitle: function(user, snip) {
+      this.search = null;
       this.$router.push("/" + user + "/snip/" + snip);
-      // this.items = [];
     },
     blankModel: function() {
       this.model = null;
+    },
+    execAlgolia: async function() {
+      if (!this.search.replace(/\s+/g, "")) return;
+      this.searchLoading = true;
+      const { hits } = await index.search(this.search);
+      for (const h of hits) {
+        let obj = {
+          ...h.snipData,
+          snipId: h.snipId,
+          userId: h.userId
+        };
+        this.items.push(obj);
+      }
+      this.searchLoading = false;
     }
   }
 };

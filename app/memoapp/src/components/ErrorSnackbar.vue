@@ -1,5 +1,5 @@
 <template>
-  <v-snackbar top v-model="snack" outlined :timeout="0" color="red">
+  <v-snackbar bottom v-model="snack" outlined :timeout="0" color="red">
     <v-container>
       {{ $store.getters.getErrorMsg }}
     </v-container>

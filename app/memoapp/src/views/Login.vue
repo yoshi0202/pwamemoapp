@@ -9,32 +9,6 @@
                 <v-container text-left py-0 px-4>ログイン</v-container>
               </v-card-title>
               <v-container fluid d-flex justify-center>
-                <v-flex xs12 sm12 md6>
-                  <v-form>
-                    <v-container pt-6 px-5>
-                      <v-text-field
-                        v-model="email"
-                        outlined
-                        dense
-                        label="Email"
-                        color="purple lighten-2"
-                        :rules="[rules.required]"
-                      ></v-text-field>
-                      <v-text-field
-                        v-model="password"
-                        outlined
-                        dense
-                        label="Password"
-                        type="password"
-                        color="purple lighten-2"
-                        :rules="[rules.required]"
-                      ></v-text-field>
-                      <v-btn dark large color="purple lighten-2" class="font-weight-bold" @click="login"
-                        >ログイン</v-btn
-                      >
-                    </v-container>
-                  </v-form>
-                </v-flex>
                 <v-container px-5>
                   <v-container fluid text-center>
                     <v-btn
@@ -85,9 +59,6 @@
                   </v-container>
                 </v-container>
               </v-container>
-              <!-- <v-container fluid text-center ma-0>
-                <v-btn text color="purple lighten-2" to="/signUp">アカウントをお持ちでない場合</v-btn>
-              </v-container>-->
             </v-card>
           </v-container>
         </v-flex>

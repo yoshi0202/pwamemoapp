@@ -40,18 +40,18 @@
         <img :src="'/img/' + t + '.svg'" alt="tags" width="auto" height="20px" />
       </span>
       <v-spacer></v-spacer>
-      <span class="px-4 body-2 font-weight-thin blue-grey--text text--darken-3">
+      <span class="px-4 body-2 subtitle blue-grey--text text--darken-3">
         <v-icon small>mdi-pin</v-icon>
         {{ data.pinCounts }}
       </span>
-      <span class="px-2 body-2 font-weight-thin blue-grey--text text--darken-3">
+      <span class="px-2 body-2 subtitle blue-grey--text text--darken-3">
         <v-icon small>mdi-eye</v-icon>
         {{ data.viewCounts }}
       </span>
     </v-container>
     <v-card-actions class="card-actions px-3 pt-0" style="width:100%">
       <v-layout align-center>
-        <span class="body-2 font-weight-thin blue-grey--text text--darken-3">{{
+        <span class="body-2 subtitle blue-grey--text text--darken-3">{{
           changeUnixTime(data.createdAt, "getFullTimestamp")
         }}</span>
         <v-spacer></v-spacer>
@@ -126,8 +126,9 @@ export default {
     moveUserPage: function(id) {
       this.$router.push("/user/" + id);
     },
-    snippetCopy: function(v) {
-      navigator.clipboard.writeText(v);
+    // snippetCopy: function(v) {
+    snippetCopy: function() {
+      // navigator.clipboard.writeText(v);
       this.snackbar = true;
     }
   },

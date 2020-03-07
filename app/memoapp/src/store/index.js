@@ -25,7 +25,8 @@ export default new Vuex.Store({
     loading: true,
     errorMsg: null,
     algoliaAppId: process.env.VUE_APP_ALGOLIA_APP_ID,
-    algoliaApiKey: process.env.VUE_APP_ALGOLIA_API_KEY
+    algoliaApiKey: process.env.VUE_APP_ALGOLIA_API_KEY,
+    unreadNotify: false
   },
   getters: {
     getLogin(state) {
@@ -63,6 +64,9 @@ export default new Vuex.Store({
     },
     getErrorMsg(state) {
       return state.errorMsg;
+    },
+    getUnreadNotify(state) {
+      return state.unreadNotify;
     }
   },
   mutations: {
@@ -88,6 +92,9 @@ export default new Vuex.Store({
     },
     drawer(state) {
       state.drawer = !state.drawer;
+    },
+    notify(state, boolean) {
+      state.unreadNotify = boolean;
     },
     closeDrawer(state) {
       state.drawer = false;
@@ -117,6 +124,9 @@ export default new Vuex.Store({
     },
     judgeMobile({ commit }) {
       commit("isMobile");
+    },
+    notify({ commit }, boolean) {
+      commit("notify", boolean);
     },
     toggleDrawer({ commit }) {
       commit("drawer");

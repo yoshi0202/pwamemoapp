@@ -9,6 +9,7 @@ const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", conve
 const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
 const pinTableName = "snippy-pin";
+const notifyTableName = "snippy-notification";
 const storage = multer.memoryStorage();
 const s3 = new aws.S3({
   bucket: "snippy.site",
@@ -35,9 +36,10 @@ router.get("/:userId", async function(req, res, next) {
     let params = {
       TableName: tableName,
       IndexName: "userId-createdAt-index",
-      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt" },
-      ExpressionAttributeValues: { ":u": userId, ":c": 0 },
+      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt", "#s": "snipType" },
+      ExpressionAttributeValues: { ":u": userId, ":c": 0, ":s": 0 },
       KeyConditionExpression: "#u = :u AND #c >= :c",
+      FilterExpression: "#s = :s",
       ScanIndexForward: false
     };
     promiseArray.push(dynamo.query(params).promise());
@@ -63,11 +65,22 @@ router.get("/:userId", async function(req, res, next) {
       FilterExpression: "#u = :u"
     };
     promiseArray.push(dynamo.scan(pinParams).promise());
+    params = {
+      TableName: tableName,
+      IndexName: "userId-createdAt-index",
+      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt", "#s": "snipType" },
+      ExpressionAttributeValues: { ":u": userId, ":c": 0, ":s": 1 },
+      KeyConditionExpression: "#u = :u AND #c >= :c",
+      FilterExpression: "#s = :s",
+      ScanIndexForward: false
+    };
+    promiseArray.push(dynamo.query(params).promise());
     const promiseAll = await Promise.all(promiseArray);
     let result = {
       snippets: {
         userSnippets: promiseAll[0].Items,
-        pins: []
+        pins: [],
+        userMemo: promiseAll[3].Items
       },
       userData: promiseAll[1].Items[0]
     };
@@ -141,6 +154,67 @@ router.get("/:userId/getUploadUrl", async function(req, res, next) {
     next(utils.createErrorObj(500, err));
   }
 });
+router.get("/:userId/notification", async function(req, res, next) {
+  try {
+    let params = {
+      TableName: notifyTableName,
+      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt" },
+      ExpressionAttributeValues: { ":u": req.params.userId, ":c": 0 },
+      KeyConditionExpression: "#u = :u AND #c >= :c",
+      ScanIndexForward: false
+    };
+    const result = await dynamo.query(params).promise();
+    let promiseArray = [];
+    let promiseArray2 = [];
+    result.Items.map(function(v) {
+      params = {
+        TableName: tableName,
+        Key: {
+          userId: v.userId,
+          snipId: v.snipId
+        }
+      };
+      promiseArray.push(dynamo.get(params).promise());
+      delete params.Key.snipId;
+      params.TableName = userTableName;
+      params.Key.userId = v.eventUserId;
+      promiseArray2.push(dynamo.get(params).promise());
+    });
+    const promiseAll = await Promise.all(promiseArray);
+    const promiseAll2 = await Promise.all(promiseArray2);
+    let resultArray = [];
+    result.Items.map(function(v, i) {
+      resultArray.push({
+        createdAt: v.createdAt,
+        eventUserId: v.eventUserId,
+        snipId: v.snipId,
+        displayName: promiseAll2[i].Item.displayName,
+        eventUserImgUrl: promiseAll2[i].Item.imgUrl,
+        snipTitle: promiseAll[i].Item.snipData.title
+      });
+    });
+
+    // update notification flg at user
+    const userParams = {
+      TableName: userTableName,
+      Key: {
+        userId: req.params.userId
+      },
+      ExpressionAttributeValues: {
+        ":n": 0
+      },
+      ExpressionAttributeNames: {
+        "#n": "notifyFlg"
+      },
+      UpdateExpression: "SET #n = :n"
+    };
+    await dynamo.update(userParams).promise();
+
+    res.json(resultArray);
+  } catch (err) {
+    next(utils.createErrorObj(500, err));
+  }
+});
 
 router.post("/:userId/changeImg", async function(req, res) {
   const updateParams = {
@@ -162,6 +236,19 @@ router.post("/:userId/changeImg", async function(req, res) {
   });
 });
 
+router.get("/:userId/unreadNotify", async function(req, res) {
+  const getParam = {
+    TableName: userTableName,
+    Key: {
+      userId: req.params.userId
+    }
+  };
+  let result = await dynamo.get(getParam).promise();
+  let returnObj = {
+    bool: result.Item.notifyFlg === 1 ? true : false
+  };
+  res.json(returnObj);
+});
 function getTimestamp() {
   return Math.floor(new Date().getTime() / 1000);
 }
