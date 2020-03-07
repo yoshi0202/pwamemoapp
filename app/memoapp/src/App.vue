@@ -4,9 +4,6 @@
     <MobileHeader v-else @logout="logout" />
     <router-view />
     <NavigationDrawer @logout="logout" v-if="$store.getters.getIsMobile" />
-    <!-- <v-btn v-if="$route.name === 'home'" color="purple lighten-2" right bottom fixed fab dark to="/addSnippets">
-      <v-icon dark>mdi-code-tags</v-icon>
-    </v-btn> -->
     <v-speed-dial
       v-if="$route.name === 'home'"
       color="purple lighten-2"

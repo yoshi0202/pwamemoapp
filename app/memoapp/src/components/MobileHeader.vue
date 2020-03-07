@@ -3,9 +3,12 @@
     <v-app-bar app dark flat color="black" class="snippy-header">
       <v-layout justify="space-between">
         <v-container pa-0 class="d-flex align-center">
-          <v-icon v-if="$route.name !== 'home'" color="#C7B967" large @click="$router.push('/')"
-            >mdi-chevron-left</v-icon
-          >
+          <v-icon
+            v-if="$route.name !== 'home'"
+            color="#C7B967"
+            large
+            @click="$router.push('/')"
+          >mdi-chevron-left</v-icon>
         </v-container>
         <v-container pa-0 text-center class="d-flex align-center">
           <TopButton />
@@ -15,7 +18,7 @@
             <v-icon large color="red" @click="$router.go({ path: '/', force: true })">mdi-refresh</v-icon>
           </span>
           <span v-else-if="$store.getters.getLoginStatus">
-            <v-badge :value="notification" bordered color="red" overlap>
+            <v-badge :value="$store.getters.getUnreadNotify" color="red" dot overlap>
               <v-avatar color="grey lighten-2">
                 <v-img
                   :src="$store.getters.getImgUrl"
@@ -44,19 +47,27 @@
 import TopButton from "./TopButton";
 import Search from "./Search";
 import Pusher from "pusher-js";
+import axios from "axios";
+import Store from "@/store/index.js";
+const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   Name: "MobileHeader",
-  data: () => ({
-    items: [{ title: "設定" }, { title: "ログアウト" }],
-    notification: false
-  }),
+  data: function() {
+    return {
+      items: [{ title: "設定" }, { title: "ログアウト" }]
+    };
+  },
   components: {
     TopButton,
     Search
   },
-  created: function() {
+  created: async function() {
+    if (!this.$store.getters.getUserId) return;
     this.subscribe();
+    let userId = this.$store.getters.getUserId;
+    let isUnreadNotify = await axios.get(apiUrl + "user/" + userId + "/unreadNotify");
+    this.$store.dispatch("notify", isUnreadNotify.data.bool);
   },
   methods: {
     myPage: function() {

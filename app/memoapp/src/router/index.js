@@ -132,6 +132,11 @@ router.afterEach(async to => {
       userId: to.query.userId,
       loginType: to.query.loginType
     });
+    if (result.data.Items[0].notifyFlg === 1) {
+      Store.dispatch("notify", true);
+    } else {
+      Store.dispatch("notify", false);
+    }
     await Store.dispatch("updateLoginStatus", {
       userId: result.data.Items[0].userId,
       email: result.data.Items[0].email,

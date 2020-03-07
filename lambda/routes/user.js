@@ -193,6 +193,23 @@ router.get("/:userId/notification", async function(req, res, next) {
         snipTitle: promiseAll[i].Item.snipData.title
       });
     });
+
+    // update notification flg at user
+    const userParams = {
+      TableName: userTableName,
+      Key: {
+        userId: req.params.userId
+      },
+      ExpressionAttributeValues: {
+        ":n": 0
+      },
+      ExpressionAttributeNames: {
+        "#n": "notifyFlg"
+      },
+      UpdateExpression: "SET #n = :n"
+    };
+    await dynamo.update(userParams).promise();
+
     res.json(resultArray);
   } catch (err) {
     next(utils.createErrorObj(500, err));
@@ -219,6 +236,19 @@ router.post("/:userId/changeImg", async function(req, res) {
   });
 });
 
+router.get("/:userId/unreadNotify", async function(req, res) {
+  const getParam = {
+    TableName: userTableName,
+    Key: {
+      userId: req.params.userId
+    }
+  };
+  let result = await dynamo.get(getParam).promise();
+  let returnObj = {
+    bool: result.Item.notifyFlg === 1 ? true : false
+  };
+  res.json(returnObj);
+});
 function getTimestamp() {
   return Math.floor(new Date().getTime() / 1000);
 }

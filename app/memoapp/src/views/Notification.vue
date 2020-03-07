@@ -18,7 +18,9 @@
               <span></span>
             </v-container>
           </v-card>
-          <v-container pa-0><v-divider></v-divider></v-container>
+          <v-container pa-0>
+            <v-divider></v-divider>
+          </v-container>
           <v-card tile elevation="0">
             <v-container py-2>
               <v-card tile elevation="0" v-for="n in noti" :key="n.createdAt">
@@ -29,14 +31,18 @@
                     </v-list-item-avatar>
 
                     <v-list-item-content>
-                      <v-list-item-title class="font-weight-bold subtitle-1 blue-grey--text text--darken-3">
-                        <a :href="'/user/' + n.eventUserId" class="purple--text text--lighten-2">{{ n.displayName }}</a>
+                      <v-list-item-title
+                        class="font-weight-bold subtitle-1 blue-grey--text text--darken-3"
+                      >
+                        <a
+                          :href="'/user/' + n.eventUserId"
+                          class="purple--text text--lighten-2"
+                        >{{ n.displayName }}</a>
                         さんが
                         <a
                           :href="'/' + $store.getters.getUserId + '/snip/' + n.snipId"
                           class="purple--text text--lighten-2"
-                          >{{ n.snipTitle }}</a
-                        >
+                        >{{ n.snipTitle }}</a>
                         をピン留めしました！
                       </v-list-item-title>
                       <v-list-item-subtitle
@@ -70,6 +76,7 @@ export default {
     const notify = apiUrl + "user/" + this.$store.getters.getUserId + "/notification";
     const getNotification = await axios.get(notify);
     this.noti = getNotification.data;
+    this.$store.dispatch("notify", false);
   },
   mixins: [Mixin]
 };

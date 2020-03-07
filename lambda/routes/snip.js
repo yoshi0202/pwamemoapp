@@ -198,7 +198,7 @@ router.delete("/destroy", async function(req, res, next) {
   }
 });
 
-//snip pin
+//add snip pin
 router.post("/pin", async function(req, res, next) {
   try {
     let promiseArray = [];
@@ -236,6 +236,22 @@ router.post("/pin", async function(req, res, next) {
       };
       promiseArray.push(dynamo.put(notiParams).promise());
     }
+
+    // update user notifyFlg
+    let updateUserNotify = {
+      TableName: userTableName,
+      Key: {
+        userId: req.body.snipUserId
+      },
+      ExpressionAttributeValues: {
+        ":n": 1
+      },
+      ExpressionAttributeNames: {
+        "#n": "notifyFlg"
+      },
+      UpdateExpression: "SET #n = :n"
+    };
+    promiseArray.push(dynamo.update(updateUserNotify).promise());
 
     await Promise.all(promiseArray);
 

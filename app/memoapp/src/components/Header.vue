@@ -11,7 +11,7 @@
         <span v-else-if="$store.getters.getLoginStatus">
           <v-menu left offset-x>
             <template v-slot:activator="{ on }">
-              <v-badge :value="notification" bordered color="red" overlap>
+              <v-badge :value="$store.getters.getUnreadNotify" dot color="red" overlap>
                 <v-avatar v-on="on" color="grey lighten-2">
                   <v-img :src="$store.getters.getImgUrl" alt="avatar" style="cursor:pointer" />
                 </v-avatar>
@@ -31,9 +31,7 @@
               <v-list-item @click="goNotification" style="cursor:pointer">
                 <v-list-item-title>
                   <span class="caption">
-                    <v-icon medium>
-                      mdi-bell-outline
-                    </v-icon>
+                    <v-icon medium>mdi-bell-outline</v-icon>
                     <span class="ml-3">通知</span>
                   </span>
                 </v-list-item-title>
@@ -74,19 +72,27 @@
 import TopButton from "@/components/TopButton";
 import Search from "@/components/Search";
 import Pusher from "pusher-js";
+import axios from "axios";
+import Store from "@/store/index.js";
+const apiUrl = Store.getters.getApiUrl + "api/";
 
 export default {
   Name: "Header",
-  data: () => ({
-    items: [{ title: "設定" }, { title: "ログアウト" }],
-    notification: false
-  }),
+  data: function() {
+    return {
+      items: [{ title: "設定" }, { title: "ログアウト" }]
+    };
+  },
   components: {
     TopButton,
     Search
   },
-  created: function() {
+  created: async function() {
+    if (!this.$store.getters.getUserId) return;
     this.subscribe();
+    let userId = this.$store.getters.getUserId;
+    let isUnreadNotify = await axios.get(apiUrl + "user/" + userId + "/unreadNotify");
+    this.$store.dispatch("notify", isUnreadNotify.data.bool);
   },
   methods: {
     myPage: function() {
