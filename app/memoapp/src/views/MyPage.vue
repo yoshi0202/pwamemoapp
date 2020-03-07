@@ -171,7 +171,6 @@ export default {
         this.items = ["投稿", "ピン"];
       }
       this.userData = result.data;
-      console.log(this.userData.userData);
       this.$store.dispatch("changeLoading", false);
     } catch (err) {
       this.$store.dispatch("changeLoading", false);
@@ -181,7 +180,7 @@ export default {
   computed: {
     filteredUsers: function() {
       let snipArray = [];
-      let array = ["userSnippets", "pin", "userMemo"];
+      let array = ["userSnippets", "pins", "userMemo"];
       let key = array[this.tab];
       for (let i in this.userData.snippets[key]) {
         let snip = this.userData.snippets[key][i];

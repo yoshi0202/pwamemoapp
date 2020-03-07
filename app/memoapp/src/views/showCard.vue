@@ -22,11 +22,23 @@
                 justify-start
               >
                 <v-list-item-avatar size="60" color="grey">
-                  <v-img @click="toUserPage" :src="userData.imgUrl" alt="avatar" style="cursor: pointer;" />
+                  <v-img
+                    @click="toUserPage"
+                    :src="userData.imgUrl"
+                    alt="avatar"
+                    style="cursor: pointer;"
+                  />
                 </v-list-item-avatar>
 
                 <v-spacer></v-spacer>
-                <v-btn v-if="snipData.snipType === 0" class="pt-3" large dark icon @click="clickSnipPin">
+                <v-btn
+                  v-if="snipData.snipType === 0"
+                  class="pt-3"
+                  large
+                  dark
+                  icon
+                  @click="clickSnipPin"
+                >
                   <v-icon :color="pin.pinColor" class>{{ pin.pinIcon }}</v-icon>
                 </v-btn>
                 <v-menu offset-y v-if="ownSnip">
@@ -53,7 +65,16 @@
                   </v-list>
                 </v-menu>
               </v-container>
-              <v-container px-2 pb-0 transparent display-1 font-weight-bold text-left blue-grey--text text--darken-3>
+              <v-container
+                px-2
+                pb-0
+                transparent
+                display-1
+                font-weight-bold
+                text-left
+                blue-grey--text
+                text--darken-3
+              >
                 <span v-text="snipData.snipData.title"></span>
               </v-container>
               <v-container v-if="snipData.snipType === 0" pa-0 text-right>
@@ -71,8 +92,8 @@
                       ']%0aコードスニペット共有サイト%20Snippy%20%20%23Snippy%0a'
                   "
                 >
-                  <v-icon left>mdi-twitter</v-icon>Tweets</v-chip
-                >
+                  <v-icon left>mdi-twitter</v-icon>Tweets
+                </v-chip>
               </v-container>
               <v-divider></v-divider>
               <v-container
@@ -87,19 +108,30 @@
                 py-0
               >
                 <v-list-item-action>
-                  <v-container pa-0 text-left
-                    >Write by: <span class="font-weight-regular">@{{ userData.displayName }}</span></v-container
-                  >
-                  <v-container pa-0 text-left
-                    >Updated:
-                    <span class="font-weight-regular">
-                      {{ changeUnixTime(snipData.createdAt, "getFullTimestamp") }}
-                    </span>
+                  <v-container pa-0 text-left>
+                    Write by:
+                    <span class="font-weight-regular">@{{ userData.displayName }}</span>
                   </v-container>
-                  <v-container pa-0 text-left d-flex align-center
-                    >Category:
-                    <span v-for="t in snipData.snipData.tags" :key="t" class="d-flex align-center">
-                      <img class="mx-2" :src="'/img/' + t + '.svg'" alt="category" width="20px" height="auto" />
+                  <v-container pa-0 text-left>
+                    Updated:
+                    <span
+                      class="font-weight-regular"
+                    >{{ changeUnixTime(snipData.createdAt, "getFullTimestamp") }}</span>
+                  </v-container>
+                  <v-container pa-0 text-left d-flex align-center>
+                    Category:
+                    <span
+                      v-for="t in snipData.snipData.tags"
+                      :key="t"
+                      class="d-flex align-center"
+                    >
+                      <img
+                        class="mx-2"
+                        :src="'/img/' + t + '.svg'"
+                        alt="category"
+                        width="20px"
+                        height="auto"
+                      />
                     </span>
                   </v-container>
                 </v-list-item-action>

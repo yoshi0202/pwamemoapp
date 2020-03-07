@@ -9,6 +9,7 @@ const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", conve
 const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
 const pinTableName = "snippy-pin";
+const notifyTableName = "snippy-notification";
 const storage = multer.memoryStorage();
 const s3 = new aws.S3({
   bucket: "snippy.site",
@@ -149,6 +150,50 @@ router.get("/:userId/getUploadUrl", async function(req, res, next) {
     res.json({
       uploadUrl: uploadUrl
     });
+  } catch (err) {
+    next(utils.createErrorObj(500, err));
+  }
+});
+router.get("/:userId/notification", async function(req, res, next) {
+  try {
+    let params = {
+      TableName: notifyTableName,
+      ExpressionAttributeNames: { "#u": "userId", "#c": "createdAt" },
+      ExpressionAttributeValues: { ":u": req.params.userId, ":c": 0 },
+      KeyConditionExpression: "#u = :u AND #c >= :c",
+      ScanIndexForward: false
+    };
+    const result = await dynamo.query(params).promise();
+    let promiseArray = [];
+    let promiseArray2 = [];
+    result.Items.map(function(v) {
+      params = {
+        TableName: tableName,
+        Key: {
+          userId: v.userId,
+          snipId: v.snipId
+        }
+      };
+      promiseArray.push(dynamo.get(params).promise());
+      delete params.Key.snipId;
+      params.TableName = userTableName;
+      params.Key.userId = v.eventUserId;
+      promiseArray2.push(dynamo.get(params).promise());
+    });
+    const promiseAll = await Promise.all(promiseArray);
+    const promiseAll2 = await Promise.all(promiseArray2);
+    let resultArray = [];
+    result.Items.map(function(v, i) {
+      resultArray.push({
+        createdAt: v.createdAt,
+        eventUserId: v.eventUserId,
+        snipId: v.snipId,
+        displayName: promiseAll2[i].Item.displayName,
+        eventUserImgUrl: promiseAll2[i].Item.imgUrl,
+        snipTitle: promiseAll[i].Item.snipData.title
+      });
+    });
+    res.json(resultArray);
   } catch (err) {
     next(utils.createErrorObj(500, err));
   }

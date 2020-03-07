@@ -25,6 +25,7 @@ export default {
   data: () => ({
     loginItems: [
       { title: "マイページ", icon: "mdi-account", action: "mypage" },
+      { title: "通知", icon: "mdi-bell-outline", action: "userNotification" },
       { title: "設定", icon: "mdi-tune", action: "setting" },
       { title: "ログアウト", icon: "mdi-logout", action: "logout" }
     ]
@@ -34,6 +35,9 @@ export default {
     execAction: function(path) {
       const user = this.$store.getters.getLogin;
       switch (path) {
+        case "userNotification":
+          this.$router.push("/user/" + user.userId + "/notification");
+          break;
         case "mypage":
           this.$router.push("/user/" + user.userId);
           break;

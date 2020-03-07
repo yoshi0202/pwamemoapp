@@ -15,14 +15,16 @@
             <v-icon large color="red" @click="$router.go({ path: '/', force: true })">mdi-refresh</v-icon>
           </span>
           <span v-else-if="$store.getters.getLoginStatus">
-            <v-avatar color="grey lighten-2">
-              <v-img
-                :src="$store.getters.getImgUrl"
-                alt="avatar"
-                @click="$store.dispatch('toggleDrawer')"
-                style="cursor:pointer"
-              />
-            </v-avatar>
+            <v-badge :value="notification" bordered color="red" overlap>
+              <v-avatar color="grey lighten-2">
+                <v-img
+                  :src="$store.getters.getImgUrl"
+                  alt="avatar"
+                  @click="$store.dispatch('toggleDrawer')"
+                  style="cursor:pointer"
+                />
+              </v-avatar>
+            </v-badge>
           </span>
           <span v-else>
             <v-icon color="white" @click="$store.dispatch('toggleDrawer')">mdi-dots-vertical</v-icon>
@@ -41,17 +43,21 @@
 <script>
 import TopButton from "./TopButton";
 import Search from "./Search";
+import Pusher from "pusher-js";
 
 export default {
   Name: "MobileHeader",
   data: () => ({
-    items: [{ title: "設定" }, { title: "ログアウト" }]
+    items: [{ title: "設定" }, { title: "ログアウト" }],
+    notification: false
   }),
   components: {
     TopButton,
     Search
   },
-  created: function() {},
+  created: function() {
+    this.subscribe();
+  },
   methods: {
     myPage: function() {
       const user = this.$store.getters.getLogin;
@@ -60,6 +66,14 @@ export default {
     editPage: function() {
       const user = this.$store.getters.getLogin;
       this.$router.push("/user/" + user.userId + "/edit");
+    },
+    subscribe() {
+      let pusher = new Pusher(process.env.VUE_APP_PUSHER_KEY, { cluster: "ap3" });
+      Pusher.logToConsole = true;
+      pusher.subscribe("notiChannel" + this.$store.getters.getUserId);
+      pusher.bind("pinAdd-event", () => {
+        this.notification = true;
+      });
     }
   }
 };

@@ -32,3 +32,6 @@ services:
       - API_BASE_URL
       - ALGOLIA_APP_ID
       - ALGOLIA_API_KEY
+      - PUSHER_APPID
+      - PUSHER_KEY
+      - PUSHER_SECRET

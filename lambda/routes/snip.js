@@ -6,9 +6,18 @@ const dynamo = new aws.DynamoDB.DocumentClient({ region: "ap-northeast-1", conve
 const tableName = "snippy-snippet";
 const userTableName = "snippy-user";
 const pinTableName = "snippy-pin";
+const notifyTableName = "snippy-notification";
 const utils = require("../utils/utils");
 const client = algoliasearch(process.env.ALGOLIA_APP_ID, process.env.ALGOLIA_API_KEY);
 const index = client.initIndex("snippets");
+let Pusher = require("pusher");
+const pusher = new Pusher({
+  appId: process.env.PUSHER_APPID,
+  key: process.env.PUSHER_KEY,
+  secret: process.env.PUSHER_SECRET,
+  cluster: "ap3",
+  useTLS: true
+});
 
 // all snip get
 router.get("/", async function(req, res, next) {
@@ -192,6 +201,12 @@ router.delete("/destroy", async function(req, res, next) {
 //snip pin
 router.post("/pin", async function(req, res, next) {
   try {
+    let promiseArray = [];
+
+    // increments pin counts
+    await incrementPinCounts(req.body.snipUserId, req.body.snipId);
+
+    // add pin
     const putParams = {
       TableName: pinTableName,
       Item: {
@@ -205,8 +220,28 @@ router.post("/pin", async function(req, res, next) {
         pinFlg: 1
       }
     };
-    await dynamo.put(putParams).promise();
-    incrementPinCounts(req.body.snipUserId, req.body.snipId);
+    promiseArray.push(dynamo.put(putParams).promise());
+
+    if (req.body.snipUserId !== req.body.userId) {
+      //update notification, not own event
+      const notiParams = {
+        TableName: notifyTableName,
+        Item: {
+          userId: req.body.snipUserId,
+          event: "pin",
+          eventUserId: req.body.userId,
+          snipId: req.body.snipId,
+          createdAt: Number(utils.getTimestamp())
+        }
+      };
+      promiseArray.push(dynamo.put(notiParams).promise());
+    }
+
+    await Promise.all(promiseArray);
+
+    // send notification using websocket
+    await sendSocket("notiChannel" + req.body.userId, "pinAdd-event");
+
     res.json({
       result: "ok"
     });
@@ -217,6 +252,12 @@ router.post("/pin", async function(req, res, next) {
 
 router.delete("/pin", async function(req, res, next) {
   try {
+    let promiseArray = [];
+
+    // decrement pin counts
+    await decrementPinCounts(req.body.snipUserId, req.body.snipId);
+
+    // delete pin
     const deleteParams = {
       TableName: pinTableName,
       Key: {
@@ -224,8 +265,37 @@ router.delete("/pin", async function(req, res, next) {
         snipId: req.body.snipId
       }
     };
-    await dynamo.delete(deleteParams).promise();
-    await decrementPinCounts(req.body.snipUserId, req.body.snipId);
+    promiseArray.push(dynamo.delete(deleteParams).promise());
+
+    // search notification table
+    let params = {
+      TableName: notifyTableName,
+      ExpressionAttributeNames: {
+        "#e": "eventUserId",
+        "#s": "snipId"
+      },
+
+      ExpressionAttributeValues: {
+        ":e": req.body.userId,
+        ":s": req.body.snipId
+      },
+      FilterExpression: "#e = :e AND #s = :s"
+    };
+    let notify = await dynamo.scan(params).promise();
+
+    if (notify.Items.length !== 0) {
+      // delete notification
+      params = {
+        TableName: notifyTableName,
+        Key: {
+          userId: notify.Items[0].userId,
+          createdAt: notify.Items[0].createdAt
+        }
+      };
+      promiseArray.push(dynamo.delete(params).promise());
+    }
+
+    await Promise.all(promiseArray);
     res.json({
       result: "ok"
     });
@@ -251,7 +321,7 @@ router.get("/pin", async function(req, res, next) {
   }
 });
 
-// snip create
+// memo create
 router.post("/addMemo", async function(req, res, next) {
   try {
     const createdAt = Number(utils.getTimestamp());
@@ -433,5 +503,14 @@ async function updateViewedAt(userId, snipId) {
     } catch (err) {
       rej(err);
     }
+  });
+}
+
+function sendSocket(channel, event) {
+  return new Promise(function(rej, res) {
+    pusher.trigger(channel, event, {}, function(err) {
+      if (err) res(err);
+      else rej("");
+    });
   });
 }
