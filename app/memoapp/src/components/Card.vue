@@ -116,9 +116,6 @@ export default {
     },
     parseMd: function(sentence) {
       return marked(sentence).replace(/<("[^"]*"|'[^']*'|[^'">])*>/g, "");
-      // return marked(sentence, {
-      // breaks: true
-      // });
     },
     cardClick: function() {
       this.$router.push(this.data.userId + "/snip/" + this.data.snipId);
@@ -127,8 +124,8 @@ export default {
       this.$router.push("/user/" + id);
     },
     // snippetCopy: function(v) {
-    snippetCopy: function() {
-      // navigator.clipboard.writeText(v);
+    snippetCopy: function(v) {
+      this.$copyText(v);
       this.snackbar = true;
     }
   },
