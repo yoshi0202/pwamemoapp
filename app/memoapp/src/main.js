@@ -11,6 +11,7 @@ import PerfectScrollbar from "vue2-perfect-scrollbar";
 import "vue2-perfect-scrollbar/dist/vue2-perfect-scrollbar.css";
 import VueCarousel from "vue-carousel";
 import VueAnalytics from "vue-analytics";
+import VueClipboard from "vue-clipboard2";
 
 import VueHighlightJS from "vue-highlightjs";
 import "highlight.js/styles/monokai-sublime.css";
@@ -19,6 +20,7 @@ Vue.config.productionTip = false;
 
 Vue.component("input-tag", InputTag);
 
+Vue.use(VueClipboard);
 Vue.use(mavonEditor);
 Vue.use(PerfectScrollbar);
 Vue.use(VueCarousel);
