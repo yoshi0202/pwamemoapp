@@ -88,8 +88,8 @@ export default {
     Search
   },
   created: async function() {
-    if (!this.$store.getters.getUserId) return;
     this.subscribe();
+    if (!this.$store.getters.getUserId) return;
     let userId = this.$store.getters.getUserId;
     let isUnreadNotify = await axios.get(apiUrl + "user/" + userId + "/unreadNotify");
     this.$store.dispatch("notify", isUnreadNotify.data.bool);
@@ -107,12 +107,14 @@ export default {
       const user = this.$store.getters.getLogin;
       this.$router.push("/user/" + user.userId + "/edit");
     },
-    subscribe() {
+    subscribe: function() {
       let pusher = new Pusher(process.env.VUE_APP_PUSHER_KEY, { cluster: "ap3" });
       Pusher.logToConsole = true;
-      pusher.subscribe("notiChannel" + this.$store.getters.getUserId);
-      pusher.bind("pinAdd-event", () => {
-        this.$store.dispatch("notify", true);
+      pusher.subscribe("notiChannel");
+      let self = this;
+      pusher.bind("pinAdd-event", function(data) {
+        if (self.$store.getters.getUserId !== data.id) return;
+        self.$store.dispatch("notify", true);
       });
     }
   }
