@@ -109,7 +109,7 @@ export default {
     },
     subscribe: function() {
       let pusher = new Pusher(process.env.VUE_APP_PUSHER_KEY, { cluster: "ap3" });
-      Pusher.logToConsole = true;
+      Pusher.logToConsole = process.env.NODE_ENV === "development" ? true : false;
       pusher.subscribe("notiChannel");
       let self = this;
       pusher.bind("pinAdd-event", function(data) {
