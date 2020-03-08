@@ -1,7 +1,7 @@
 <template>
   <span :class="margin">
     <v-btn to="/" text small color="purple lighten-2" class="text-center pa-0">
-      <div class="d-flex align-center title pa-0 title-logo">Snippy</div>
+      <div class="d-flex align-center title pa-0 title-logo">Snippy(β)</div>
     </v-btn>
     <v-menu offset-y v-if="!$store.getters.getIsMobile">
       <template v-slot:activator="{ on }">

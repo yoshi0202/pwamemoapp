@@ -8,7 +8,7 @@
       :solo="solo"
       :color="$store.getters.getIsMobile ? 'grey darken-1' : 'white'"
       hide-details
-      label="フリーワード検索"
+      label="タイトルで検索"
       hide-selected
       item-text="title"
       :search-input.sync="search"
