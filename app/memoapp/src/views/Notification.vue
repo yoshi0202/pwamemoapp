@@ -32,7 +32,7 @@
 
                     <v-list-item-content>
                       <v-list-item-title
-                        class="font-weight-bold subtitle-1 blue-grey--text text--darken-3"
+                        class="font-weight-bold subtitle-1 blue-grey--text text--darken-3 item-title"
                       >
                         <a
                           :href="'/user/' + n.eventUserId"
@@ -86,4 +86,8 @@ export default {
 };
 </script>
 
-<style scope></style>
+<style scope>
+.item-title {
+  white-space: normal !important;
+}
+</style>
